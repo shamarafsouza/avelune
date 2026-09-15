@@ -406,15 +406,6 @@ function Explorar({
               Explorar
             </button>
 
-            <button
-              type="button"
-              onClick={() => {
-                setMenuAberto(false);
-                onNavigate?.("resenhas");
-              }}
-            >
-              Resenhas
-            </button>
 
             <button
               type="button"
