@@ -1,0 +1,53 @@
+/*
+ * Paleta central da Avelune.
+ *
+ * Antes dessa mudança, o projeto tinha 253 tons hexadecimais únicos
+ * espalhados por 6 arquivos CSS diferentes — a maioria usada uma
+ * única vez, sendo variações quase imperceptíveis de um mesmo tom
+ * (ex.: #ead7b8, #ead7b7, #ead9bc... todos são o mesmo "creme de
+ * texto", só digitados de formas levemente diferentes em momentos
+ * diferentes). Isso é o que causava a sensação de inconsistência
+ * entre páginas.
+ *
+ * Este arquivo define os tons que se repetiam de verdade (16+ dessas
+ * variações reunidas em cada token abaixo) como uma única fonte de
+ * verdade. Não cobre 100% das 253 cores originais — cores usadas uma
+ * única vez, sem nenhuma variação próxima, foram deixadas como estão,
+ * porque ali não havia deriva pra corrigir.
+ */
+
+:root {
+  /* Texto sobre fundo escuro, do mais claro ao mais suave */
+  --cor-texto-claro: #eee2d2;
+  --cor-texto: #ead7b8;
+  --cor-texto-suave: #eadcc7;
+  --cor-texto-mutado: #62584f;
+
+  /* Dourado — cor de destaque da marca (botões, bordas, ícones) */
+  --cor-dourado-muito-claro: #efd7ae;
+  --cor-dourado-claro: #d5a45f;
+  --cor-dourado-suave: #d5ad68;
+  --cor-dourado: #c99652;
+
+  /* Fundos escuros */
+  --cor-fundo: #090504;
+  --cor-fundo-sombra: #180b08;
+
+  /* Gradiente decorativo das capas de livro, por cor de gênero.
+     Usado em .livro-capa, .estante-capa e .modal-capa — antes, cada
+     um desses três lugares tinha seu próprio tom de preto no fim do
+     gradiente (ex.: #0c0705, #070909, #080607, #070906 — quatro
+     "pretos" diferentes que deveriam ser o mesmo); agora os três
+     convergem pra --cor-fundo. */
+  --capa-vinho-inicio: #401b13;
+  --capa-vinho-meio: #21100b;
+
+  --capa-azul-inicio: #182229;
+  --capa-azul-meio: #0c1114;
+
+  --capa-roxo-inicio: #281725;
+  --capa-roxo-meio: #130b12;
+
+  --capa-verde-inicio: #182217;
+  --capa-verde-meio: #0d130b;
+}
