@@ -23,9 +23,9 @@
       rgba(176, 84, 30, 0.07),
       transparent 50%
     ),
-    #090504;
+    var(--cor-fundo);
 
-  color: #eee2d2;
+  color: var(--cor-texto-claro);
 
   font-family:
     "Inter",
@@ -155,7 +155,7 @@
 }
 
 .explorar-logo {
-  color: #e9dcc8;
+  color: var(--cor-texto-suave);
 
   font-family:
     "Cinzel",
@@ -214,7 +214,7 @@
 }
 
 .explorar-nav button.ativo {
-  color: #ead7b7;
+  color: var(--cor-texto);
 }
 
 .explorar-nav button.ativo::after {
@@ -232,7 +232,7 @@
     linear-gradient(
       90deg,
       transparent,
-      #c99652,
+      var(--cor-dourado),
       transparent
     );
 }
@@ -331,7 +331,7 @@
 .explorar-introducao h1 {
   margin: 0;
 
-  color: #eadcc8;
+  color: var(--cor-texto-suave);
 
   font-family:
     "Cinzel",
@@ -424,7 +424,7 @@
 
   background: transparent;
 
-  color: #eadcc8;
+  color: var(--cor-texto-suave);
 
   font-family:
     "Inter",
@@ -540,14 +540,14 @@
 }
 
 .explorar-categorias-lista button:hover {
-  color: #e7d2b0;
+  color: var(--cor-texto);
 
   border-color:
     rgba(213, 157, 83, 0.32);
 }
 
 .explorar-categorias-lista button.ativo {
-  color: #ead7b7;
+  color: var(--cor-texto);
 
   border-color:
     rgba(213, 157, 83, 0.42);
@@ -589,7 +589,7 @@
 .explorar-cabecalho h2 {
   margin: 0;
 
-  color: #e7dac6;
+  color: var(--cor-texto-suave);
 
   font-family:
     "Cinzel",
@@ -693,8 +693,8 @@
     linear-gradient(
       145deg,
       #4b1d15,
-      #24100c 62%,
-      #0d0705
+      var(--capa-vinho-meio) 62%,
+      var(--cor-fundo)
     );
 }
 
@@ -707,9 +707,9 @@
     ),
     linear-gradient(
       145deg,
-      #1d2930,
+      var(--capa-azul-inicio),
       #0e1519 62%,
-      #070a0b
+      var(--cor-fundo)
     );
 }
 
@@ -722,9 +722,9 @@
     ),
     linear-gradient(
       145deg,
-      #2b1929,
-      #150b14 62%,
-      #080608
+      var(--capa-roxo-inicio),
+      var(--capa-roxo-meio) 62%,
+      var(--cor-fundo)
     );
 }
 
@@ -737,9 +737,9 @@
     ),
     linear-gradient(
       145deg,
-      #1c2819,
-      #0d150b 62%,
-      #070906
+      var(--capa-verde-inicio),
+      var(--cor-fundo-sombra) 62%,
+      var(--cor-fundo)
     );
 }
 
@@ -890,7 +890,7 @@
 }
 
 .explorar-capa-texto strong {
-  color: #eadcc6;
+  color: var(--cor-texto-suave);
 
   font-family:
     "Cinzel",
@@ -987,7 +987,7 @@
   border-color:
     rgba(225, 181, 112, 0.6);
 
-  color: #f0ddbc;
+  color: var(--cor-texto);
 
   transform:
     translateY(-2px);
@@ -1125,7 +1125,7 @@
 .explorar-vazio h3 {
   margin: 0;
 
-  color: #e5d6c0;
+  color: var(--cor-texto);
 
   font-family:
     "Cinzel",
@@ -1234,7 +1234,7 @@
   margin:
     18px 0 15px;
 
-  color: #e8dbc7;
+  color: var(--cor-texto-suave);
 
   font-family:
     "Cinzel",
@@ -1375,14 +1375,14 @@
 
 .explorar-menu-dropdown button:hover,
 .explorar-menu-dropdown button.ativo {
-  color: #ead7b7;
+  color: var(--cor-texto);
   background: rgba(126, 61, 25, 0.12);
 }
 
 .explorar-menu-dropdown button.ativo::before {
   content: "✦";
   margin-right: 9px;
-  color: #c99652;
+  color: var(--cor-dourado);
 }
 
 @media (max-width: 750px) {
@@ -1663,8 +1663,8 @@
     ),
     linear-gradient(
       145deg,
-      #1b100b,
-      #0e0806 70%
+      var(--capa-vinho-meio),
+      var(--cor-fundo) 70%
     );
 
   box-shadow:
@@ -1732,7 +1732,7 @@
   border-color:
     rgba(225, 181, 112, 0.55);
 
-  color: #f0ddbc;
+  color: var(--cor-texto);
 
   transform:
     rotate(90deg);
@@ -1769,9 +1769,9 @@
     ),
     linear-gradient(
       145deg,
-      #401b13,
-      #21100b 62%,
-      #0c0705
+      var(--capa-vinho-inicio),
+      var(--capa-vinho-meio) 62%,
+      var(--cor-fundo)
     );
 }
 
@@ -1784,9 +1784,9 @@
     ),
     linear-gradient(
       145deg,
-      #182229,
-      #0c1114 62%,
-      #070909
+      var(--capa-azul-inicio),
+      var(--capa-azul-meio) 62%,
+      var(--cor-fundo)
     );
 }
 
@@ -1799,9 +1799,9 @@
     ),
     linear-gradient(
       145deg,
-      #281725,
-      #130b12 62%,
-      #080607
+      var(--capa-roxo-inicio),
+      var(--capa-roxo-meio) 62%,
+      var(--cor-fundo)
     );
 }
 
@@ -1814,9 +1814,9 @@
     ),
     linear-gradient(
       145deg,
-      #182217,
-      #0d130b 62%,
-      #070906
+      var(--capa-verde-inicio),
+      var(--capa-verde-meio) 62%,
+      var(--cor-fundo)
     );
 }
 
@@ -1889,7 +1889,7 @@
   margin:
     18px 0 0;
 
-  color: #eadcc7;
+  color: var(--cor-texto-suave);
 
   font-family:
     "Cinzel",
@@ -1934,13 +1934,13 @@
 }
 
 .explorar-modal-avaliacao span {
-  color: #d9a45d;
+  color: var(--cor-dourado-claro);
 
   font-size: 17px;
 }
 
 .explorar-modal-avaliacao strong {
-  color: #eadcc7;
+  color: var(--cor-texto-suave);
 
   font-family:
     "Cinzel",
@@ -2042,7 +2042,7 @@
   border-color:
     rgba(213, 157, 83, 0.38);
 
-  color: #eadcc7;
+  color: var(--cor-texto-suave);
 }
 
 .explorar-modal-acoes .principal:hover,
