@@ -3,7 +3,7 @@ import { criarCena } from "./three/Scene";
 import Biblioteca from "./pages/Biblioteca";
 import Comunidade from "./pages/Comunidade";
 import Perfil from "./pages/Perfil";
-import Auth from "./pages/Auth";
+import Cadastro from "./pages/Cadastro";
 import "./App.css";
 
 type Pagina =
@@ -11,8 +11,7 @@ type Pagina =
   | "biblioteca"
   | "comunidade"
   | "perfil"
-  | "auth-cadastro"
-  | "auth-login";
+  | "cadastro";
 
 function App() {
   const containerRef =
@@ -42,18 +41,14 @@ function App() {
     setEntrando(true);
 
     setTimeout(() => {
-      navegar("biblioteca");
+      setPagina("biblioteca");
     }, 1800);
-  }
-
-  function navegar(novaPagina: Pagina) {
-    setPagina(novaPagina);
   }
 
   if (pagina === "biblioteca") {
     return (
       <Biblioteca
-        onNavigate={navegar}
+        onNavigate={setPagina}
       />
     );
   }
@@ -62,7 +57,7 @@ function App() {
   if (pagina === "comunidade") {
     return (
       <Comunidade
-        onNavigate={navegar}
+        onNavigate={setPagina}
       />
     );
   }
@@ -70,36 +65,15 @@ function App() {
   if (pagina === "perfil") {
     return (
       <Perfil
-        onNavigate={navegar}
+        onNavigate={setPagina}
       />
     );
   }
 
-
-  if (pagina === "auth-cadastro") {
+  if (pagina === "cadastro") {
     return (
-      <Auth
-        modoInicial="cadastro"
-        onAuthenticated={() =>
-          navegar("comunidade")
-        }
-        onBack={() =>
-          navegar("comunidade")
-        }
-      />
-    );
-  }
-
-  if (pagina === "auth-login") {
-    return (
-      <Auth
-        modoInicial="login"
-        onAuthenticated={() =>
-          navegar("comunidade")
-        }
-        onBack={() =>
-          navegar("comunidade")
-        }
+      <Cadastro
+        onNavigate={setPagina}
       />
     );
   }
@@ -130,7 +104,7 @@ function App() {
           <button
             type="button"
             onClick={() =>
-              navegar("biblioteca")
+              setPagina("biblioteca")
             }
           >
             Biblioteca
@@ -140,10 +114,19 @@ function App() {
           <button
             type="button"
             onClick={() =>
-              navegar("comunidade")
+              setPagina("comunidade")
             }
           >
             Comunidade
+          </button>
+
+          <button
+            type="button"
+            onClick={() =>
+              setPagina("perfil")
+            }
+          >
+            Perfil
           </button>
         </nav>
       </header>
@@ -172,48 +155,32 @@ function App() {
           type="button"
           onClick={entrarNaBiblioteca}
         >
-          <span>
-            ENTRAR NA BIBLIOTECA
-          </span>
+          <span>ENTRAR NA BIBLIOTECA</span>
           <strong>→</strong>
         </button>
       </section>
 
       <div className="rodape">
         <div>
-          <span className="numero">
-            01
-          </span>
-
-          <span>
-            O COMEÇO DE UMA HISTÓRIA
-          </span>
+          <span className="numero">01</span>
+          <span>O COMEÇO DE UMA HISTÓRIA</span>
         </div>
 
         <div className="scroll">
           <span>EXPLORE</span>
-
-          <span className="scroll-arrow">
-            ↓
-          </span>
+          <span className="scroll-arrow">↓</span>
         </div>
 
         <div>
           <span>BIBLIOTECA</span>
-
-          <span className="numero">
-            ∞
-          </span>
+          <span className="numero">∞</span>
         </div>
       </div>
 
       {entrando && (
         <div className="transicao">
           <div className="transicao-luz" />
-
-          <p>
-            A biblioteca está esperando...
-          </p>
+          <p>A biblioteca está esperando...</p>
         </div>
       )}
     </main>
