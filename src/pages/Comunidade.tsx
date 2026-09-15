@@ -1049,13 +1049,6 @@ const [comentariosAbertos, setComentariosAbertos] =
         Biblioteca
          </button>
 
-          <button
-            type="button"
-            onClick={() => onNavigate?.("explorar")}
-          >
-            Explorar
-          </button>
-
       <button
         type="button"
         className="ativo"
