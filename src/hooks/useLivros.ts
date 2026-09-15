@@ -4,39 +4,42 @@ import type { Livro } from "../types/livro";
 
 type LinhaLivro = {
   titulo: string;
-  autor: string;
+  autora: string;
   genero: string;
   avaliacao: string | null;
-  cor: string;
-  simbolo: string;
+  cor: string | null;
+  simbolo: string | null;
   sinopse: string;
   amazon_url: string | null;
   capa_url: string | null;
   real: boolean;
+  tropes: string[] | null;
+  vibes: string[] | null;
 };
 
 function paraLivro(linha: LinhaLivro): Livro {
   return {
     titulo: linha.titulo,
-    autor: linha.autor,
+    autor: linha.autora,
     genero: linha.genero,
     avaliacao: linha.avaliacao ?? "—",
-    cor: linha.cor,
-    simbolo: linha.simbolo,
+    cor: linha.cor ?? "vinho",
+    simbolo: linha.simbolo ?? "✦",
     sinopse: linha.sinopse,
     amazonUrl: linha.amazon_url ?? undefined,
     capaUrl: linha.capa_url ?? undefined,
     real: linha.real,
+    tropes: linha.tropes ?? [],
+    vibes: linha.vibes ?? [],
   };
 }
 
 /**
  * Busca o catálogo de livros no Supabase.
  *
- * Antes esse mesmo array de 38 livros vivia copiado (e levemente
- * divergente) dentro de Biblioteca.tsx, Explorar.tsx e Resenhas.tsx.
- * Agora a tabela `livros` é a única fonte de verdade; as três páginas
- * usam este hook.
+ * A coluna do banco é `autora` (não `autor`) — o mapeamento pra
+ * `autor` no tipo Livro acontece aqui, pra não precisar renomear
+ * esse campo em todas as páginas que já usam `livro.autor`.
  */
 export function useLivros() {
   const [livros, setLivros] = useState<Livro[]>([]);
@@ -53,9 +56,10 @@ export function useLivros() {
       const { data, error } = await supabase
         .from("livros")
         .select(
-          "titulo, autor, genero, avaliacao, cor, simbolo, sinopse, amazon_url, capa_url, real"
+          "titulo, autora, genero, avaliacao, cor, simbolo, sinopse, amazon_url, capa_url, real, tropes, vibes"
         )
-        .order("ordem", { ascending: true });
+        .order("ordem", { ascending: true, nullsFirst: false })
+        .order("titulo", { ascending: true });
 
       if (!ativo) return;
 

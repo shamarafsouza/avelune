@@ -9,4 +9,6 @@ export type Livro = {
   amazonUrl?: string;
   real?: boolean;
   capaUrl?: string;
+  tropes?: string[];
+  vibes?: string[];
 };
