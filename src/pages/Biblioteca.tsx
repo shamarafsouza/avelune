@@ -231,15 +231,6 @@ function Biblioteca({
           <button
             type="button"
             onClick={() =>
-              onNavigate?.("resenhas")
-            }
-          >
-            Resenhas
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
               onNavigate?.("comunidade")
             }
           >
@@ -286,16 +277,6 @@ function Biblioteca({
               }}
             >
               Explorar
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setMenuAberto(false);
-                onNavigate?.("resenhas");
-              }}
-            >
-              Resenhas
             </button>
 
             <button
