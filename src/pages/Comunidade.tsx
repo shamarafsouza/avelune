@@ -1319,28 +1319,90 @@ const [comentariosAbertos, setComentariosAbertos] =
                   <div>
                     <button
                       type="button"
-                      aria-label="Criar resenha"
+                      aria-label="Escrever uma resenha"
+                      title="Escrever uma resenha"
                       className={
                         modoResenha
-                          ? "selecionado"
-                          : ""
+                          ? "comunidade-acao comunidade-acao-resenha selecionado"
+                          : "comunidade-acao comunidade-acao-resenha"
                       }
                       onClick={ativarResenha}
                     >
-                      ♧
+                      <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M5 5.5A3.5 3.5 0 0 1 8.5 2H19v19H8.5A3.5 3.5 0 0 0 5 24V5.5Z"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M5 5.5A3.5 3.5 0 0 1 8.5 2"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M9 7h6.5M9 10.5h6.5M9 14h4.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="m17.5 15.5.8 1.8 1.8.8-1.8.8-.8 1.8-.8-1.8-1.8-.8 1.8-.8.8-1.8Z"
+                          fill="currentColor"
+                        />
+                      </svg>
                     </button>
 
                     <button
                       type="button"
+                      className="comunidade-acao"
                       aria-label="Adicionar imagem"
+                      title="Adicionar imagem"
                       onClick={abrirImagem}
                     >
-                      ◫
+                      <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <rect
+                          x="3"
+                          y="4"
+                          width="18"
+                          height="16"
+                          rx="2"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                        />
+                        <circle
+                          cx="8"
+                          cy="9"
+                          r="1.5"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="m4.5 17 5-5 3.5 3 2.5-2.5 4 4"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </button>
 
                     <button
                       type="button"
+                      className="comunidade-acao"
                       aria-label="Adicionar citação"
+                      title="Adicionar citação"
                       onClick={() => {
                         if (!exigirConta()) {
                           return;
@@ -1353,7 +1415,27 @@ const [comentariosAbertos, setComentariosAbertos] =
                         );
                       }}
                     >
-                      ❝
+                      <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M10 7H6.5A3.5 3.5 0 0 0 3 10.5v1A3.5 3.5 0 0 0 6.5 15H10v-4H6.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M21 7h-3.5a3.5 3.5 0 0 0-3.5 3.5v1a3.5 3.5 0 0 0 3.5 3.5H21v-4h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     </button>
 
                     <input
