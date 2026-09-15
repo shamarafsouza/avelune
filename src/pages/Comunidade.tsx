@@ -14,7 +14,6 @@ type Pagina =
   | "explorar"
   | "comunidade"
   | "perfil"
-  | "resenhas"
   | "auth-cadastro"
   | "auth-login";
 
