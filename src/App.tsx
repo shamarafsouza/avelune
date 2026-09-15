@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { criarCena } from "./three/Scene";
 import Biblioteca from "./pages/Biblioteca";
-import Explorar from "./pages/Explorar";
 import Comunidade from "./pages/Comunidade";
 import Perfil from "./pages/Perfil";
 import Auth from "./pages/Auth";
@@ -10,7 +9,6 @@ import "./App.css";
 type Pagina =
   | "inicio"
   | "biblioteca"
-  | "explorar"
   | "comunidade"
   | "perfil"
   | "auth-cadastro"
