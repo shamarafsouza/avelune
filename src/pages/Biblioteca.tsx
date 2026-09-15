@@ -39,6 +39,7 @@ type BibliotecaProps = {
     pagina:
       | "inicio"
       | "biblioteca"
+      | "explorar"
       | "comunidade"
       | "perfil"
   ) => void;
@@ -402,7 +403,6 @@ function Biblioteca({
       </header>
 
       <section className="biblioteca-conteudo">
-        <section className="biblioteca-hero">
           <div className="biblioteca-introducao">
           <span className="biblioteca-eyebrow">
             A GRANDE BIBLIOTECA
@@ -442,7 +442,6 @@ function Biblioteca({
             BUSCAR
           </button>
           </div>
-        </section>
 
         <section className="categorias">
           <div className="secao-titulo">
@@ -693,45 +692,6 @@ function Biblioteca({
               <div className="nenhum-livro"><span>{filtroBiblioteca === "favoritos" ? "♥" : "✦"}</span><h3>{filtroBiblioteca === "estante" ? "Sua estante está vazia." : filtroBiblioteca === "favoritos" ? "Você ainda não tem favoritos." : "Nenhuma história encontrada."}</h3><p>{filtroBiblioteca === "estante" ? "Escolha uma história na biblioteca para começar sua coleção." : "Tente buscar por outro título, autor ou categoria."}</p><button type="button" onClick={limparFiltros}>EXPLORAR TODAS AS HISTÓRIAS</button></div>
             )}
           </section>
-        )}
-
-        {filtroBiblioteca ===
-                "favoritos"
-                  ? "♥"
-                  : "✦"}
-              </span>
-
-              <h3>
-                {filtroBiblioteca ===
-                "estante"
-                  ? "Sua estante está vazia."
-                  : filtroBiblioteca ===
-                    "favoritos"
-                  ? "Você ainda não tem favoritos."
-                  : "Nenhuma história encontrada."}
-              </h3>
-
-              <p>
-                {filtroBiblioteca ===
-                "estante"
-                  ? "Escolha uma história na biblioteca para começar sua coleção."
-                  : filtroBiblioteca ===
-                    "favoritos"
-                  ? "Favorite os livros que você deseja encontrar novamente."
-                  : "Tente buscar por outro título, autor ou categoria."}
-              </p>
-
-              <button
-                type="button"
-                onClick={limparFiltros}
-              >
-                EXPLORAR TODAS AS
-                HISTÓRIAS
-              </button>
-            </div>
-          )}
-        </section>
-
         )}
 
         {filtroBiblioteca ===
