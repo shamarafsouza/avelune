@@ -1044,6 +1044,37 @@ function Comunidade({
         </button>
 
         <nav className="comunidade-nav" aria-label="Navegação principal">
+          <button
+            type="button"
+            onClick={() => onNavigate?.("biblioteca")}
+          >
+        Biblioteca
+         </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate?.("explorar")}
+          >
+            Explorar
+          </button>
+
+      <button
+        type="button"
+        className="ativo"
+        onClick={() => onNavigate?.("comunidade")}
+      >
+      Comunidade
+    </button>
+
+    <button
+      type="button"
+      onClick={() => onNavigate?.("perfil")}
+    >
+      Perfil
+    </button>
+  </nav>
+
+        <nav className="comunidade-nav" aria-label="Navegação principal">
           <button type="button" onClick={() => onNavigate?.("biblioteca")}>Biblioteca</button>
           <button type="button" onClick={() => onNavigate?.("explorar")}>Explorar</button>
           <button type="button" className="ativo" onClick={() => onNavigate?.("comunidade")}>Comunidade</button>
