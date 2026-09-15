@@ -12,9 +12,7 @@ type Pagina =
   | "inicio"
   | "biblioteca"
   | "comunidade"
-  | "perfil"
-  | "auth-cadastro"
-  | "auth-login";
+  | "perfil";
 
 type PublicacaoPerfil = {
   id: number;
@@ -61,63 +59,6 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [totalSeguindo, setTotalSeguindo] = useState(0);
   const [mensagem, setMensagem] = useState("");
   const [editando, setEditando] = useState(false);
-
-  type StatusLeitura = "quero-ler" | "lendo" | "lido";
-
-  type Leitura = {
-    titulo: string;
-    autor: string;
-    genero: string;
-    status: StatusLeitura;
-    paginaAtual: number;
-    totalPaginas: number;
-    dataInicio?: string;
-    dataFim?: string;
-    emocional?: boolean;
-  };
-
-  const LIVROS_AVELUNE = [
-    ["GÊNESIS | \"JUDAS\" PELOS OLHOS DELE", "Larissa Abreu", "Romance"],
-    ["Judas (Volume 1)", "Larissa Abreu", "Romance"],
-    ["A Hipótese do Amor: Capítulo Extra", "Ali Hazelwood", "Romance"],
-    ["OBLÍVIO", "Leonor Carvalho", "Romance"],
-    ["VULTUS", "Leonor Carvalho", "Romance"],
-    ["INCIPIT", "Leonor Carvalho", "Romance"],
-    ["EXÍMIO — ROSTOS VAZIOS — LIVRO 3", "Leonor Carvalho", "Romance"],
-    ["O Acordo", "Elle Kennedy", "Romance"],
-    ["O Erro", "Elle Kennedy", "Romance"],
-    ["O Jogo", "Elle Kennedy", "Romance"],
-    ["Box - Amores Improváveis (Nova Edição)", "Elle Kennedy", "Romance"],
-    ["INDOMÁVEL", "Zoe X", "Dark Romance"],
-    ["INCONSEQUENTE", "Zoe X", "Dark Romance"],
-    ["IMPROVÁVEL", "Zoe X", "Dark Romance"],
-    ["INVULNERÁVEL", "Zoe X", "Dark Romance"],
-    ["IMORAL", "Zoe X", "Dark Romance"],
-    ["BAD PRINCE", "Zoe X", "Dark Romance"],
-    ["UNDER YOUR SKIN", "Zoe X", "Dark Romance"],
-    ["BAILANDO NO INFERNO", "Zoe X", "Dark Romance"],
-    ["Maldição de Amor", "Zoe X", "Romance"],
-    ["A Corte das Sombras", "Elena Beaumont", "Fantasia"],
-    ["O Jardim das Estrelas", "Clara Whitmore", "Fantasia"],
-    ["Entre Mundos", "Adrian Blackwood", "Fantasia"],
-    ["A Última Lua", "Victoria Ashford", "Romance"],
-    ["O Reino Esquecido", "Arthur Evernight", "Fantasia"],
-    ["Cartas Para a Lua", "Isabelle Laurent", "Romance"],
-    ["A Casa das Chaves", "Nathaniel Crow", "Mistério"],
-    ["Depois do Crepúsculo", "Evelyn Rose", "Romance"],
-  ] as const;
-
-  const STORAGE_LEITURAS = "avelune-leituras";
-  const STORAGE_META = "avelune-meta-leitura";
-
-  const [leituras, setLeituras] = useState<Leitura[]>([]);
-  const [metaAnual, setMetaAnual] = useState(24);
-  const [mostrarLeituraForm, setMostrarLeituraForm] = useState(false);
-  const [livroSelecionadoLeitura, setLivroSelecionadoLeitura] = useState("");
-  const [statusEdicao, setStatusEdicao] = useState<StatusLeitura>("lendo");
-  const [paginaAtualEdicao, setPaginaAtualEdicao] = useState(0);
-  const [totalPaginasEdicao, setTotalPaginasEdicao] = useState(0);
-  const [emocionalEdicao, setEmocionalEdicao] = useState(false);
 
   const [nomePerfil, setNomePerfil] = useState("Você");
   const [usuarioPerfil, setUsuarioPerfil] =
@@ -360,79 +301,6 @@ function Perfil({ onNavigate }: PerfilProps) {
   }, []);
 
   useEffect(() => {
-    let ativo = true;
-
-    async function carregarLeituras() {
-      try {
-        const local = localStorage.getItem(STORAGE_LEITURAS);
-        const metaLocal = localStorage.getItem(STORAGE_META);
-
-        if (local) {
-          const dados = JSON.parse(local);
-          if (Array.isArray(dados) && ativo) setLeituras(dados);
-        }
-        if (metaLocal) {
-          const meta = Number(metaLocal);
-          if (Number.isFinite(meta) && meta > 0 && ativo) setMetaAnual(meta);
-        }
-
-        const { data: sessao } = await supabase.auth.getSession();
-        const usuario = sessao.session?.user;
-        if (!usuario || !ativo) return;
-
-        const [resultadoLeituras, resultadoMeta] = await Promise.all([
-          supabase
-            .from("leituras")
-            .select("titulo, autor, genero, status, pagina_atual, total_paginas, data_inicio, data_fim, emocional")
-            .eq("usuario_id", usuario.id)
-            .order("updated_at", { ascending: false }),
-          supabase
-            .from("metas_leitura")
-            .select("meta_livros")
-            .eq("usuario_id", usuario.id)
-            .eq("ano", new Date().getFullYear())
-            .maybeSingle(),
-        ]);
-
-        if (resultadoLeituras.error) {
-          console.warn("Tabela de leituras ainda não disponível; usando registro local.");
-        } else if (ativo && resultadoLeituras.data) {
-          setLeituras(
-            resultadoLeituras.data.map((item) => ({
-              titulo: item.titulo,
-              autor: item.autor,
-              genero: item.genero,
-              status: item.status as StatusLeitura,
-              paginaAtual: Number(item.pagina_atual) || 0,
-              totalPaginas: Number(item.total_paginas) || 0,
-              dataInicio: item.data_inicio ?? undefined,
-              dataFim: item.data_fim ?? undefined,
-              emocional: Boolean(item.emocional),
-            }))
-          );
-        }
-
-        if (!resultadoMeta.error && resultadoMeta.data && ativo) {
-          setMetaAnual(Number(resultadoMeta.data.meta_livros) || 24);
-        }
-      } catch {
-        // O registro local continua funcionando mesmo sem a tabela no Supabase.
-      }
-    }
-
-    void carregarLeituras();
-    return () => { ativo = false; };
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_LEITURAS, JSON.stringify(leituras));
-  }, [leituras]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_META, String(metaAnual));
-  }, [metaAnual]);
-
-  useEffect(() => {
     if (!mensagem) {
       return;
     }
@@ -457,137 +325,6 @@ function Perfil({ onNavigate }: PerfilProps) {
     () => favoritos,
     [favoritos]
   );
-
-  const livrosLidos = useMemo(
-    () => leituras.filter((item) => item.status === "lido"),
-    [leituras]
-  );
-
-  const livrosLendo = useMemo(
-    () => leituras.filter((item) => item.status === "lendo"),
-    [leituras]
-  );
-
-  const livroAtual = livrosLendo[0] ?? null;
-
-  const leiturasTBR = useMemo(() => {
-    const tbrRegistrada = leituras.filter((item) => item.status === "quero-ler");
-    const extras = queroLer
-      .filter((titulo) => !leituras.some((item) => item.titulo === titulo))
-      .map((titulo) => {
-        const livro = LIVROS_AVELUNE.find((item) => item[0] === titulo);
-        return livro ? {
-          titulo: livro[0], autor: livro[1], genero: livro[2], status: "quero-ler" as const, paginaAtual: 0, totalPaginas: 0,
-        } : null;
-      })
-      .filter(Boolean) as Leitura[];
-    return [...tbrRegistrada, ...extras];
-  }, [leituras, queroLer]);
-
-  const progressoAtual = livroAtual && livroAtual.totalPaginas > 0
-    ? Math.min(100, Math.round((livroAtual.paginaAtual / livroAtual.totalPaginas) * 100))
-    : 0;
-
-  const progressoMeta = metaAnual > 0
-    ? Math.min(100, Math.round((livrosLidos.length / metaAnual) * 100))
-    : 0;
-
-  const generoMaisLido = useMemo(() => {
-    const contagem = livrosLidos.reduce<Record<string, number>>((acc, item) => {
-      acc[item.genero] = (acc[item.genero] ?? 0) + 1;
-      return acc;
-    }, {});
-    return Object.entries(contagem).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "Ainda descobrindo";
-  }, [livrosLidos]);
-
-  const autorMaisLido = useMemo(() => {
-    const contagem = livrosLidos.reduce<Record<string, number>>((acc, item) => {
-      acc[item.autor] = (acc[item.autor] ?? 0) + 1;
-      return acc;
-    }, {});
-    return Object.entries(contagem).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "Ainda descobrindo";
-  }, [livrosLidos]);
-
-  const livroQueDestruiu = livrosLidos.find((item) => item.emocional)?.titulo ?? "Ainda não marcado";
-
-  function abrirFormularioLeitura(titulo = "") {
-    const existente = leituras.find((item) => item.titulo === titulo);
-    setLivroSelecionadoLeitura(titulo);
-    setStatusEdicao(existente?.status ?? "lendo");
-    setPaginaAtualEdicao(existente?.paginaAtual ?? 0);
-    setTotalPaginasEdicao(existente?.totalPaginas ?? 0);
-    setEmocionalEdicao(Boolean(existente?.emocional));
-    setMostrarLeituraForm(true);
-  }
-
-  async function salvarLeitura() {
-    const livro = LIVROS_AVELUNE.find((item) => item[0] === livroSelecionadoLeitura);
-    if (!livro) {
-      mostrarMensagem("Escolha um livro para registrar a leitura.");
-      return;
-    }
-
-    const existente = leituras.find((item) => item.titulo === livro[0]);
-    const agora = new Date().toISOString();
-    const atualizada: Leitura = {
-      titulo: livro[0],
-      autor: livro[1],
-      genero: livro[2],
-      status: statusEdicao,
-      paginaAtual: Math.max(0, paginaAtualEdicao),
-      totalPaginas: Math.max(0, totalPaginasEdicao),
-      dataInicio: existente?.dataInicio ?? (statusEdicao !== "quero-ler" ? agora : undefined),
-      dataFim: statusEdicao === "lido" ? (existente?.dataFim ?? agora) : undefined,
-      emocional: statusEdicao === "lido" ? emocionalEdicao : false,
-    };
-
-    setLeituras((atuais) =>
-      existente
-        ? atuais.map((item) => item.titulo === livro[0] ? atualizada : item)
-        : [...atuais, atualizada]
-    );
-
-    if (statusEdicao === "quero-ler") {
-      setQueroLer((atuais) => atuais.includes(livro[0]) ? atuais : [...atuais, livro[0]]);
-    } else {
-      setQueroLer((atuais) => atuais.filter((item) => item !== livro[0]));
-    }
-
-    try {
-      const { data: sessao } = await supabase.auth.getSession();
-      const usuario = sessao.session?.user;
-
-      if (usuario) {
-        const { error } = await supabase.from("leituras").upsert({
-          usuario_id: usuario.id,
-          titulo: atualizada.titulo,
-          autor: atualizada.autor,
-          genero: atualizada.genero,
-          status: atualizada.status,
-          pagina_atual: atualizada.paginaAtual,
-          total_paginas: atualizada.totalPaginas,
-          data_inicio: atualizada.dataInicio ?? null,
-          data_fim: atualizada.dataFim ?? null,
-          emocional: atualizada.emocional ?? false,
-        }, { onConflict: "usuario_id,titulo" });
-
-        if (error) console.warn("Não foi possível sincronizar a leitura no Supabase; ela permanece salva neste navegador.");
-
-        const { error: erroMeta } = await supabase.from("metas_leitura").upsert({
-          usuario_id: usuario.id,
-          ano: new Date().getFullYear(),
-          meta_livros: metaAnual,
-        }, { onConflict: "usuario_id,ano" });
-
-        if (erroMeta) console.warn("Meta anual salva apenas localmente.");
-      }
-    } catch {
-      // O localStorage é o fallback.
-    }
-
-    setMostrarLeituraForm(false);
-    mostrarMensagem("Sua leitura foi atualizada.");
-  }
 
   function navegar(pagina: Pagina) {
     onNavigate?.(pagina);
@@ -747,45 +484,30 @@ function Perfil({ onNavigate }: PerfilProps) {
         </button>
 
         <nav className="perfil-nav">
-          <button type="button" onClick={() => navegar("biblioteca")}>Biblioteca</button>
-          <button type="button" onClick={() => navegar("comunidade")}>Comunidade</button>
-          <button type="button" className="ativo" onClick={() => navegar("perfil")}>Perfil</button>
+          <button
+            type="button"
+            onClick={() => navegar("biblioteca")}
+          >
+            Biblioteca
+          </button>
+
+
+          <button
+            type="button"
+            onClick={() => navegar("comunidade")}
+          >
+            Comunidade
+          </button>
+
+          <button
+            type="button"
+            className="ativo"
+            onClick={() => navegar("perfil")}
+          >
+            Perfil
+          </button>
         </nav>
 
-        <div className="perfil-acoes-topo">
-          <button
-            type="button"
-            className="perfil-icone"
-            onClick={() =>
-              mostrarMensagem(
-                "A busca do Avelune será integrada em breve."
-              )
-            }
-            aria-label="Pesquisar"
-          >
-            ⌕
-          </button>
-
-          <button
-            type="button"
-            className={`perfil-avatar-mini ${
-              fotoPerfil
-                ? "perfil-avatar-mini--foto"
-                : ""
-            }`}
-            onClick={() => navegar("perfil")}
-            aria-label="Abrir seu perfil"
-          >
-            {fotoPerfil ? (
-              <img
-                src={fotoPerfil}
-                alt=""
-              />
-            ) : (
-              iniciais
-            )}
-          </button>
-        </div>
       </header>
 
       <div className="perfil-conteudo">
@@ -880,79 +602,6 @@ function Perfil({ onNavigate }: PerfilProps) {
               </div>
             </div>
           </div>
-        </section>
-
-        <section className="perfil-literario">
-          <div className="perfil-secao-titulo">
-            <div>
-              <p className="perfil-kicker">SEU CAMINHO ENTRE PÁGINAS</p>
-              <h2>Vida literária</h2>
-            </div>
-            <button type="button" className="perfil-registrar-leitura" onClick={() => abrirFormularioLeitura()}>＋ REGISTRAR LEITURA</button>
-          </div>
-
-          <div className="perfil-literario-grid">
-            <article className="perfil-painel-literario perfil-leitura-atual">
-              <div className="perfil-painel-legenda"><span>ESTANTE ATIVA</span><span>EM LEITURA</span></div>
-              {livroAtual ? (
-                <div className="perfil-leitura-corpo">
-                  <div className="perfil-capa-atual"><span>✦</span><strong>{livroAtual.titulo}</strong><small>{livroAtual.autor}</small></div>
-                  <div className="perfil-leitura-info">
-                    <p className="perfil-kicker">LIVRO ATUAL</p>
-                    <h3>{livroAtual.titulo}</h3>
-                    <p className="perfil-autor-atual">{livroAtual.autor}</p>
-                    <div className="perfil-progresso-topo"><span>{progressoAtual}% concluído</span><span>{livroAtual.paginaAtual} / {livroAtual.totalPaginas || "—"} pág.</span></div>
-                    <div className="perfil-progresso-trilho"><span style={{ width: `${progressoAtual}%` }} /></div>
-                    <p className="perfil-frase-progresso">{progressoAtual >= 85 ? "Reta final 🔥" : progressoAtual >= 50 ? "Metade do caminho 🕯️" : "A história está apenas começando 🕯️"}</p>
-                    <button type="button" className="perfil-acao-leitura" onClick={() => abrirFormularioLeitura(livroAtual.titulo)}>ATUALIZAR PROGRESSO</button>
-                  </div>
-                </div>
-              ) : (
-                <div className="perfil-literario-vazio"><span>☾</span><strong>Nenhuma leitura em andamento</strong><p>Escolha um livro e registre sua primeira leitura.</p><button type="button" className="perfil-acao-leitura" onClick={() => abrirFormularioLeitura()}>COMEÇAR UMA LEITURA</button></div>
-              )}
-            </article>
-
-            <article className="perfil-painel-literario perfil-meta">
-              <div className="perfil-painel-legenda"><span>GRIMÓRIO DE 2026</span><span>✧</span></div>
-              <div className="perfil-meta-centro">
-                <div className="perfil-selo-meta"><span>{livrosLidos.length}</span><small>de {metaAnual}</small></div>
-                <p className="perfil-kicker">META ANUAL</p>
-                <h3>As páginas que ainda<br />aguardam você.</h3>
-                <div className="perfil-meta-barra"><span style={{ width: `${progressoMeta}%` }} /></div>
-                <p className="perfil-meta-legenda">{metaAnual - livrosLidos.length > 0 ? `Faltam ${metaAnual - livrosLidos.length} livros para completar seu grimório.` : "Seu grimório anual está completo. ✦"}</p>
-                <label className="perfil-meta-editor"><span>Meta anual</span><input type="number" min={1} max={200} value={metaAnual} onChange={(evento) => setMetaAnual(Math.max(1, Number(evento.target.value) || 1))} /></label>
-                <div className="perfil-selos">{Array.from({ length: Math.min(metaAnual, 8) }, (_, indice) => <span key={indice} className={indice < livrosLidos.length ? "conquistado" : ""}>✦</span>)}</div>
-              </div>
-            </article>
-          </div>
-
-          <article className="perfil-painel-literario perfil-proxima-leitura">
-            <div className="perfil-painel-legenda"><span>PRÓXIMA LEITURA</span><span>ESTANTE TBR</span></div>
-            {leiturasTBR.length > 0 ? (
-              <div className="perfil-tbr-lista">{leiturasTBR.slice(0, 5).map((livro) => <button key={livro.titulo} type="button" onClick={() => abrirFormularioLeitura(livro.titulo)}><span>✦</span><div><strong>{livro.titulo}</strong><small>{livro.autor}</small></div><b>→</b></button>)}</div>
-            ) : (
-              <div className="perfil-literario-vazio"><span>◇</span><strong>Sua TBR está vazia</strong><p>Adicione livros à sua estante pela Biblioteca.</p><button type="button" className="perfil-acao-leitura" onClick={() => navegar("biblioteca")}>ABRIR BIBLIOTECA</button></div>
-            )}
-          </article>
-
-          <div className="perfil-estatisticas-literarias">
-            <article><span className="perfil-stat-ornamento">☾</span><p>GÊNERO MAIS LIDO</p><strong>{generoMaisLido}</strong><small>{livrosLidos.length ? "mais presente nas suas leituras" : "suas estatísticas aparecerão aqui"}</small></article>
-            <article><span className="perfil-stat-ornamento">✦</span><p>AUTOR DO ANO</p><strong>{autorMaisLido}</strong><small>{livrosLidos.length ? "mais presente nas suas leituras" : "suas estatísticas aparecerão aqui"}</small></article>
-            <article><span className="perfil-stat-ornamento">♡</span><p>O QUE TE DESTRUIU</p><strong>{livroQueDestruiu}</strong><small>{livrosLidos.length ? "marcado por você" : "marque uma leitura quando doer"}</small></article>
-          </div>
-
-          {mostrarLeituraForm && (
-            <div className="perfil-leitura-modal-fundo" onMouseDown={(evento) => { if (evento.target === evento.currentTarget) setMostrarLeituraForm(false); }}>
-              <section className="perfil-leitura-modal" role="dialog" aria-modal="true" aria-labelledby="perfil-leitura-titulo">
-                <div className="perfil-modal-topo"><div><p className="perfil-kicker">DIÁRIO DE LEITURA</p><h2 id="perfil-leitura-titulo">Registrar leitura</h2></div><button type="button" className="perfil-modal-fechar" onClick={() => setMostrarLeituraForm(false)}>×</button></div>
-                <label className="perfil-campo"><span>Livro</span><select value={livroSelecionadoLeitura} onChange={(evento) => { const titulo = evento.target.value; setLivroSelecionadoLeitura(titulo); const existente = leituras.find((item) => item.titulo === titulo); setStatusEdicao(existente?.status ?? "lendo"); setPaginaAtualEdicao(existente?.paginaAtual ?? 0); setTotalPaginasEdicao(existente?.totalPaginas ?? 0); setEmocionalEdicao(Boolean(existente?.emocional)); }}><option value="">Escolha um livro</option>{LIVROS_AVELUNE.map((livro) => <option key={livro[0]} value={livro[0]}>{livro[0]}</option>)}</select></label>
-                <label className="perfil-campo"><span>Status</span><select value={statusEdicao} onChange={(evento) => setStatusEdicao(evento.target.value as StatusLeitura)}><option value="quero-ler">Quero ler</option><option value="lendo">Lendo</option><option value="lido">Lido</option></select></label>
-                {statusEdicao !== "quero-ler" && <div className="perfil-leitura-numeros"><label className="perfil-campo"><span>Página atual</span><input type="number" min={0} value={paginaAtualEdicao} onChange={(evento) => setPaginaAtualEdicao(Number(evento.target.value))} /></label><label className="perfil-campo"><span>Total de páginas</span><input type="number" min={0} value={totalPaginasEdicao} onChange={(evento) => setTotalPaginasEdicao(Number(evento.target.value))} /></label></div>}
-                {statusEdicao === "lido" && <label className="perfil-check-literario"><input type="checkbox" checked={emocionalEdicao} onChange={(evento) => setEmocionalEdicao(evento.target.checked)} /><span>Esse livro me destruiu emocionalmente 😂</span></label>}
-                <div className="perfil-modal-acoes"><button type="button" className="perfil-modal-cancelar" onClick={() => setMostrarLeituraForm(false)}>Cancelar</button><button type="button" className="perfil-modal-salvar" onClick={salvarLeitura}>Salvar leitura</button></div>
-              </section>
-            </div>
-          )}
         </section>
 
         <div className="perfil-divisor">
