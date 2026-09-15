@@ -5,7 +5,6 @@ import Explorar from "./pages/Explorar";
 import Comunidade from "./pages/Comunidade";
 import Perfil from "./pages/Perfil";
 import Auth from "./pages/Auth";
-import Resenhas from "./pages/Resenhas";
 import "./App.css";
 
 type Pagina =
@@ -14,7 +13,6 @@ type Pagina =
   | "explorar"
   | "comunidade"
   | "perfil"
-  | "resenhas"
   | "auth-cadastro"
   | "auth-login";
 
