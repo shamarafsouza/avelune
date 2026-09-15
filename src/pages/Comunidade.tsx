@@ -234,6 +234,10 @@ function Comunidade({
   const [fotoSelecionada, setFotoSelecionada] =
     useState("");
 
+  const [secaoComunidade, setSecaoComunidade] = useState<
+    "publicacoes" | "resenhas"
+  >("publicacoes");
+
   const [comentariosAbertos, setComentariosAbertos] =
     useState<number | null>(null);
 
