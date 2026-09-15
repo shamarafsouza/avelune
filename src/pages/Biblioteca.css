@@ -18,7 +18,7 @@
       rgba(7, 3, 3, 0.08) 48%,
       rgba(7, 3, 3, 0.22) 100%
     ),
-    url("/avelune-cabecalio.png") center top / cover fixed no-repeat,
+    url("/avelune-cabecalho.png") center top / cover fixed no-repeat,
     #090504;
 
   color: #eee2d2;
