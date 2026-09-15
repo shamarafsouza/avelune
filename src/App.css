@@ -203,7 +203,7 @@
   gap: 14px;
   margin: 22px 0 20px;
 
-  color: #d6af65;
+  color: var(--cor-dourado-suave);
 }
 
 .ornamento span {
@@ -374,7 +374,7 @@
 }
 
 .numero {
-  color: #d3ae67;
+  color: var(--cor-dourado-suave);
 }
 
 .scroll {
