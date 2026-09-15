@@ -2146,7 +2146,7 @@
   isolation: isolate;
   background:
     linear-gradient(rgba(8, 3, 3, .72), rgba(8, 3, 3, .88)),
-    url('/avelune-castelo.webp') center top / cover fixed no-repeat,
+    url('/avelune-castelo.png') center top / cover fixed no-repeat,
     #090504;
 }
 
