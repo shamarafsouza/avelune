@@ -16,8 +16,8 @@
       rgba(176, 84, 30, 0.07),
       transparent 52%
     ),
-    #090504;
-  color: #eee2d2;
+    var(--cor-fundo);
+  color: var(--cor-texto-claro);
   font-family: "Inter", Arial, sans-serif;
 }
 
@@ -56,7 +56,7 @@
   border: 0;
   padding: 0;
   background: transparent;
-  color: #ead9bc;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 21px;
   letter-spacing: 0.28em;
@@ -87,12 +87,12 @@
 }
 
 .perfil-nav button:hover {
-  color: #ead7b8;
+  color: var(--cor-texto);
   transform: translateY(-1px);
 }
 
 .perfil-nav button:last-child {
-  color: #ead7b8;
+  color: var(--cor-texto);
 }
 
 .perfil-nav button:last-child::after {
@@ -102,7 +102,7 @@
   right: 0;
   bottom: 21px;
   height: 1px;
-  background: #c99655;
+  background: var(--cor-dourado);
 }
 
 .perfil-acoes-topo {
@@ -127,7 +127,7 @@
   place-items: center;
   border-radius: 50%;
   font-family: Georgia, "Times New Roman", serif;
-  color: #ead9bd;
+  color: var(--cor-texto);
   background:
     radial-gradient(
       circle at 35% 30%,
@@ -194,7 +194,7 @@
 
 .perfil-identidade h1 {
   margin: 0;
-  color: #f0dfc4;
+  color: var(--cor-texto-suave);
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(38px, 5vw, 56px);
   font-weight: 400;
@@ -241,7 +241,7 @@
 .perfil-seguir {
   border: 1px solid rgba(210, 157, 86, 0.62);
   background: #a96f38;
-  color: #120a06;
+  color: var(--cor-fundo-sombra);
 }
 
 .perfil-seguir:hover {
@@ -262,7 +262,7 @@
 
 .perfil-editar:hover {
   border-color: rgba(211, 173, 121, 0.48);
-  color: #f0dfc4;
+  color: var(--cor-texto-suave);
 }
 
 .perfil-estatisticas {
@@ -278,7 +278,7 @@
 }
 
 .perfil-estatisticas strong {
-  color: #e8d2af;
+  color: var(--cor-dourado-muito-claro);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 22px;
   font-weight: 400;
@@ -350,7 +350,7 @@
 }
 
 .perfil-aba--ativa {
-  color: #ead7b8;
+  color: var(--cor-texto);
 }
 
 .perfil-aba--ativa::after {
@@ -360,7 +360,7 @@
   right: 0;
   bottom: -1px;
   height: 1px;
-  background: #c99655;
+  background: var(--cor-dourado);
 }
 
 .perfil-feed {
@@ -473,7 +473,7 @@
 }
 
 .perfil-livro strong {
-  color: #ead8bd;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 14px;
   font-weight: 400;
@@ -516,7 +516,7 @@
 
 .perfil-vazio h2 {
   margin: 17px 0 8px;
-  color: #ead8bd;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 25px;
   font-weight: 400;
@@ -594,7 +594,7 @@
     linear-gradient(
       145deg,
       #52251d,
-      #27100d
+      var(--capa-vinho-meio)
     );
   border: 1px solid rgba(215, 163, 94, 0.16);
   color: rgba(230, 181, 114, 0.72);
@@ -612,12 +612,12 @@
     linear-gradient(
       145deg,
       #3d281d,
-      #1e120d
+      var(--capa-vinho-meio)
     );
 }
 
 .perfil-card-livro strong {
-  color: #ead7b8;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 14px;
   font-weight: 400;
@@ -651,7 +651,7 @@
 }
 
 .perfil-rodape strong {
-  color: #e7d4b4;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 13px;
   letter-spacing: 0.2em;
@@ -685,7 +685,7 @@
   padding: 13px 17px;
   border: 1px solid rgba(211, 159, 87, 0.26);
   background: rgba(30, 16, 10, 0.95);
-  color: #e7d4b5;
+  color: var(--cor-texto);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
   font-size: 11px;
   letter-spacing: 0.04em;
@@ -715,7 +715,7 @@
       rgba(116, 55, 24, 0.18),
       transparent 55%
     ),
-    #160c08;
+    var(--cor-fundo-sombra);
   box-shadow: 0 30px 90px rgba(0, 0, 0, 0.58);
 }
 
@@ -730,7 +730,7 @@
 
 .perfil-modal-topo h2 {
   margin: 0;
-  color: #eedcc0;
+  color: var(--cor-texto-suave);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 30px;
   font-weight: 400;
@@ -768,7 +768,7 @@
       rgba(185, 129, 72, 0.42),
       rgba(55, 28, 16, 0.96) 62%
     );
-  color: #ead9bd;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 17px;
 }
@@ -780,7 +780,7 @@
 }
 
 .perfil-modal-avatar-area strong {
-  color: #e9d7b9;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 15px;
   font-weight: 400;
@@ -815,7 +815,7 @@
   outline: none;
   border-radius: 1px;
   background: rgba(39, 21, 13, 0.8);
-  color: #eedfc8;
+  color: var(--cor-texto-suave);
   font-family: "Inter", Arial, sans-serif;
   font-size: 13px;
   transition: border-color 0.2s ease;
@@ -878,7 +878,7 @@
 .perfil-modal-salvar {
   border: 1px solid rgba(211, 159, 87, 0.55);
   background: #a96f38;
-  color: #140b06;
+  color: var(--cor-fundo-sombra);
 }
 
 .perfil-modal-salvar:hover {
@@ -1060,7 +1060,7 @@
 }
 
 .perfil-foto-controles > strong {
-  color: #e9d7b9;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 15px;
   font-weight: 400;
@@ -1092,7 +1092,7 @@
 
 .perfil-foto-controles button:hover {
   border-color: rgba(211, 159, 87, 0.52);
-  color: #ead7b8;
+  color: var(--cor-texto);
 }
 
 .perfil-foto-controles .perfil-remover-foto {
@@ -1120,7 +1120,7 @@
 
 .perfil-sair:hover {
   background: rgba(116, 55, 24, 0.32);
-  color: #f0dfc9;
+  color: var(--cor-texto-claro);
 }
 
 .perfil-publicacao-foto {
@@ -1128,7 +1128,7 @@
   margin: 16px 0;
   overflow: hidden;
   border-radius: 14px;
-  background: #120b07;
+  background: var(--cor-fundo-sombra);
 }
 
 .perfil-publicacao-foto img {
@@ -1162,7 +1162,7 @@
 
 .perfil-secao-titulo h2 {
   margin: 0;
-  color: #ead7b8;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(24px, 3vw, 34px);
   font-weight: 400;
@@ -1237,7 +1237,7 @@
   border: 1px solid rgba(222, 169, 92, 0.38);
   background:
     radial-gradient(circle at 50% 35%, rgba(190, 116, 48, 0.28), transparent 43%),
-    linear-gradient(145deg, #35150e, #160906 72%);
+    linear-gradient(145deg, #35150e, var(--cor-fundo-sombra) 72%);
   box-shadow: 0 16px 30px rgba(0, 0, 0, 0.38), inset 0 0 25px rgba(0, 0, 0, 0.3);
 }
 
@@ -1271,7 +1271,7 @@
 }
 
 .perfil-capa-atual strong {
-  color: #ead7b8;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 14px;
   font-weight: 400;
@@ -1295,7 +1295,7 @@
 
 .perfil-leitura-info h3 {
   margin: 0;
-  color: #ead7b8;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(23px, 2.5vw, 31px);
   font-weight: 400;
@@ -1333,7 +1333,7 @@
 .perfil-meta-barra span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #8e582d, #d19a54);
+  background: linear-gradient(90deg, #8e582d, var(--cor-dourado));
   box-shadow: 0 0 12px rgba(209, 154, 84, 0.25);
   transition: width 0.5s ease;
 }
@@ -1604,7 +1604,7 @@
   border: 1px solid rgba(207, 151, 75, 0.4);
   padding: 12px 16px;
   background: rgba(116, 55, 24, 0.12);
-  color: #d9a25b;
+  color: var(--cor-dourado-claro);
   font-size: 10px !important;
   letter-spacing: .14em;
   cursor: pointer;
@@ -1635,13 +1635,13 @@
 
 .perfil-literario-vazio > span:first-child {
   margin-bottom: 8px;
-  color: #d5a45f;
+  color: var(--cor-dourado-claro);
   font-size: 27px;
   text-shadow: 0 0 14px rgba(213,164,95,.62);
 }
 
 .perfil-literario-vazio strong {
-  color: #ead9bc;
+  color: var(--cor-texto);
   font-family: Georgia, "Times New Roman", serif;
   font-size: 18px;
   font-weight: 500;
@@ -1659,7 +1659,7 @@
   border: 1px solid rgba(207,151,75,.38);
   padding: 10px 14px;
   background: rgba(116,55,24,.14);
-  color: #d9a25b;
+  color: var(--cor-dourado-claro);
   font-size: 9px !important;
   letter-spacing: .13em;
   cursor: pointer;
@@ -1699,7 +1699,7 @@
 .perfil-tbr-lista button div { min-width: 0; }
 .perfil-tbr-lista button strong,
 .perfil-tbr-lista button small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.perfil-tbr-lista button strong { color: #e8d9c3; font-size: 12px; font-weight: 600; }
+.perfil-tbr-lista button strong { color: var(--cor-texto-suave); font-size: 12px; font-weight: 600; }
 .perfil-tbr-lista button small { margin-top: 4px; color: rgba(238,226,210,.48); font-size: 9px; }
 .perfil-tbr-lista button b { color: #b98543; font-size: 14px; font-weight: 400; }
 
@@ -1720,7 +1720,7 @@
   border: 1px solid rgba(207,151,75,.22);
   padding: 7px 6px;
   background: rgba(0,0,0,.18);
-  color: #ead9bc;
+  color: var(--cor-texto);
   font-size: 11px;
   text-align: center;
 }
@@ -1744,7 +1744,7 @@
 }
 
 .perfil-selos span.conquistado {
-  color: #d7a35c;
+  color: var(--cor-dourado-claro);
   border-color: rgba(207,151,75,.52);
   background: radial-gradient(circle, rgba(207,151,75,.18), transparent 70%);
   text-shadow: 0 0 10px rgba(213,164,95,.7);
@@ -1773,7 +1773,7 @@
   overflow: auto;
   border: 1px solid rgba(207,151,75,.3);
   padding: 26px;
-  background: #100805;
+  background: var(--cor-fundo);
   box-shadow: 0 30px 80px rgba(0,0,0,.6);
 }
 
@@ -1781,7 +1781,7 @@
 .perfil-leitura-modal .perfil-modal-topo h2 { margin: 5px 0 0; }
 .perfil-leitura-modal .perfil-campo { margin-top: 14px; }
 .perfil-leitura-modal .perfil-campo select,
-.perfil-leitura-modal .perfil-campo input { width: 100%; min-height: 43px; border: 1px solid rgba(207,151,75,.2); padding: 10px 12px; background: #0b0604; color: #ead9bc; font-size: 12px; }
+.perfil-leitura-modal .perfil-campo input { width: 100%; min-height: 43px; border: 1px solid rgba(207,151,75,.2); padding: 10px 12px; background: var(--cor-fundo); color: var(--cor-texto); font-size: 12px; }
 .perfil-leitura-numeros { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .perfil-check-literario { display:flex; align-items:center; gap:9px; margin-top:16px; color:rgba(238,226,210,.68); font-size:11px; }
 
