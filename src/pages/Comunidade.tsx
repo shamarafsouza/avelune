@@ -1046,7 +1046,6 @@ function Comunidade({
         <nav className="comunidade-nav" aria-label="Navegação principal">
           <button type="button" onClick={() => onNavigate?.("biblioteca")}>Biblioteca</button>
           <button type="button" onClick={() => onNavigate?.("explorar")}>Explorar</button>
-          <button type="button" onClick={() => onNavigate?.("resenhas")}>Resenhas</button>
           <button type="button" className="ativo" onClick={() => onNavigate?.("comunidade")}>Comunidade</button>
           <button type="button" onClick={() => onNavigate?.("perfil")}>Perfil</button>
         </nav>
