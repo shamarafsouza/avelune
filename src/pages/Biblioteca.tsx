@@ -14,7 +14,6 @@ type BibliotecaProps = {
       | "inicio"
       | "biblioteca"
       | "explorar"
-      | "resenhas"
       | "comunidade"
       | "perfil"
   ) => void;
