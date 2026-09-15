@@ -1358,6 +1358,7 @@ const [comentariosAbertos, setComentariosAbertos] =
                           fill="currentColor"
                         />
                       </svg>
+                      <span>Resenha</span>
                     </button>
 
                     <button
@@ -1396,6 +1397,7 @@ const [comentariosAbertos, setComentariosAbertos] =
                           strokeLinejoin="round"
                         />
                       </svg>
+                      <span>Foto</span>
                     </button>
 
                     <button
@@ -1436,6 +1438,7 @@ const [comentariosAbertos, setComentariosAbertos] =
                           strokeLinejoin="round"
                         />
                       </svg>
+                      <span>Citação</span>
                     </button>
 
                     <input
