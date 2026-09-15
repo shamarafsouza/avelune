@@ -2628,3 +2628,82 @@ body {
   .biblioteca-hero-conteudo { min-height: 430px; height: 430px; }
   .biblioteca-hero { background-position: 58% center; }
 }
+
+
+/* AVELUNE — CORREÇÃO FINAL: CABEÇALHO, HERO E ROLAGEM */
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  height: auto !important;
+  margin: 0;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+.biblioteca {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow: visible !important;
+  background: #090504 !important;
+}
+
+.biblioteca-topo {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  height: 78px !important;
+  min-height: 78px !important;
+  box-sizing: border-box !important;
+  background: rgba(8, 4, 3, 0.97) !important;
+  border-bottom: 1px solid rgba(199, 139, 65, 0.24) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.biblioteca-nav {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+.biblioteca-nav button {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.biblioteca-hero {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 100% !important;
+  height: 420px !important;
+  min-height: 420px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  background-color: #100704 !important;
+  background-image: linear-gradient(
+      90deg,
+      rgba(7, 3, 2, 0.52) 0%,
+      rgba(7, 3, 2, 0.22) 45%,
+      rgba(7, 3, 2, 0.1) 100%
+    ),
+    url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB5YAAAMpCAIAAABALEgLAABVVGNhQlgAAFVUanVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAVS5qdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjg5Mzc0OWU0LWQ3ZjgtNDI4OS1hZDMwLWExZDNlZDAzNGEzZQAAAAxXanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAJ0Wp1bWIAAAA7anVtZEDLDDK7ikidpwsq1vR/Q2kTYzJwYS5pY29uAAAAABhjMnNojwnMMJVCwM0LqpF/xQBe5wAAABdiZmRiAGltYWdlL3N2Zyt4bWwAAAAJd2JpZGI8c3ZnIHdpZHRoPSI3MTYiIGhlaWdodD0iNzE2IiB2aWV3Qm94PSIwIDAgNzE2IDcxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUwOC43NDkgMzE3LjM5OUM1MTYuNzc3IDI4Ny4zMTQgNTA4Ljk5MSAyNTMuODg0IDQ4NS4zODkgMjMwLjI4MkM0NjEuNzg4IDIwNi42Original4MzAuMjg0IDQ4NS4zOTFDMjUzLjg4NSA1MDguOTkyIDI4Ny4zMTMgNTE2Ljc3OSAzMTcuNDAxIDUwOC43NUMzMzkuNDQyIDUzMC43NDUgMzcyLjI4NiA1NDAuNzE3IDQwNC41MjUgNTMyLjA3OUM0MzYuNzY3IDUyMy40NDEgNDYwLjIyMyA0OTguMzg0IDQ6OS4yMk1FXBMwKBYM1HRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIGwDAfBgNVHSUEGDAWBgorBgEEAYPoXgIBBggrBgEFBQcDJDAlBgNVHSAEHjAcMAwGCisGAQQBg+heAQEwDAYKKwYBBAGD6DwBATBeBggrBgEFBQcBAQRSMFAwIQYIKwYBBQUHMAGGFWh0dHBzOi8vb2NzcC50cnVmby5haTArBggrBgEFBQcwAoYfaHR0cHM6Ly9jYS50cnVmby5haS9jMnBhLWNhLmNydDAzBgkrBgEEAYPoXgQEJgwkMDE5YmM0MDMtNWNkNy03NjY5LWFmZTYtZmRiMTcxNzdkNDI4MBkGCSsGAQQBg+heAwQMBgorBgEEAYPoXgMKMAoGCCqGSM49BAMDA2kAMGYCMQD/5oFiNWv70TfsT9gQvQqMqQ+mBNdWbS3qZxvVvolX750qrwd9eyqWWlGaoojvpc8CMQCtgDZrZ+hERAeVrM0BhL3tW8vdHVmLeIcDzg5lKxX7dJ+7xR2q0PF+uOzAiEt2FThZA9cwggPTMIIDWKADAgECAhQw6KHwpYlCa9K5gkhHmRncFjcCyzAKBggqhkj");
+}
+
+@media (max-width: 700px) {
+  .biblioteca-topo {
+    height: 68px !important;
+    min-height: 68px !important;
+  }
+}
