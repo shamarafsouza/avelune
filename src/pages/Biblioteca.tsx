@@ -39,7 +39,6 @@ type BibliotecaProps = {
     pagina:
       | "inicio"
       | "biblioteca"
-      | "explorar"
       | "comunidade"
       | "perfil"
   ) => void;
@@ -348,16 +347,6 @@ function Biblioteca({
               type="button"
               onClick={() => {
                 setMenuAberto(false);
-                onNavigate?.("explorar");
-              }}
-            >
-              Explorar
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setMenuAberto(false);
                 onNavigate?.("comunidade");
               }}
             >
@@ -403,7 +392,9 @@ function Biblioteca({
       </header>
 
       <section className="biblioteca-conteudo">
-          <div className="biblioteca-introducao">
+        <section className="biblioteca-hero" aria-label="Apresentação da biblioteca">
+          <div className="biblioteca-hero-conteudo">
+            <div className="biblioteca-introducao">
           <span className="biblioteca-eyebrow">
             A GRANDE BIBLIOTECA
           </span>
@@ -419,9 +410,9 @@ function Biblioteca({
             personagens e mundos esperando
             para serem descobertos.
           </p>
-        </div>
+            </div>
 
-        <div className="biblioteca-busca">
+            <div className="biblioteca-busca">
           <span>⌕</span>
 
           <input
@@ -440,8 +431,10 @@ function Biblioteca({
             }
           >
             BUSCAR
-          </button>
+            </button>
+            </div>
           </div>
+        </section>
 
         <section className="categorias">
           <div className="secao-titulo">
