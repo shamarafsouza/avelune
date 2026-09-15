@@ -1,30 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap");
 
 .biblioteca {
-  position: relative;
-
-  width: 100%;
-  height: 100vh;
-  min-height: 0;
-
-  overflow-x: hidden;
-  overflow-y: auto;
-
+  isolation: isolate;
   background:
-    radial-gradient(
-      ellipse at 50% 0%,
-      rgba(116, 55, 24, 0.16),
-      transparent 45%
+    linear-gradient(
+      rgba(8, 3, 3, .16),
+      rgba(8, 3, 3, .25)
     ),
-    radial-gradient(
-      ellipse at 50% 45%,
-      rgba(176, 84, 30, 0.08),
-      transparent 50%
-    ),
+    url('/avelune-castelo.png') center top / cover fixed no-repeat,
     #090504;
-
-  color: #eee2d2;
-  font-family: "Inter", Arial, sans-serif;
 }
 
 /* =========================
@@ -226,88 +210,6 @@
 }
 
 /* =========================
-   MENU MOBILE
-========================= */
-
-.biblioteca-menu-mobile {
-  display: none;
-  width: 38px;
-  height: 38px;
-  padding: 8px;
-  flex-shrink: 0;
-  border: 1px solid rgba(213, 157, 83, 0.22);
-  background: rgba(30, 16, 9, 0.55);
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.biblioteca-menu-mobile span {
-  display: block;
-  width: 16px;
-  height: 1px;
-  background: rgba(233, 216, 192, 0.75);
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.biblioteca-menu-mobile.aberto span:nth-child(1) {
-  transform: translateY(5px) rotate(45deg);
-}
-
-.biblioteca-menu-mobile.aberto span:nth-child(2) {
-  opacity: 0;
-}
-
-.biblioteca-menu-mobile.aberto span:nth-child(3) {
-  transform: translateY(-5px) rotate(-45deg);
-}
-
-.biblioteca-menu-dropdown {
-  display: none;
-  position: absolute;
-  top: calc(100% + 1px);
-  right: 15px;
-  z-index: 80;
-  width: min(210px, calc(100vw - 30px));
-  padding: 8px;
-  border: 1px solid rgba(213, 157, 83, 0.2);
-  background: linear-gradient(
-    145deg,
-    rgba(29, 16, 10, 0.98),
-    rgba(12, 7, 5, 0.99)
-  );
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(16px);
-}
-
-.biblioteca-menu-dropdown button {
-  width: 100%;
-  min-height: 45px;
-  padding: 0 14px;
-  border: 0;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.08);
-  background: transparent;
-  color: rgba(226, 202, 166, 0.62);
-  text-align: left;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.biblioteca-menu-dropdown button:last-child {
-  border-bottom: 0;
-}
-
-.biblioteca-menu-dropdown button:hover,
-.biblioteca-menu-dropdown button.ativo {
-  color: #ead7b7;
-  background: rgba(126, 61, 25, 0.12);
-}
-
-/* =========================
    AÇÕES
 ========================= */
 
@@ -381,7 +283,7 @@
 
   margin: 0 auto;
 
-  padding: 54px 70px;
+  padding: 90px 0 70px;
 }
 
 /* =========================
@@ -410,7 +312,7 @@
 
   font-family: "Cinzel", serif;
 
-  font-size: clamp(38px, 4vw, 58px);
+  font-size: clamp(42px, 5vw, 70px);
 
   line-height: 1.05;
 
@@ -428,7 +330,7 @@
 .biblioteca-introducao p {
   max-width: 540px;
 
-  margin-top: 18px;
+  margin-top: 25px;
 
   color:
     rgba(215, 195, 169, 0.55);
@@ -446,12 +348,12 @@
 
 .biblioteca-busca {
   width: 100%;
-  height: 58px;
+  height: 68px;
 
   display: flex;
   align-items: center;
 
-  margin-top: 34px;
+  margin-top: 58px;
 
   padding: 0 8px 0 24px;
 
@@ -553,7 +455,7 @@
 ========================= */
 
 .categorias {
-  margin-top: 42px;
+  margin-top: 75px;
 }
 
 .secao-titulo {
@@ -644,7 +546,7 @@
 ========================= */
 
 .destaques {
-  margin-top: 46px;
+  margin-top: 85px;
 }
 
 .secao-cabecalho {
@@ -652,7 +554,7 @@
   align-items: flex-end;
   justify-content: space-between;
 
-  margin-bottom: 24px;
+  margin-bottom: 34px;
 }
 
 .secao-eyebrow {
@@ -1199,18 +1101,6 @@
 
   .biblioteca-nav {
     display: none;
-  }
-
-  .biblioteca-menu-mobile {
-    display: flex;
-  }
-
-  .biblioteca-menu-dropdown {
-    display: block;
-  }
-
-  .biblioteca-topo {
-    position: relative;
   }
 
   .biblioteca-conteudo {
@@ -1787,8 +1677,8 @@
   flex-wrap: wrap;
   gap: 10px;
 
-  margin-top: 20px;
-  padding-top: 16px;
+  margin-top: 28px;
+  padding-top: 22px;
 
   border-top:
     1px solid rgba(169, 102, 44, 0.13);
@@ -1911,7 +1801,7 @@
 ========================= */
 
 .biblioteca-filtros + .destaques {
-  margin-top: 42px;
+  margin-top: 72px;
 }
 
 
@@ -1956,483 +1846,18 @@
 
 
 /* =========================
-   AMAZON / ASSOCIADOS
-========================= */
-
-.livro-card {
-  position: relative;
-}
-
-.livro-capa {
-  position: relative;
-}
-
-.livro-selo-amazon {
-  position: absolute;
-  top: 13px;
-  right: 13px;
-  z-index: 4;
-  padding: 5px 8px;
-  border: 1px solid rgba(220, 169, 91, 0.34);
-  background: rgba(20, 10, 5, 0.72);
-  color: #d8ad69;
-  font-size: 7px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  backdrop-filter: blur(5px);
-}
-
-.livro-amazon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 35px;
-  margin-top: 12px;
-  padding: 0 12px;
-  border: 1px solid rgba(210, 151, 75, 0.42);
-  background: linear-gradient(
-    135deg,
-    rgba(113, 57, 19, 0.58),
-    rgba(55, 27, 12, 0.7)
-  );
-  color: #e4c38f;
-  font-size: 8px;
-  letter-spacing: 0.13em;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition:
-    border-color 0.25s ease,
-    background 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease;
-}
-
-.livro-amazon:hover {
-  border-color: rgba(226, 170, 91, 0.72);
-  background: linear-gradient(
-    135deg,
-    rgba(139, 73, 24, 0.7),
-    rgba(69, 34, 14, 0.82)
-  );
-  color: #f1d5a5;
-  transform: translateY(-1px);
-}
-
-.modal-botao.amazon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  border-color: rgba(219, 157, 77, 0.58);
-  background: linear-gradient(
-    135deg,
-    rgba(124, 63, 20, 0.82),
-    rgba(67, 32, 12, 0.88)
-  );
-  color: #f0cf98;
-  text-decoration: none;
-}
-
-.modal-botao.amazon:hover {
-  border-color: rgba(231, 178, 100, 0.82);
-  background: linear-gradient(
-    135deg,
-    rgba(148, 77, 24, 0.9),
-    rgba(79, 38, 13, 0.94)
-  );
-  color: #f8dfb4;
-}
-
-.biblioteca-afiliado {
-  max-width: 300px;
-  color: rgba(210, 179, 137, 0.32);
-  font-size: 8px;
-  line-height: 1.5;
-  letter-spacing: 0.04em;
-  text-align: center;
-}
-
-@media (max-width: 650px) {
-  .livro-amazon {
-    min-height: 38px;
-    margin-top: 10px;
-  }
-
-  .biblioteca-afiliado {
-    max-width: 240px;
-    font-size: 7px;
-  }
-}
-
-
-/* =========================
-   CAPAS REAIS DOS LIVROS
-========================= */
-
-.capa-imagem-real {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-}
-
-.livro-capa .capa-moldura,
-.modal-capa .capa-moldura,
-.livro-capa .livro-selo-amazon {
-  z-index: 3;
-}
-
-.modal-capa .capa-imagem-real {
-  object-fit: cover;
-}
-
-@media (max-width: 650px) {
-  .capa-imagem-real {
-    object-fit: cover;
-  }
-}
-
-/* =========================
-   ALINHAMENTO DOS CARDS
-========================= */
-
-.livros-grid {
-  align-items: stretch;
-}
-
-.livro-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-.livro-informacoes {
-  min-height: 58px;
-  box-sizing: border-box;
-}
-
-.livro-genero {
-  min-height: 20px;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-}
-
-.livro-amazon {
-  margin-top: 12px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 650px) {
-  .livro-informacoes {
-    min-height: 58px;
-  }
-}
-/* =========================================================
-   AVELUNE — BIBLIOTECA
-   Visual: fantasia gótica + dark romance + paranormal
-   Performance: sem blur pesado, sombras menores, atmosfera leve
-   ========================================================= */
-
-.biblioteca {
-  isolation: isolate;
-  background:
-    linear-gradient(90deg, rgba(7, 3, 3, .16) 0%, rgba(7, 3, 3, .05) 50%, rgba(7, 3, 3, .18) 100%),
-    url('/avelune-castelo.png') center top / cover fixed no-repeat,
-    #090504;
-}
-
-/* Atmosfera discreta: não apaga o castelo. */
-.biblioteca::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 52% 22%, rgba(218, 157, 78, .06), transparent 34%),
-    linear-gradient(to bottom, rgba(0,0,0,.02), rgba(0,0,0,.08) 60%, rgba(0,0,0,.16));
-}
-
-.biblioteca::after {
-  display: none;
-}
-
-/* Partículas discretas: uma textura só, sem animação. */
-.biblioteca-particulas {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  opacity: .16;
-  background-image: radial-gradient(circle, rgba(225, 171, 91, .8) .8px, transparent .9px);
-  background-size: 190px 190px;
-  background-position: 25px 35px;
-  mask-image: linear-gradient(to bottom, black, transparent 88%);
-}
-
-/* Cabeçalho: mantém o acabamento dourado sem backdrop-filter. */
-.biblioteca-topo {
-  background: linear-gradient(to bottom, rgba(8, 4, 3, .98), rgba(12, 6, 4, .94));
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.biblioteca-logo-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  cursor: pointer;
-}
-
-.biblioteca-brasao {
-  width: 45px;
-  height: 45px;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 0 8px rgba(211, 151, 63, .22));
-}
-
-.biblioteca-logo {
-  white-space: nowrap;
-}
-
-/* Menu mobile correto: botão pequeno no canto + painel vertical. */
-.biblioteca-menu-mobile {
-  display: none;
-  position: relative;
-  width: 42px;
-  height: 42px;
-  margin-left: auto;
-  border: 1px solid rgba(213, 157, 83, .32);
-  border-radius: 50%;
-  background: rgba(18, 8, 5, .94);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .28);
-}
-
-.biblioteca-menu-mobile span {
-  width: 17px;
-  height: 1px;
-  background: #dcb67b;
-}
-
-.biblioteca-menu-dropdown {
-  display: none;
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 18px;
-  width: min(245px, calc(100vw - 36px));
-  padding: 8px;
-  border: 1px solid rgba(207, 148, 72, .38);
-  border-radius: 3px;
-  background: linear-gradient(150deg, rgba(24, 10, 7, .99), rgba(8, 4, 3, .99));
-  box-shadow: 0 16px 35px rgba(0, 0, 0, .48);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.biblioteca-menu-dropdown::before {
-  content: "✦";
-  display: block;
-  margin: 2px auto 7px;
-  color: #c8944e;
-  font-size: 11px;
-  text-align: center;
-}
-
-.biblioteca-menu-dropdown button {
-  min-height: 46px;
-  border-bottom: 1px solid rgba(213, 157, 83, .09);
-  color: rgba(236, 216, 184, .72);
-  background: transparent;
-}
-
-.biblioteca-menu-dropdown button.ativo {
-  color: #efd5a4;
-  background: rgba(128, 63, 25, .16);
-}
-
-/* Busca sem blur. */
-.biblioteca-busca {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  background: rgba(22, 9, 6, .88);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, .22);
-}
-
-/* Capas: proporção de capa editorial e imagem real sem deformar. */
-.livro-capa {
-  aspect-ratio: 2 / 3;
-  height: auto;
-  min-height: 0;
-  background-clip: padding-box;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, .46);
-  contain: paint;
-}
-
-.livro-card:hover .livro-capa {
-  box-shadow: 0 16px 34px rgba(0, 0, 0, .56), 0 0 22px rgba(161, 81, 26, .09);
-}
-
-.capa-imagem-real {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-  display: block;
-  image-rendering: auto;
-}
-
-/* Não deixe a moldura/selos alterarem a imagem original. */
-.livro-capa .capa-moldura,
-.livro-capa .livro-selo-amazon {
-  z-index: 3;
-}
-
-/* Evita transition: all, que força mais trabalho do navegador. */
-.categoria {
-  transition: border-color .25s ease, background-color .25s ease, color .25s ease;
-}
-
-.livro-card {
-  transition: transform .25s ease;
-}
-
-/* O brasão também aparece como assinatura nas divisórias. */
-.secao-titulo .linha::after,
-.secao-cabecalho::after {
-  content: "✦";
-  color: rgba(218, 164, 83, .72);
-  font-size: 10px;
-}
-
-@media (max-width: 900px) {
-  .biblioteca {
-    background-attachment: scroll;
-  }
-}
-
-@media (max-width: 650px) {
-  .biblioteca-topo {
-    height: 76px;
-    padding: 0 18px;
-  }
-
-  .biblioteca-logo-link {
-    gap: 7px;
-  }
-
-  .biblioteca-brasao {
-    width: 39px;
-    height: 39px;
-  }
-
-  .biblioteca-logo {
-    font-size: 15px;
-    letter-spacing: .23em;
-  }
-
-  .biblioteca-menu-mobile {
-    display: flex;
-  }
-
-  .biblioteca-acoes {
-    display: flex;
-    gap: 7px;
-    margin-left: 8px;
-  }
-
-  .icone-botao,
-  .perfil-botao {
-    width: 36px;
-    height: 36px;
-  }
-
-  .biblioteca-menu-dropdown {
-    display: block;
-  }
-
-  .biblioteca-conteudo {
-    padding-top: 55px;
-  }
-
-  .livros-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 13px;
-  }
-
-  .livro-capa {
-    aspect-ratio: 2 / 3;
-  }
-
-  .capa-moldura {
-    inset: 9px;
-  }
-
-  /* No mobile, mantém o fundo visível. */
-  .biblioteca::before {
-    background:
-      radial-gradient(circle at 50% 18%, rgba(218,157,78,.06), transparent 30%),
-      linear-gradient(to bottom, rgba(0,0,0,.03), rgba(0,0,0,.10) 60%, rgba(0,0,0,.18));
-  }
-}
-
-@media (max-width: 400px) {
-  .biblioteca-brasao {
-    width: 35px;
-    height: 35px;
-  }
-
-  .biblioteca-logo {
-    font-size: 14px;
-  }
-
-  .livros-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px 10px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .livro-card,
-  .categoria,
-  .biblioteca-nav button,
-  .biblioteca-nav button::after {
-    transition: none !important;
-  }
-}
-
-/* =========================
    ÚLTIMAS ADIÇÕES — PROTÓTIPO
 ========================= */
-.ultimas-adicoes {
-  margin-top: 64px;
+.biblioteca-ultimas {
+  margin-top: 78px;
 }
 
-.ultimas-adicoes .secao-cabecalho {
-  margin-bottom: 24px;
-}
-
-/* Não aplica filtros/opacity sobre as capas reais. */
-.capa-imagem-real {
-  opacity: 1;
-  filter: none;
+.biblioteca-ultimas .secao-cabecalho {
+  margin-bottom: 34px;
 }
 
 @media (max-width: 650px) {
-  .ultimas-adicoes {
-    margin-top: 52px;
+  .biblioteca-ultimas {
+    margin-top: 58px;
   }
 }
