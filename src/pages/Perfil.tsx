@@ -748,7 +748,6 @@ function Perfil({ onNavigate }: PerfilProps) {
 
         <nav className="perfil-nav">
           <button type="button" onClick={() => navegar("biblioteca")}>Biblioteca</button>
-          <button type="button" onClick={() => navegar("explorar")}>Explorar</button>
           <button type="button" onClick={() => navegar("comunidade")}>Comunidade</button>
           <button type="button" className="ativo" onClick={() => navegar("perfil")}>Perfil</button>
         </nav>
