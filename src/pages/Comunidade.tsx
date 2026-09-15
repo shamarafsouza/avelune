@@ -1067,7 +1067,6 @@ function Comunidade({
           <div className="comunidade-menu-dropdown">
             <button type="button" onClick={() => { setMenuAberto(false); onNavigate?.("biblioteca"); }}>Biblioteca</button>
             <button type="button" onClick={() => { setMenuAberto(false); onNavigate?.("explorar"); }}>Explorar</button>
-            <button type="button" onClick={() => { setMenuAberto(false); onNavigate?.("resenhas"); }}>Resenhas</button>
             <button type="button" className="ativo" onClick={() => setMenuAberto(false)}>Comunidade</button>
             <button type="button" onClick={() => { setMenuAberto(false); onNavigate?.("perfil"); }}>Perfil</button>
           </div>
