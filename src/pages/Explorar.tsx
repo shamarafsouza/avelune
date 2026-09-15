@@ -9,7 +9,6 @@ type ExplorarProps = {
       | "inicio"
       | "biblioteca"
       | "explorar"
-      | "resenhas"
       | "comunidade"
       | "perfil"
   ) => void;
