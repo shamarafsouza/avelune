@@ -21,9 +21,9 @@
       rgba(176, 84, 30, 0.08),
       transparent 50%
     ),
-    var(--cor-fundo);
+    #090504;
 
-  color: var(--cor-texto-claro);
+  color: #eee2d2;
   font-family: "Inter", Arial, sans-serif;
 }
 
@@ -147,7 +147,7 @@
 
   letter-spacing: 0.28em;
 
-  color: var(--cor-texto);
+  color: #ead8c0;
 
   text-shadow:
     0 0 10px rgba(220, 155, 73, 0.28),
@@ -215,7 +215,7 @@
 
 .biblioteca-nav button:hover,
 .biblioteca-nav button.ativo {
-  color: var(--cor-texto);
+  color: #e9d5b5;
 
   text-shadow:
     0 0 12px rgba(201, 135, 60, 0.3);
@@ -223,88 +223,6 @@
 
 .biblioteca-nav button.ativo::after {
   width: 24px;
-}
-
-/* =========================
-   MENU MOBILE
-========================= */
-
-.biblioteca-menu-mobile {
-  display: none;
-  width: 38px;
-  height: 38px;
-  padding: 8px;
-  flex-shrink: 0;
-  border: 1px solid rgba(213, 157, 83, 0.22);
-  background: rgba(30, 16, 9, 0.55);
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.biblioteca-menu-mobile span {
-  display: block;
-  width: 16px;
-  height: 1px;
-  background: rgba(233, 216, 192, 0.75);
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.biblioteca-menu-mobile.aberto span:nth-child(1) {
-  transform: translateY(5px) rotate(45deg);
-}
-
-.biblioteca-menu-mobile.aberto span:nth-child(2) {
-  opacity: 0;
-}
-
-.biblioteca-menu-mobile.aberto span:nth-child(3) {
-  transform: translateY(-5px) rotate(-45deg);
-}
-
-.biblioteca-menu-dropdown {
-  display: none;
-  position: absolute;
-  top: calc(100% + 1px);
-  right: 15px;
-  z-index: 80;
-  width: min(210px, calc(100vw - 30px));
-  padding: 8px;
-  border: 1px solid rgba(213, 157, 83, 0.2);
-  background: linear-gradient(
-    145deg,
-    rgba(29, 16, 10, 0.98),
-    rgba(12, 7, 5, 0.99)
-  );
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(16px);
-}
-
-.biblioteca-menu-dropdown button {
-  width: 100%;
-  min-height: 45px;
-  padding: 0 14px;
-  border: 0;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.08);
-  background: transparent;
-  color: rgba(226, 202, 166, 0.62);
-  text-align: left;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.biblioteca-menu-dropdown button:last-child {
-  border-bottom: 0;
-}
-
-.biblioteca-menu-dropdown button:hover,
-.biblioteca-menu-dropdown button.ativo {
-  color: var(--cor-texto);
-  background: rgba(126, 61, 25, 0.12);
 }
 
 /* =========================
@@ -357,7 +275,7 @@
 
 .icone-botao:hover,
 .perfil-botao:hover {
-  color: var(--cor-texto);
+  color: #f1ddbb;
 
   border-color:
     rgba(211, 143, 63, 0.55);
@@ -418,7 +336,7 @@
 
   letter-spacing: -0.025em;
 
-  color: var(--cor-texto-claro);
+  color: #eee0cb;
 
   text-shadow:
     0 0 12px rgba(224, 178, 105, 0.22),
@@ -503,7 +421,7 @@
 
   background: transparent;
 
-  color: var(--cor-texto);
+  color: #ead9c0;
 
   font-family: "Inter", sans-serif;
 
@@ -617,7 +535,7 @@
 }
 
 .categoria:hover {
-  color: var(--cor-texto);
+  color: #ead7b8;
 
   border-color:
     rgba(202, 135, 59, 0.48);
@@ -633,7 +551,7 @@
   background:
     rgba(101, 49, 16, 0.42);
 
-  color: var(--cor-dourado-muito-claro);
+  color: #efd7ae;
 
   box-shadow:
     0 0 22px rgba(167, 88, 24, 0.1);
@@ -676,7 +594,7 @@
 
   font-weight: 400;
 
-  color: var(--cor-texto);
+  color: #e9d8c0;
 }
 
 .ver-todos {
@@ -698,7 +616,7 @@
 }
 
 .ver-todos:hover {
-  color: var(--cor-dourado-claro);
+  color: #d5a15f;
 }
 
 /* =========================
@@ -777,9 +695,9 @@
     ),
     linear-gradient(
       145deg,
-      var(--capa-vinho-inicio),
-      var(--capa-vinho-meio) 62%,
-      var(--cor-fundo)
+      #401b13,
+      #21100b 62%,
+      #0c0705
     );
 }
 
@@ -792,9 +710,9 @@
     ),
     linear-gradient(
       145deg,
-      var(--capa-azul-inicio),
-      var(--capa-azul-meio) 62%,
-      var(--cor-fundo)
+      #182229,
+      #0c1114 62%,
+      #070909
     );
 }
 
@@ -807,9 +725,9 @@
     ),
     linear-gradient(
       145deg,
-      var(--capa-roxo-inicio),
-      var(--capa-roxo-meio) 62%,
-      var(--cor-fundo)
+      #281725,
+      #130b12 62%,
+      #080607
     );
 }
 
@@ -822,9 +740,9 @@
     ),
     linear-gradient(
       145deg,
-      var(--capa-verde-inicio),
-      var(--capa-verde-meio) 62%,
-      var(--cor-fundo)
+      #182217,
+      #0d130b 62%,
+      #070906
     );
 }
 
@@ -939,7 +857,7 @@
 .capa-conteudo strong {
   font-family: "Cinzel", serif;
 
-  color: var(--cor-texto-suave);
+  color: #eadcc7;
 
   font-size:
     clamp(17px, 1.7vw, 24px);
@@ -996,7 +914,7 @@
 .livro-informacoes h3 {
   margin: 0;
 
-  color: var(--cor-texto);
+  color: #e5d4bb;
 
   font-family: "Cinzel", serif;
 
@@ -1021,7 +939,7 @@
 .avaliacao {
   flex-shrink: 0;
 
-  color: var(--cor-dourado);
+  color: #c99552;
 
   font-size: 9px;
 
@@ -1086,7 +1004,7 @@
 
   font-weight: 400;
 
-  color: var(--cor-texto);
+  color: #e6d3b7;
 }
 
 .nenhum-livro p {
@@ -1199,18 +1117,6 @@
 
   .biblioteca-nav {
     display: none;
-  }
-
-  .biblioteca-menu-mobile {
-    display: flex;
-  }
-
-  .biblioteca-menu-dropdown {
-    display: block;
-  }
-
-  .biblioteca-topo {
-    position: relative;
   }
 
   .biblioteca-conteudo {
@@ -1326,7 +1232,7 @@
   transform: translateY(-2px);
   border-color: rgba(229, 172, 92, 0.8);
   background: rgba(84, 40, 14, 0.92);
-  color: var(--cor-dourado-muito-claro);
+  color: #f2d6a6;
 }
 
 .capa-acao.ativo {
@@ -1392,19 +1298,19 @@
 }
 
 .estante-capa.vinho {
-  background: linear-gradient(145deg, var(--capa-vinho-inicio), var(--cor-fundo-sombra));
+  background: linear-gradient(145deg, #401b13, #180b08);
 }
 
 .estante-capa.azul {
-  background: linear-gradient(145deg, var(--capa-azul-inicio), var(--cor-fundo-sombra));
+  background: linear-gradient(145deg, #182229, #080c0e);
 }
 
 .estante-capa.roxo {
-  background: linear-gradient(145deg, var(--capa-roxo-inicio), var(--cor-fundo));
+  background: linear-gradient(145deg, #281725, #0b070a);
 }
 
 .estante-capa.verde {
-  background: linear-gradient(145deg, var(--capa-verde-inicio), var(--cor-fundo));
+  background: linear-gradient(145deg, #182217, #080b07);
 }
 
 .estante-livro > span:last-child {
@@ -1416,7 +1322,7 @@
 
 .estante-livro strong {
   overflow: hidden;
-  color: var(--cor-texto);
+  color: #e5d4bb;
   font-family: "Cinzel", serif;
   font-size: 12px;
   font-weight: 400;
@@ -1512,7 +1418,7 @@
 
 .modal-fechar:hover {
   transform: rotate(90deg);
-  color: var(--cor-dourado-muito-claro);
+  color: #f0d5a7;
   border-color: rgba(211, 143, 62, 0.65);
   background: rgba(92, 44, 16, 0.55);
 }
@@ -1531,19 +1437,19 @@
 }
 
 .modal-capa.vinho {
-  background: radial-gradient(circle at 70% 20%, rgba(177, 73, 47, 0.3), transparent 32%), linear-gradient(145deg, var(--capa-vinho-inicio), var(--capa-vinho-meio) 62%, var(--cor-fundo));
+  background: radial-gradient(circle at 70% 20%, rgba(177, 73, 47, 0.3), transparent 32%), linear-gradient(145deg, #401b13, #21100b 62%, #0c0705);
 }
 
 .modal-capa.azul {
-  background: radial-gradient(circle at 30% 20%, rgba(91, 113, 126, 0.2), transparent 32%), linear-gradient(145deg, var(--capa-azul-inicio), var(--capa-azul-meio) 62%, var(--cor-fundo));
+  background: radial-gradient(circle at 30% 20%, rgba(91, 113, 126, 0.2), transparent 32%), linear-gradient(145deg, #182229, #0c1114 62%, #070909);
 }
 
 .modal-capa.roxo {
-  background: radial-gradient(circle at 65% 25%, rgba(116, 68, 136, 0.22), transparent 32%), linear-gradient(145deg, var(--capa-roxo-inicio), var(--capa-roxo-meio) 62%, var(--cor-fundo));
+  background: radial-gradient(circle at 65% 25%, rgba(116, 68, 136, 0.22), transparent 32%), linear-gradient(145deg, #281725, #130b12 62%, #080607);
 }
 
 .modal-capa.verde {
-  background: radial-gradient(circle at 35% 20%, rgba(87, 113, 73, 0.22), transparent 32%), linear-gradient(145deg, var(--capa-verde-inicio), var(--capa-verde-meio) 62%, var(--cor-fundo));
+  background: radial-gradient(circle at 35% 20%, rgba(87, 113, 73, 0.22), transparent 32%), linear-gradient(145deg, #182217, #0d130b 62%, #070906);
 }
 
 .modal-capa .capa-conteudo strong {
@@ -1575,7 +1481,7 @@
 
 .modal-informacoes h2 {
   margin: 12px 0 0;
-  color: var(--cor-texto-suave);
+  color: #eadcc7;
   font-family: "Cinzel", serif;
   font-size: clamp(28px, 3.2vw, 43px);
   font-weight: 400;
@@ -1602,7 +1508,7 @@
 }
 
 .modal-avaliacao > span {
-  color: var(--cor-dourado);
+  color: #c99552;
   font-size: 16px;
 }
 
@@ -1658,7 +1564,7 @@
   transform: translateY(-2px);
   border-color: rgba(213, 146, 62, 0.65);
   background: rgba(91, 44, 16, 0.62);
-  color: var(--cor-dourado-muito-claro);
+  color: #efd5a8;
 }
 
 .modal-botao.principal {
@@ -1869,7 +1775,7 @@
 
   border-radius: 50%;
 
-  background: var(--cor-dourado);
+  background: #c9934d;
 
   box-shadow:
     0 0 8px rgba(213, 145, 60, 0.55);
@@ -1955,184 +1861,84 @@
 }
 
 
-/* =========================
-   AMAZON / ASSOCIADOS
-========================= */
+/* =========================================================
+   AVELUNE — PERFORMANCE / MAGICAL DARK ROMANCE
+   Mantém a identidade visual e reduz custo de composição.
+   ========================================================= */
 
+/* Uma única camada atmosférica em vez de duas camadas fixas */
+.biblioteca::before {
+  background:
+    radial-gradient(ellipse at 50% 8%, rgba(116,55,24,.13), transparent 44%),
+    radial-gradient(ellipse at 50% 55%, rgba(176,84,30,.055), transparent 48%),
+    radial-gradient(ellipse at center, transparent 48%, rgba(0,0,0,.58) 100%);
+  pointer-events: none;
+}
+
+.biblioteca::after { display: none; }
+
+/* Poeira mágica mais leve: continua visível sem uma textura pesada */
+.biblioteca-particulas {
+  opacity: .32;
+  background-image:
+    radial-gradient(circle at 18% 28%, rgba(224,170,92,.28) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 76% 64%, rgba(224,170,92,.18) 0 1px, transparent 1.5px);
+  background-size: 180px 180px, 240px 240px;
+  will-change: auto;
+}
+
+/* Header: mantém o efeito de vidro visual, sem blur de tela inteira */
+.biblioteca-topo {
+  background: rgba(9,5,4,.94);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Busca: mesma leitura visual, sem blur caro */
+.biblioteca-busca {
+  background: rgba(22,12,10,.88);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Transições específicas em vez de transition: all */
+.categoria {
+  transition: transform .22s ease, background-color .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+/* Sombras mais econômicas nas capas/cards */
 .livro-card {
-  position: relative;
+  box-shadow: 0 12px 28px rgba(0,0,0,.30);
 }
 
-.livro-capa {
-  position: relative;
+.livro-card:hover {
+  box-shadow: 0 16px 34px rgba(0,0,0,.38);
 }
 
-.livro-selo-amazon {
-  position: absolute;
-  top: 13px;
-  right: 13px;
-  z-index: 4;
-  padding: 5px 8px;
-  border: 1px solid rgba(220, 169, 91, 0.34);
-  background: rgba(20, 10, 5, 0.72);
-  color: var(--cor-dourado-suave);
-  font-size: 7px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  backdrop-filter: blur(5px);
-}
-
-.livro-amazon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 35px;
-  margin-top: 12px;
-  padding: 0 12px;
-  border: 1px solid rgba(210, 151, 75, 0.42);
-  background: linear-gradient(
-    135deg,
-    rgba(113, 57, 19, 0.58),
-    rgba(55, 27, 12, 0.7)
-  );
-  color: #e4c38f;
-  font-size: 8px;
-  letter-spacing: 0.13em;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition:
-    border-color 0.25s ease,
-    background 0.25s ease,
-    color 0.25s ease,
-    transform 0.25s ease;
-}
-
-.livro-amazon:hover {
-  border-color: rgba(226, 170, 91, 0.72);
-  background: linear-gradient(
-    135deg,
-    rgba(139, 73, 24, 0.7),
-    rgba(69, 34, 14, 0.82)
-  );
-  color: var(--cor-dourado-muito-claro);
-  transform: translateY(-1px);
-}
-
-.modal-botao.amazon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  border-color: rgba(219, 157, 77, 0.58);
-  background: linear-gradient(
-    135deg,
-    rgba(124, 63, 20, 0.82),
-    rgba(67, 32, 12, 0.88)
-  );
-  color: #f0cf98;
-  text-decoration: none;
-}
-
-.modal-botao.amazon:hover {
-  border-color: rgba(231, 178, 100, 0.82);
-  background: linear-gradient(
-    135deg,
-    rgba(148, 77, 24, 0.9),
-    rgba(79, 38, 13, 0.94)
-  );
-  color: #f8dfb4;
-}
-
-.biblioteca-afiliado {
-  max-width: 300px;
-  color: rgba(210, 179, 137, 0.32);
-  font-size: 8px;
-  line-height: 1.5;
-  letter-spacing: 0.04em;
-  text-align: center;
-}
-
-@media (max-width: 650px) {
-  .livro-amazon {
-    min-height: 38px;
-    margin-top: 10px;
-  }
-
-  .biblioteca-afiliado {
-    max-width: 240px;
-    font-size: 7px;
-  }
-}
-
-
-/* =========================
-   CAPAS REAIS DOS LIVROS
-========================= */
-
+/* Capas reais: decodificação assíncrona é tratada no JSX quando houver imagem */
 .capa-imagem-real {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  backface-visibility: hidden;
 }
 
-.livro-capa .capa-moldura,
-.modal-capa .capa-moldura,
-.livro-capa .livro-selo-amazon {
-  z-index: 3;
+/* Modal continua com profundidade, mas evita sombras gigantes */
+.biblioteca-modal-conteudo {
+  box-shadow: 0 20px 50px rgba(0,0,0,.48);
 }
 
-.modal-capa .capa-imagem-real {
-  object-fit: cover;
-}
-
-@media (max-width: 650px) {
-  .capa-imagem-real {
-    object-fit: cover;
+/* Usuários com GPU limitada: preserva a estética, reduz ainda mais os efeitos */
+@media (prefers-reduced-motion: reduce) {
+  .biblioteca *,
+  .biblioteca *::before,
+  .biblioteca *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-/* =========================
-   ALINHAMENTO DOS CARDS
-========================= */
-
-.livros-grid {
-  align-items: stretch;
-}
-
-.livro-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  box-sizing: border-box;
-}
-
-.livro-informacoes {
-  min-height: 58px;
-  box-sizing: border-box;
-}
-
-.livro-genero {
-  min-height: 20px;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-}
-
-.livro-amazon {
-  margin-top: 12px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 650px) {
-  .livro-informacoes {
-    min-height: 58px;
-  }
+@media (max-width: 700px) {
+  .biblioteca-particulas { opacity: .20; }
+  .livro-card { box-shadow: 0 8px 20px rgba(0,0,0,.28); }
+  .livro-card:hover { box-shadow: 0 10px 24px rgba(0,0,0,.32); }
 }
