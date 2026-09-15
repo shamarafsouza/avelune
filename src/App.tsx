@@ -143,14 +143,6 @@ function App() {
             Biblioteca
           </button>
 
-          <button
-            type="button"
-            onClick={() =>
-              navegar("explorar")
-            }
-          >
-            Explorar
-          </button>
 
           <button
             type="button"
