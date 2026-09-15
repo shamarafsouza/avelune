@@ -58,13 +58,6 @@ function App() {
     );
   }
 
-  if (pagina === "explorar") {
-    return (
-      <Explorar
-        onNavigate={navegar}
-      />
-    );
-  }
 
   if (pagina === "comunidade") {
     return (
