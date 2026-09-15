@@ -2698,12 +2698,77 @@ body,
       rgba(7, 3, 2, 0.22) 45%,
       rgba(7, 3, 2, 0.1) 100%
     ),
-    url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAB5YAAAMpCAIAAABALEgLAABVVGNhQlgAAFVUanVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAVS5qdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjg5Mzc0OWU0LWQ3ZjgtNDI4OS1hZDMwLWExZDNlZDAzNGEzZQAAAAxXanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAJ0Wp1bWIAAAA7anVtZEDLDDK7ikidpwsq1vR/Q2kTYzJwYS5pY29uAAAAABhjMnNojwnMMJVCwM0LqpF/xQBe5wAAABdiZmRiAGltYWdlL3N2Zyt4bWwAAAAJd2JpZGI8c3ZnIHdpZHRoPSI3MTYiIGhlaWdodD0iNzE2IiB2aWV3Qm94PSIwIDAgNzE2IDcxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUwOC43NDkgMzE3LjM5OUM1MTYuNzc3IDI4Ny4zMTQgNTA4Ljk5MSAyNTMuODg0IDQ4NS4zODkgMjMwLjI4MkM0NjEuNzg4IDIwNi42Original4MzAuMjg0IDQ4NS4zOTFDMjUzLjg4NSA1MDguOTkyIDI4Ny4zMTMgNTE2Ljc3OSAzMTcuNDAxIDUwOC43NUMzMzkuNDQyIDUzMC43NDUgMzcyLjI4NiA1NDAuNzE3IDQwNC41MjUgNTMyLjA3OUM0MzYuNzY3IDUyMy40NDEgNDYwLjIyMyA0OTguMzg0IDQ6OS4yMk1FXBMwKBYM1HRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIGwDAfBgNVHSUEGDAWBgorBgEEAYPoXgIBBggrBgEFBQcDJDAlBgNVHSAEHjAcMAwGCisGAQQBg+heAQEwDAYKKwYBBAGD6DwBATBeBggrBgEFBQcBAQRSMFAwIQYIKwYBBQUHMAGGFWh0dHBzOi8vb2NzcC50cnVmby5haTArBggrBgEFBQcwAoYfaHR0cHM6Ly9jYS50cnVmby5haS9jMnBhLWNhLmNydDAzBgkrBgEEAYPoXgQEJgwkMDE5YmM0MDMtNWNkNy03NjY5LWFmZTYtZmRiMTcxNzdkNDI4MBkGCSsGAQQBg+heAwQMBgorBgEEAYPoXgMKMAoGCCqGSM49BAMDA2kAMGYCMQD/5oFiNWv70TfsT9gQvQqMqQ+mBNdWbS3qZxvVvolX750qrwd9eyqWWlGaoojvpc8CMQCtgDZrZ+hERAeVrM0BhL3tW8vdHVmLeIcDzg5lKxX7dJ+7xR2q0PF+uOzAiEt2FThZA9cwggPTMIIDWKADAgECAhQw6KHwpYlCa9K5gkhHmRncFjcCyzAKBggqhkj");
+    url("/avelune-cabecalho.png");
 }
 
 @media (max-width: 700px) {
   .biblioteca-topo {
     height: 68px !important;
     min-height: 68px !important;
+  }
+}
+
+/* =========================================================
+   AVELUNE — CORREÇÃO FINAL DO CABEÇALHO PANORÂMICO
+   A imagem fica SOMENTE no .biblioteca-hero.
+========================================================= */
+
+.biblioteca {
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+  background: #090504 !important;
+}
+
+.biblioteca::before,
+.biblioteca::after {
+  display: none !important;
+}
+
+.biblioteca-hero {
+  position: relative !important;
+  width: 100% !important;
+  height: 420px !important;
+  min-height: 420px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  background-color: #100704 !important;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(7, 3, 2, 0.38) 0%,
+      rgba(7, 3, 2, 0.12) 48%,
+      rgba(7, 3, 2, 0.22) 100%
+    ),
+    url("/avelune-cabecalho.png") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: cover !important;
+}
+
+.biblioteca-hero-conteudo {
+  position: relative !important;
+  z-index: 2 !important;
+  width: min(1180px, 88%) !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 auto !important;
+  padding: 52px 0 42px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+@media (max-width: 700px) {
+  .biblioteca-hero {
+    height: 360px !important;
+    min-height: 360px !important;
+  }
+
+  .biblioteca-hero-conteudo {
+    width: 92% !important;
+    padding: 36px 0 30px !important;
   }
 }
