@@ -3,7 +3,7 @@ import { criarCena } from "./three/Scene";
 import Biblioteca from "./pages/Biblioteca";
 import Comunidade from "./pages/Comunidade";
 import Perfil from "./pages/Perfil";
-import Cadastro from "./pages/Cadastro";
+import Auth from "./pages/Auth";
 import "./App.css";
 
 type Pagina =
@@ -11,7 +11,8 @@ type Pagina =
   | "biblioteca"
   | "comunidade"
   | "perfil"
-  | "cadastro";
+  | "auth-cadastro"
+  | "auth-login";
 
 function App() {
   const containerRef =
@@ -70,10 +71,22 @@ function App() {
     );
   }
 
-  if (pagina === "cadastro") {
+  if (pagina === "auth-cadastro") {
     return (
-      <Cadastro
-        onNavigate={setPagina}
+      <Auth
+        modoInicial="cadastro"
+        onAuthenticated={() => setPagina("comunidade")}
+        onBack={() => setPagina("comunidade")}
+      />
+    );
+  }
+
+  if (pagina === "auth-login") {
+    return (
+      <Auth
+        modoInicial="login"
+        onAuthenticated={() => setPagina("comunidade")}
+        onBack={() => setPagina("comunidade")}
       />
     );
   }

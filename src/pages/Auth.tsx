@@ -1,6 +1,4 @@
-import { useState } from "react";
-import type { FormEvent } from "react";
-import { supabase } from "../lib/supabase";
+import { FormEvent, useState } from "react";
 import "./Auth.css";
 
 type ModoAuth = "login" | "cadastro";
@@ -11,55 +9,23 @@ type AuthProps = {
   onBack?: () => void;
 };
 
-function traduzirErroAuth(mensagem: string) {
-  const texto = mensagem.toLowerCase();
-
-  if (
-    texto.includes("user already registered") ||
-    texto.includes("already been registered")
-  ) {
-    return "Este e-mail já está cadastrado no Avelune.";
-  }
-
-  if (
-    texto.includes("invalid login credentials") ||
-    texto.includes("invalid credentials")
-  ) {
-    return "E-mail ou senha incorretos.";
-  }
-
-  if (
-    texto.includes("email not confirmed") ||
-    texto.includes("email_not_confirmed")
-  ) {
-    return "Confirme seu e-mail antes de entrar no Avelune.";
-  }
-
-  if (
-    texto.includes("password") &&
-    (texto.includes("weak") || texto.includes("should be at least"))
-  ) {
-    return "Sua senha precisa ter pelo menos 6 caracteres.";
-  }
-
-  return mensagem || "Não foi possível concluir a operação.";
-}
-
 function Auth({
   modoInicial = "login",
   onAuthenticated,
   onBack,
 }: AuthProps) {
-  const [modo, setModo] = useState<ModoAuth>(modoInicial);
+  const [modo, setModo] =
+    useState<ModoAuth>(modoInicial);
 
   const [nome, setNome] = useState("");
   const [usuario, setUsuario] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] =
+    useState("");
 
-  const [mostrarSenha, setMostrarSenha] = useState(false);
-  const [carregando, setCarregando] = useState(false);
+  const [mostrarSenha, setMostrarSenha] =
+    useState(false);
 
   const [erro, setErro] = useState("");
   const [mensagem, setMensagem] = useState("");
@@ -70,26 +36,21 @@ function Auth({
     setMensagem("");
   }
 
-  async function enviarFormulario(
+  function enviarFormulario(
     evento: FormEvent<HTMLFormElement>
   ) {
     evento.preventDefault();
 
-    if (carregando) {
-      return;
-    }
-
     setErro("");
     setMensagem("");
-
-    const emailLimpo = email.trim().toLowerCase();
 
     if (modo === "cadastro") {
       const nomeLimpo = nome.trim();
       const usuarioLimpo = usuario
         .trim()
-        .replace(/^@+/, "")
-        .toLowerCase();
+        .replace(/^@+/, "");
+      const emailLimpo =
+        email.trim().toLowerCase();
 
       if (
         !nomeLimpo ||
@@ -104,20 +65,6 @@ function Auth({
         return;
       }
 
-      if (usuarioLimpo.length < 3) {
-        setErro(
-          "Seu nome de usuário precisa ter pelo menos 3 caracteres."
-        );
-        return;
-      }
-
-      if (!/^[a-z0-9._-]+$/.test(usuarioLimpo)) {
-        setErro(
-          "O nome de usuário pode usar apenas letras, números, ponto, hífen e sublinhado."
-        );
-        return;
-      }
-
       if (senha.length < 6) {
         setErro(
           "Sua senha precisa ter pelo menos 6 caracteres."
@@ -126,143 +73,88 @@ function Auth({
       }
 
       if (senha !== confirmarSenha) {
-        setErro("As senhas não coincidem.");
+        setErro(
+          "As senhas não coincidem."
+        );
         return;
       }
 
-      setCarregando(true);
+      const iniciais =
+        nomeLimpo
+          .split(" ")
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((parte) => parte[0])
+          .join("")
+          .toUpperCase() || "VC";
 
       try {
-        const { data, error } =
-          await supabase.auth.signUp({
+        localStorage.setItem(
+          "avelune-conta",
+          JSON.stringify({
+            nome: nomeLimpo,
+            usuario: `@${usuarioLimpo}`,
             email: emailLimpo,
-            password: senha,
-            options: {
-              emailRedirectTo: window.location.origin,
-              data: {
-                nome: nomeLimpo,
-                username: usuarioLimpo,
-              },
-            },
-          });
+          })
+        );
 
-        if (error) {
-          setErro(traduzirErroAuth(error.message));
-          return;
-        }
+        localStorage.setItem(
+          "avelune-perfil",
+          JSON.stringify({
+            nome: nomeLimpo,
+            usuario: `@${usuarioLimpo}`,
+            bio:
+              "Apaixonada por histórias e mundos que ficam com a gente.",
+            iniciais,
+            foto: "",
+          })
+        );
 
-        if (!data.user) {
-          setErro("Não foi possível criar sua conta.");
-          return;
-        }
-
-        if (data.session) {
-          setMensagem(
-            "Conta criada com sucesso. Bem-vinda ao Avelune!"
-          );
-
-          window.setTimeout(() => {
-            onAuthenticated();
-          }, 700);
-
-          return;
-        }
+        localStorage.setItem(
+          "avelune-usuario-logado",
+          "true"
+        );
 
         setMensagem(
-          "Conta criada! Confira seu e-mail para confirmar a conta e depois entre no Avelune."
+          "Conta criada. Bem-vinda à comunidade..."
         );
-      } catch (erroDesconhecido) {
-        const mensagemErro =
-          erroDesconhecido instanceof Error
-            ? erroDesconhecido.message
-            : "Não foi possível criar sua conta.";
 
-        setErro(traduzirErroAuth(mensagemErro));
-      } finally {
-        setCarregando(false);
+        window.setTimeout(() => {
+          onAuthenticated();
+        }, 700);
+      } catch {
+        setErro(
+          "Não foi possível criar a conta neste navegador."
+        );
       }
 
       return;
     }
 
-    if (!emailLimpo || !senha) {
-      setErro("Preencha seu e-mail e sua senha.");
-      return;
-    }
-
-    setCarregando(true);
-
-    try {
-      const { error } =
-        await supabase.auth.signInWithPassword({
-          email: emailLimpo,
-          password: senha,
-        });
-
-      if (error) {
-        setErro(traduzirErroAuth(error.message));
-        return;
-      }
-
-      setMensagem("Entrando no Avelune...");
-
-      window.setTimeout(() => {
-        onAuthenticated();
-      }, 500);
-    } catch (erroDesconhecido) {
-      const mensagemErro =
-        erroDesconhecido instanceof Error
-          ? erroDesconhecido.message
-          : "Não foi possível entrar no Avelune.";
-
-      setErro(traduzirErroAuth(mensagemErro));
-    } finally {
-      setCarregando(false);
-    }
-  }
-
-  async function recuperarSenha() {
-    const emailLimpo = email.trim().toLowerCase();
-
-    setErro("");
-    setMensagem("");
-
-    if (!emailLimpo) {
+    if (!email.trim() || !senha) {
       setErro(
-        "Digite seu e-mail para receber o link de recuperação."
+        "Preencha seu e-mail e sua senha."
       );
       return;
     }
 
-    setCarregando(true);
+    /*
+     * Temporariamente o login usa o navegador
+     * apenas para testar o fluxo da aplicação.
+     *
+     * Depois esta parte será substituída pelo
+     * Supabase Auth. Nenhuma senha é salva aqui.
+     */
+    localStorage.setItem(
+      "avelune-usuario-logado",
+      "true"
+    );
 
-    try {
-      const { error } =
-        await supabase.auth.resetPasswordForEmail(
-          emailLimpo,
-          {
-            redirectTo: `${window.location.origin}/`,
-          }
-        );
+    setMensagem("Entrando no Avelune...");
 
-      if (error) {
-        setErro(traduzirErroAuth(error.message));
-        return;
-      }
-
-      setMensagem(
-        "Se esse e-mail estiver cadastrado, você receberá um link para redefinir sua senha."
-      );
-    } catch (erroDesconhecido) {
-      const mensagemErro =
-        erroDesconhecido instanceof Error
-          ? erroDesconhecido.message
-          : "Não foi possível solicitar a recuperação da senha.";
-
-      setErro(traduzirErroAuth(mensagemErro));
-    } finally {
-      setCarregando(false);
-    }
+    window.setTimeout(() => {
+      onAuthenticated();
+    }, 700);
   }
 
   return (
@@ -285,7 +177,6 @@ function Auth({
           type="button"
           className="auth-voltar"
           onClick={onBack}
-          disabled={carregando}
         >
           ← VOLTAR
         </button>
@@ -326,8 +217,9 @@ function Auth({
                 ? "auth-aba auth-aba--ativa"
                 : "auth-aba"
             }
-            onClick={() => trocarModo("login")}
-            disabled={carregando}
+            onClick={() =>
+              trocarModo("login")
+            }
           >
             ENTRAR
           </button>
@@ -339,8 +231,9 @@ function Auth({
                 ? "auth-aba auth-aba--ativa"
                 : "auth-aba"
             }
-            onClick={() => trocarModo("cadastro")}
-            disabled={carregando}
+            onClick={() =>
+              trocarModo("cadastro")
+            }
           >
             CRIAR CONTA
           </button>
@@ -359,14 +252,11 @@ function Auth({
                   type="text"
                   value={nome}
                   onChange={(evento) =>
-                    setNome(
-                      evento.target.value
-                    )
+                    setNome(evento.target.value)
                   }
                   placeholder="Como podemos chamar você?"
                   maxLength={80}
                   autoComplete="name"
-                  disabled={carregando}
                 />
               </label>
 
@@ -377,14 +267,11 @@ function Auth({
                   type="text"
                   value={usuario}
                   onChange={(evento) =>
-                    setUsuario(
-                      evento.target.value
-                    )
+                    setUsuario(evento.target.value)
                   }
                   placeholder="@seunome"
                   maxLength={30}
                   autoComplete="username"
-                  disabled={carregando}
                 />
               </label>
             </>
@@ -397,14 +284,11 @@ function Auth({
               type="email"
               value={email}
               onChange={(evento) =>
-                setEmail(
-                  evento.target.value
-                )
+                setEmail(evento.target.value)
               }
               placeholder="seu@email.com"
               maxLength={120}
               autoComplete="email"
-              disabled={carregando}
             />
           </label>
 
@@ -420,9 +304,7 @@ function Auth({
                 }
                 value={senha}
                 onChange={(evento) =>
-                  setSenha(
-                    evento.target.value
-                  )
+                  setSenha(evento.target.value)
                 }
                 placeholder="••••••••"
                 autoComplete={
@@ -430,7 +312,6 @@ function Auth({
                     ? "current-password"
                     : "new-password"
                 }
-                disabled={carregando}
               />
 
               <button
@@ -445,11 +326,8 @@ function Auth({
                     ? "Ocultar senha"
                     : "Mostrar senha"
                 }
-                disabled={carregando}
               >
-                {mostrarSenha
-                  ? "◉"
-                  : "◌"}
+                {mostrarSenha ? "◉" : "◌"}
               </button>
             </div>
           </label>
@@ -472,7 +350,6 @@ function Auth({
                 }
                 placeholder="••••••••"
                 autoComplete="new-password"
-                disabled={carregando}
               />
             </label>
           )}
@@ -482,7 +359,9 @@ function Auth({
               type="button"
               className="auth-esqueci"
               onClick={() =>
-                recuperarSenha()
+                setMensagem(
+                  "A recuperação de senha será configurada junto com o Supabase."
+                )
               }
             >
               Esqueci minha senha
@@ -510,14 +389,11 @@ function Auth({
           <button
             type="submit"
             className="auth-botao"
-            disabled={carregando}
           >
             <span>
-              {carregando
-                ? "AGUARDE..."
-                : modo === "login"
-                  ? "ENTRAR NO AVELUNE"
-                  : "CRIAR MINHA CONTA"}
+              {modo === "login"
+                ? "ENTRAR NO AVELUNE"
+                : "CRIAR MINHA CONTA"}
             </span>
 
             <strong>→</strong>
@@ -533,12 +409,10 @@ function Auth({
 
       <div className="auth-frase">
         <span>✦</span>
-
         <p>
           Toda grande história começa
           com uma página.
         </p>
-
         <span>✦</span>
       </div>
     </main>
