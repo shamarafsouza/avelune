@@ -1,15 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
 import "./Biblioteca.css";
-import { buscarLivros, type Livro as LivroSupabase } from "../data/livros";
+import { supabase } from "../lib/supabase";
+import type { Livro as LivroBase } from "../types/livro";
 
-type Livro = LivroSupabase & {
-  autor: string;
+type Livro = LivroBase & {
+  id: string;
   avaliacao?: string;
   cor: string;
   simbolo: string;
   amazonUrl?: string;
   capaUrl?: string;
   real?: boolean;
+};
+
+type LivroBanco = {
+  id: string;
+  titulo: string;
+  autora?: string | null;
+  autor?: string | null;
+  genero: string;
+  sinopse?: string | null;
+  avaliacao?: string | number | null;
+  cor?: string | null;
+  simbolo?: string | null;
+  amazon_url?: string | null;
+  capa_url?: string | null;
+  tropes?: string[] | null;
+  vibes?: string[] | null;
 };
 
 type FiltroBiblioteca =
@@ -51,17 +68,34 @@ function Biblioteca({
       try {
         setCarregando(true);
         setErro("");
-        const dados = await buscarLivros();
+        const { data, error: erroSupabase } = await supabase
+          .from("livros")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (erroSupabase) {
+          throw erroSupabase;
+        }
+
+        const dados = (data ?? []) as LivroBanco[];
+
         setLivros(
           dados.map((livro) => ({
-            ...livro,
-            autor: livro.autora,
+            id: livro.id,
+            titulo: livro.titulo,
+            autor: livro.autor ?? livro.autora ?? "Autor desconhecido",
+            genero: livro.genero,
+            sinopse: livro.sinopse ?? "",
             amazonUrl: livro.amazon_url ?? undefined,
             capaUrl: livro.capa_url ?? undefined,
             real: Boolean(livro.capa_url),
-            avaliacao: undefined,
-            cor: "vinho",
-            simbolo: "✦",
+            avaliacao:
+              livro.avaliacao !== null &&
+              livro.avaliacao !== undefined
+                ? String(livro.avaliacao)
+                : undefined,
+            cor: livro.cor ?? "vinho",
+            simbolo: livro.simbolo ?? "✦",
             tropes: Array.isArray(livro.tropes) ? livro.tropes : [],
             vibes: Array.isArray(livro.vibes) ? livro.vibes : [],
           }))
@@ -628,7 +662,7 @@ function Biblioteca({
                               </strong>
 
                               <small>
-                                {livro.autora}
+                                {livro.autor}
                               </small>
                             </div>
                           </>
@@ -662,7 +696,7 @@ function Biblioteca({
                               event.stopPropagation();
 
                               alternarFavorito(
-                                livro.titulo
+                                livro.id
                               );
                             }}
                           >
@@ -689,7 +723,7 @@ function Biblioteca({
                               event.stopPropagation();
 
                               alternarQueroLer(
-                                livro.titulo
+                                livro.id
                               );
                             }}
                           >
@@ -707,7 +741,7 @@ function Biblioteca({
                           </h3>
 
                           <p>
-                            {livro.autora}
+                            {livro.autor}
                           </p>
                         </div>
 
@@ -835,7 +869,7 @@ function Biblioteca({
                         </strong>
 
                         <small>
-                          {livro.autora}
+                          {livro.autor}
                         </small>
                       </span>
                     </button>
@@ -955,7 +989,7 @@ function Biblioteca({
 
                     <small>
                       {
-                        livroSelecionado.autora
+                        livroSelecionado.autor
                       }
                     </small>
                   </div>
@@ -980,7 +1014,7 @@ function Biblioteca({
                 por{" "}
                 <strong>
                   {
-                    livroSelecionado.autora
+                    livroSelecionado.autor
                   }
                 </strong>
               </p>
