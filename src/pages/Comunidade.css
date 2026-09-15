@@ -3252,3 +3252,267 @@
     padding: 0 !important;
   }
 }
+
+
+/* =========================================================
+   COMPOSITOR — VERSÃO FINAL / MAIS ELEGANTE
+   ========================================================= */
+
+.comunidade-publicar {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 28px;
+  padding: 18px 20px 14px;
+  border: 1px solid rgba(213, 157, 83, 0.11);
+  border-radius: 2px;
+  background: rgba(18, 10, 7, 0.72);
+  box-shadow: none;
+}
+
+.comunidade-publicar:hover {
+  border-color: rgba(213, 157, 83, 0.16);
+}
+
+.comunidade-publicar:focus-within {
+  border-color: rgba(213, 157, 83, 0.25);
+  background: rgba(20, 11, 8, 0.82);
+}
+
+.comunidade-publicar-corpo {
+  min-width: 0;
+}
+
+.comunidade-publicar textarea {
+  display: block;
+  min-height: 56px;
+  height: 56px;
+  padding: 4px 0 8px;
+  resize: none;
+  color: rgba(241, 225, 202, 0.9);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.comunidade-publicar textarea::placeholder {
+  color: rgba(220, 194, 159, 0.34);
+}
+
+.comunidade-publicar-rodape {
+  min-height: 36px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(213, 157, 83, 0.065);
+}
+
+.comunidade-publicar-rodape > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.comunidade-publicar-acoes {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.comunidade-publicar-rodape > div:first-child > button,
+.comunidade-publicar-acoes .comunidade-acao {
+  width: auto !important;
+  min-width: 0;
+  height: 31px !important;
+  padding: 0 9px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  border: 1px solid transparent !important;
+  border-radius: 3px !important;
+
+  background: transparent !important;
+  color: rgba(218, 186, 139, 0.52) !important;
+
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  box-shadow: none !important;
+  transform: none !important;
+
+  transition:
+    color 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.comunidade-publicar-rodape > div:first-child > button svg,
+.comunidade-publicar-acoes .comunidade-acao svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.comunidade-publicar-rodape > div:first-child > button:hover,
+.comunidade-publicar-acoes .comunidade-acao:hover {
+  color: #dfc394 !important;
+  background: rgba(213, 157, 83, 0.07) !important;
+  border-color: rgba(213, 157, 83, 0.10) !important;
+}
+
+.comunidade-publicar-rodape > div:first-child > button.selecionado,
+.comunidade-publicar-acoes .comunidade-acao.selecionado {
+  color: #e7c98e !important;
+  background: rgba(213, 157, 83, 0.10) !important;
+  border-color: rgba(213, 157, 83, 0.18) !important;
+}
+
+.comunidade-publicar-rodape > div:first-child > button:focus-visible {
+  outline: 1px solid rgba(213, 157, 83, 0.55);
+  outline-offset: 2px;
+}
+
+/* Texto da ação fica visível no desktop */
+.comunidade-publicar-rodape > div:first-child > button span {
+  display: inline;
+  white-space: nowrap;
+}
+
+.comunidade-publicar-botoes {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+}
+
+.comunidade-cancelar-resenha {
+  height: 31px;
+  padding: 0 10px;
+  border: 1px solid rgba(213, 157, 83, 0.10);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(220, 190, 146, 0.4);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+}
+
+.comunidade-publicar-botao {
+  min-width: 84px;
+  height: 31px;
+  padding: 0 14px;
+  border: 1px solid rgba(213, 157, 83, 0.30);
+  border-radius: 2px;
+  background: rgba(116, 57, 28, 0.20);
+  color: rgba(232, 208, 170, 0.72);
+  font-size: 7px;
+  letter-spacing: 0.16em;
+}
+
+.comunidade-publicar-botao:hover {
+  background: rgba(140, 72, 35, 0.30);
+  border-color: rgba(213, 157, 83, 0.46);
+}
+
+/* Spoiler como detalhe, e não como uma faixa enorme */
+.comunidade-spoiler-opcao {
+  width: fit-content;
+  margin: 0 0 3px;
+  padding: 3px 0;
+  gap: 7px;
+  color: rgba(220, 191, 151, 0.34);
+  font-size: 7px;
+}
+
+.comunidade-spoiler-opcao input {
+  width: 12px;
+  height: 12px;
+}
+
+/* Resenha: expansão suave dentro do próprio compositor */
+.comunidade-resenha-campos {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 8px;
+  margin: 0 0 8px;
+  padding: 10px 0 2px;
+  border-top: 1px solid rgba(213, 157, 83, 0.065);
+}
+
+.comunidade-resenha-campos input {
+  height: 35px;
+  padding: 0 10px;
+  border: 1px solid rgba(213, 157, 83, 0.10);
+  border-radius: 2px;
+  background: rgba(5, 3, 2, 0.32);
+  color: rgba(241, 222, 197, 0.88);
+  font-size: 9px;
+}
+
+.comunidade-resenha-campos input:focus {
+  border-color: rgba(213, 157, 83, 0.28);
+  outline: none;
+}
+
+.comunidade-nota {
+  min-height: 27px;
+  gap: 7px;
+}
+
+.comunidade-nota > span {
+  color: rgba(218, 186, 139, 0.42);
+  font-size: 7px;
+  letter-spacing: 0.12em;
+}
+
+.comunidade-nota button {
+  width: 20px;
+  height: 24px;
+  font-size: 14px;
+}
+
+.comunidade-nota strong {
+  color: rgba(229, 201, 153, 0.58);
+  font-size: 8px;
+  font-weight: 500;
+}
+
+@media (max-width: 560px) {
+  .comunidade-publicar {
+    padding: 15px;
+  }
+
+  .comunidade-publicar textarea {
+    min-height: 52px;
+    height: 52px;
+  }
+
+  .comunidade-publicar-rodape {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .comunidade-publicar-rodape > div:first-child {
+    width: 100%;
+  }
+
+  .comunidade-publicar-botoes {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .comunidade-resenha-campos {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 390px) {
+  .comunidade-publicar-rodape > div:first-child > button span {
+    display: none;
+  }
+
+  .comunidade-publicar-rodape > div:first-child > button {
+    width: 34px !important;
+    padding: 0 !important;
+  }
+}
