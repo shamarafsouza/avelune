@@ -1,11 +1,10 @@
 import {
+  ChangeEvent,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import type { ChangeEvent } from "react";
-import { supabase } from "../lib/supabase";
 import "./Comunidade.css";
 
 type Pagina =
@@ -46,32 +45,149 @@ type Publicacao = {
   seguindo?: boolean;
   origemUsuario?: boolean;
   comentariosLista?: Comentario[];
-  spoiler?: boolean;
-  spoilerRevelado?: boolean;
 };
 
 type ComunidadeProps = {
   onNavigate?: (pagina: Pagina) => void;
 };
 
+const STORAGE_POSTS =
+  "avelune-comunidade-postagens";
+
 const STORAGE_SALVOS =
   "avelune-comunidade-salvos";
 
-const postagensIniciais: Publicacao[] = [];
+const postagensIniciais: Publicacao[] = [
+  {
+    id: 1,
+    usuario: "Luna Valmont",
+    iniciais: "LV",
+    tempo: "há 18 min",
+    texto:
+      "Terminei A Corte das Sombras e ainda estou tentando processar tudo. A atmosfera desse livro é simplesmente maravilhosa. Preciso conversar com alguém sobre esse final.",
+    livro: "A Corte das Sombras",
+    autorLivro: "Elena Beaumont",
+    avaliacao: 5,
+    cor: "vinho",
+    simbolo: "✦",
+    curtidas: 128,
+    comentarios: 24,
+    curtido: false,
+    salva: false,
+    seguindo: true,
+    comentariosLista: [
+      {
+        id: 101,
+        usuario: "Clara Moon",
+        texto:
+          "SIM! O final me deixou olhando para o teto por uns dez minutos.",
+      },
+      {
+        id: 102,
+        usuario: "Noah Evernight",
+        texto:
+          "Essa é definitivamente uma leitura que merece uma releitura.",
+      },
+    ],
+  },
+  {
+    id: 2,
+    usuario: "Arthur Black",
+    iniciais: "AB",
+    tempo: "há 42 min",
+    texto:
+      "O Jardim das Estrelas tem aquela sensação rara de livro que parece existir fora do tempo. Cada capítulo parece uma pequena lembrança.",
+    livro: "O Jardim das Estrelas",
+    autorLivro: "Clara Whitmore",
+    avaliacao: 4,
+    cor: "azul",
+    simbolo: "✧",
+    curtidas: 94,
+    comentarios: 16,
+    curtido: false,
+    salva: false,
+    seguindo: false,
+    comentariosLista: [
+      {
+        id: 201,
+        usuario: "Luna Valmont",
+        texto:
+          "Você descreveu exatamente a sensação que eu tive lendo.",
+      },
+    ],
+  },
+  {
+    id: 3,
+    usuario: "Clara Moon",
+    iniciais: "CM",
+    tempo: "há 1 h",
+    texto:
+      "Pergunta séria para a comunidade: qual livro vocês gostariam de esquecer só para poder ler pela primeira vez novamente?",
+    curtidas: 76,
+    comentarios: 31,
+    curtido: false,
+    salva: false,
+    seguindo: true,
+    comentariosLista: [
+      {
+        id: 301,
+        usuario: "Arthur Black",
+        texto:
+          "Entre Mundos. Sem pensar duas vezes.",
+      },
+      {
+        id: 302,
+        usuario: "Luna Valmont",
+        texto:
+          "A Corte das Sombras. Eu queria sentir aquele impacto de novo.",
+      },
+    ],
+  },
+  {
+    id: 4,
+    usuario: "Noah Evernight",
+    iniciais: "NE",
+    tempo: "há 2 h",
+    texto:
+      "Comecei Entre Mundos sem grandes expectativas e agora não consigo parar. A ideia de atravessar realidades diferentes é muito bem construída.",
+    livro: "Entre Mundos",
+    autorLivro: "Adrian Blackwood",
+    avaliacao: 5,
+    cor: "roxo",
+    simbolo: "◇",
+    curtidas: 61,
+    comentarios: 11,
+    curtido: false,
+    salva: false,
+    seguindo: false,
+    comentariosLista: [
+      {
+        id: 401,
+        usuario: "Clara Moon",
+        texto:
+          "Esse livro me pegou completamente de surpresa também.",
+      },
+    ],
+  },
+];
 
-function dataUrlParaBlob(dataUrl: string): Blob {
-  const partes = dataUrl.split(",");
-  const tipo = partes[0].match(/data:(.*?);base64/)?.[1] ||
-    "image/jpeg";
+function carregarPostagens(): Publicacao[] {
+  try {
+    const salvas =
+      localStorage.getItem(STORAGE_POSTS);
 
-  const binario = atob(partes[1]);
-  const bytes = new Uint8Array(binario.length);
+    if (salvas) {
+      const dados = JSON.parse(salvas);
 
-  for (let indice = 0; indice < binario.length; indice += 1) {
-    bytes[indice] = binario.charCodeAt(indice);
+      if (Array.isArray(dados)) {
+        return dados;
+      }
+    }
+  } catch {
+    // Usa os dados iniciais.
   }
 
-  return new Blob([bytes], { type: tipo });
+  return postagensIniciais;
 }
 
 function redimensionarImagem(
@@ -154,59 +270,12 @@ function redimensionarImagem(
   });
 }
 
-type PublicacaoBanco = {
-  id: number;
-  usuario_id: string;
-  texto: string;
-  livro: string | null;
-  autor_livro: string | null;
-  avaliacao: number | null;
-  foto_url: string | null;
-  curtidas: number;
-  comentarios: number;
-  created_at: string;
-  spoiler: boolean;
-};
-
-type ComentarioBanco = {
-  id: number;
-  publicacao_id: number;
-  usuario_id: string;
-  texto: string;
-  created_at: string;
-};
-
-function formatarTempo(data: string) {
-  const diferenca = Math.max(
-    0,
-    Date.now() - new Date(data).getTime()
-  );
-  const minutos = Math.floor(diferenca / 60000);
-
-  if (minutos < 1) {
-    return "agora";
-  }
-
-  if (minutos < 60) {
-    return `há ${minutos} min`;
-  }
-
-  const horas = Math.floor(minutos / 60);
-
-  if (horas < 24) {
-    return `há ${horas} h`;
-  }
-
-  const dias = Math.floor(horas / 24);
-  return `há ${dias} ${dias === 1 ? "dia" : "dias"}`;
-}
-
 function Comunidade({
   onNavigate,
 }: ComunidadeProps) {
   const [postagens, setPostagens] =
     useState<Publicacao[]>(
-      postagensIniciais
+      carregarPostagens
     );
 
   const [filtro, setFiltro] =
@@ -227,12 +296,10 @@ function Comunidade({
   const [modoResenha, setModoResenha] =
     useState(false);
 
-  const [marcarSpoiler, setMarcarSpoiler] =
-    useState(false);
-
   const [fotoSelecionada, setFotoSelecionada] =
     useState("");
-const [comentariosAbertos, setComentariosAbertos] =
+
+  const [comentariosAbertos, setComentariosAbertos] =
     useState<number | null>(null);
 
   const [comentarioDigitado, setComentarioDigitado] =
@@ -244,13 +311,21 @@ const [comentariosAbertos, setComentariosAbertos] =
   const [mostrarAvisoConta, setMostrarAvisoConta] =
     useState(false);
 
-  const [autenticado, setAutenticado] =
-    useState(false);
-
-  const [menuAberto, setMenuAberto] = useState(false);
-
   const inputImagemRef =
     useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        STORAGE_POSTS,
+        JSON.stringify(postagens)
+      );
+    } catch {
+      setMensagem(
+        "A postagem foi criada, mas a imagem não pôde ser salva no navegador."
+      );
+    }
+  }, [postagens]);
 
   useEffect(() => {
     const salvos = postagens
@@ -267,273 +342,18 @@ const [comentariosAbertos, setComentariosAbertos] =
     }
   }, [postagens]);
 
-  useEffect(() => {
-    let montado = true;
-
-    async function carregarSessao() {
-      const { data } =
-        await supabase.auth.getSession();
-
-      if (montado) {
-        setAutenticado(Boolean(data.session));
-      }
+  function estaAutenticado() {
+    try {
+      return localStorage.getItem(
+        "avelune-usuario-logado"
+      ) === "true";
+    } catch {
+      return false;
     }
-
-    carregarSessao();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(
-      (_evento, session) => {
-        setAutenticado(Boolean(session));
-      }
-    );
-
-    return () => {
-      montado = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    let montado = true;
-
-    async function carregarPublicacoes() {
-      if (!autenticado) {
-        if (montado) {
-          setPostagens(postagensIniciais);
-        }
-        return;
-      }
-
-      const { data: usuarioAtual } =
-        await supabase.auth.getUser();
-
-      if (!usuarioAtual.user) {
-        if (montado) {
-          setPostagens([]);
-        }
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("publicacoes")
-        .select(
-          "id, usuario_id, texto, livro, autor_livro, avaliacao, foto_url, curtidas, comentarios, created_at, spoiler"
-        )
-        .order("created_at", { ascending: false });
-
-      if (!montado) {
-        return;
-      }
-
-      if (error) {
-        setMensagem(
-          "Não foi possível carregar as publicações da comunidade."
-        );
-        return;
-      }
-
-      const publicacoes =
-        (data ?? []) as PublicacaoBanco[];
-
-      if (publicacoes.length === 0) {
-        setPostagens([]);
-        return;
-      }
-
-      const idsPublicacoes = publicacoes.map(
-        (publicacao) => publicacao.id
-      );
-
-      const idsUsuarios = [
-        ...new Set(
-          publicacoes.map(
-            (publicacao) => publicacao.usuario_id
-          )
-        ),
-      ];
-
-      const [resultadoPerfis, resultadoCurtidas, resultadoComentarios] =
-        await Promise.all([
-          supabase
-            .from("profiles")
-            .select("id, nome, username")
-            .in("id", idsUsuarios),
-          supabase
-            .from("curtidas")
-            .select("publicacao_id, usuario_id")
-            .in("publicacao_id", idsPublicacoes),
-          supabase
-            .from("comentarios")
-            .select("id, publicacao_id, usuario_id, texto, created_at")
-            .in("publicacao_id", idsPublicacoes)
-            .order("created_at", { ascending: true }),
-        ]);
-
-      const mapaPerfis = new Map(
-        (resultadoPerfis.data ?? []).map(
-          (perfil: {
-            id: string;
-            nome: string | null;
-            username: string;
-          }) => [perfil.id, perfil]
-        )
-      );
-
-      const idsCurtidos = new Set(
-        (resultadoCurtidas.data ?? [])
-          .filter(
-            (curtida: {
-              publicacao_id: number;
-              usuario_id: string;
-            }) =>
-              curtida.usuario_id ===
-              usuarioAtual.user.id
-          )
-          .map(
-            (curtida: { publicacao_id: number }) =>
-              curtida.publicacao_id
-          )
-      );
-
-      const curtidasPorPublicacao = new Map<number, number>();
-
-      (resultadoCurtidas.data ?? []).forEach(
-        (curtida: { publicacao_id: number }) => {
-          curtidasPorPublicacao.set(
-            curtida.publicacao_id,
-            (curtidasPorPublicacao.get(curtida.publicacao_id) ?? 0) + 1
-          );
-        }
-      );
-
-      const comentariosBanco =
-        (resultadoComentarios.data ?? []) as ComentarioBanco[];
-
-      const idsUsuariosComentarios = [
-        ...new Set(
-          comentariosBanco.map(
-            (comentario) => comentario.usuario_id
-          )
-        ),
-      ];
-
-      let mapaPerfisComentarios = mapaPerfis;
-
-      if (idsUsuariosComentarios.length > 0) {
-        const { data: perfisComentarios } = await supabase
-          .from("profiles")
-          .select("id, nome, username")
-          .in("id", idsUsuariosComentarios);
-
-        mapaPerfisComentarios = new Map(
-          (perfisComentarios ?? []).map(
-            (perfil: {
-              id: string;
-              nome: string | null;
-              username: string;
-            }) => [perfil.id, perfil]
-          )
-        );
-
-        mapaPerfis.forEach((perfil, id) => {
-          if (!mapaPerfisComentarios.has(id)) {
-            mapaPerfisComentarios.set(id, perfil);
-          }
-        });
-      }
-
-      const comentariosPorPublicacao = new Map<
-        number,
-        Comentario[]
-      >();
-
-      comentariosBanco.forEach((comentario) => {
-        const perfil = mapaPerfisComentarios.get(
-          comentario.usuario_id
-        );
-        const nome =
-          perfil?.nome ||
-          perfil?.username ||
-          "Leitor";
-
-        const lista =
-          comentariosPorPublicacao.get(
-            comentario.publicacao_id
-          ) ?? [];
-
-        lista.push({
-          id: comentario.id,
-          usuario: nome,
-          texto: comentario.texto,
-        });
-
-        comentariosPorPublicacao.set(
-          comentario.publicacao_id,
-          lista
-        );
-      });
-
-      const convertidas: Publicacao[] =
-        publicacoes.map((publicacao) => {
-          const perfil = mapaPerfis.get(
-            publicacao.usuario_id
-          );
-          const nome =
-            perfil?.nome ||
-            perfil?.username ||
-            "Leitor";
-          const comentariosDaPublicacao =
-            comentariosPorPublicacao.get(publicacao.id) ?? [];
-
-          return {
-            id: publicacao.id,
-            usuario: nome,
-            iniciais: nome
-              .split(" ")
-              .filter(Boolean)
-              .slice(0, 2)
-              .map((parte: string) => parte[0])
-              .join("")
-              .toUpperCase() || "LE",
-            tempo: formatarTempo(
-              publicacao.created_at
-            ),
-            texto: publicacao.texto,
-            livro: publicacao.livro ?? undefined,
-            autorLivro:
-              publicacao.autor_livro ?? undefined,
-            avaliacao:
-              publicacao.avaliacao ?? undefined,
-            foto: publicacao.foto_url ?? undefined,
-            curtidas: curtidasPorPublicacao.get(publicacao.id) ?? 0,
-            comentarios: comentariosDaPublicacao.length,
-            curtido: idsCurtidos.has(publicacao.id),
-            salva: false,
-            seguindo: false,
-            origemUsuario:
-              publicacao.usuario_id === usuarioAtual.user.id,
-            comentariosLista: comentariosDaPublicacao,
-            spoiler: Boolean(publicacao.spoiler),
-            spoilerRevelado: false,
-          };
-        });
-
-      if (montado) {
-        setPostagens(convertidas);
-      }
-    }
-
-    carregarPublicacoes();
-
-    return () => {
-      montado = false;
-    };
-  }, [autenticado]);
+  }
 
   function exigirConta() {
-    if (autenticado) {
+    if (estaAutenticado()) {
       return true;
     }
 
@@ -541,7 +361,7 @@ const [comentariosAbertos, setComentariosAbertos] =
     return false;
   }
 
-  const visitante = !autenticado;
+  const visitante = !estaAutenticado();
 
   const postagensVisiveis = useMemo(() => {
     if (!visitante) {
@@ -643,10 +463,9 @@ const [comentariosAbertos, setComentariosAbertos] =
     setAvaliacaoDigitada(5);
     setFotoSelecionada("");
     setModoResenha(false);
-    setMarcarSpoiler(false);
   }
 
-  async function publicar() {
+  function publicar() {
     if (!exigirConta()) {
       return;
     }
@@ -673,107 +492,22 @@ const [comentariosAbertos, setComentariosAbertos] =
       return;
     }
 
-    const { data: usuarioAuth, error: erroUsuario } =
-      await supabase.auth.getUser();
-
-    if (erroUsuario || !usuarioAuth.user) {
-      mostrarMensagem(
-        "Sua sessão expirou. Entre novamente para publicar."
-      );
-      return;
-    }
-
-    let fotoUrl: string | null = null;
-
-    if (fotoSelecionada) {
-      const arquivoFoto = dataUrlParaBlob(
-        fotoSelecionada
-      );
-
-      const caminhoFoto =
-        `${usuarioAuth.user.id}/${Date.now()}.jpg`;
-
-      const { error: erroUpload } =
-        await supabase.storage
-          .from("comunidade")
-          .upload(caminhoFoto, arquivoFoto, {
-            contentType: "image/jpeg",
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-      if (erroUpload) {
-        mostrarMensagem(
-          "Não foi possível enviar a foto. Tente novamente."
-        );
-        return;
-      }
-
-      const { data: urlPublica } =
-        supabase.storage
-          .from("comunidade")
-          .getPublicUrl(caminhoFoto);
-
-      fotoUrl = urlPublica.publicUrl;
-    }
-
-    const { data: novaPublicacao, error } =
-      await supabase
-        .from("publicacoes")
-        .insert({
-          usuario_id: usuarioAuth.user.id,
-          texto:
-            textoLimpo ||
-            "Minha nova leitura no Avelune.",
-          livro: livroLimpo || null,
-          autor_livro: autorLimpo || null,
-          avaliacao: livroLimpo
-            ? avaliacaoDigitada
-            : null,
-          foto_url: fotoUrl,
-          spoiler: marcarSpoiler,
-        })
-        .select(
-          "id, usuario_id, texto, livro, autor_livro, avaliacao, foto_url, curtidas, comentarios, created_at, spoiler"
-        )
-        .single();
-
-    if (error || !novaPublicacao) {
-      mostrarMensagem(
-        "Não foi possível publicar sua resenha. Tente novamente."
-      );
-      return;
-    }
-
-    const { data: perfil } = await supabase
-      .from("profiles")
-      .select("id, nome, username")
-      .eq("id", usuarioAuth.user.id)
-      .maybeSingle();
-
-    const nome =
-      perfil?.nome ||
-      perfil?.username ||
-      "Você";
-
-    const postagemCriada: Publicacao = {
-      id: novaPublicacao.id,
-      usuario: nome,
-      iniciais: nome
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((parte: string) => parte[0])
-        .join("")
-        .toUpperCase() || "VC",
+    const novaPostagem: Publicacao = {
+      id: Date.now(),
+      usuario: "Você",
+      iniciais: "VC",
       tempo: "agora",
-      texto: novaPublicacao.texto,
-      livro: novaPublicacao.livro ?? undefined,
+      texto:
+        textoLimpo ||
+        "Minha nova leitura no Avelune.",
+      livro: livroLimpo || undefined,
       autorLivro:
-        novaPublicacao.autor_livro ?? undefined,
+        autorLimpo || undefined,
       avaliacao:
-        novaPublicacao.avaliacao ?? undefined,
-      foto: novaPublicacao.foto_url ?? undefined,
+        livroLimpo
+          ? avaliacaoDigitada
+          : undefined,
+      foto: fotoSelecionada || undefined,
       curtidas: 0,
       comentarios: 0,
       curtido: false,
@@ -781,88 +515,41 @@ const [comentariosAbertos, setComentariosAbertos] =
       seguindo: true,
       origemUsuario: true,
       comentariosLista: [],
-      spoiler: marcarSpoiler,
-      spoilerRevelado: false,
     };
 
     setPostagens((atual) => [
-      postagemCriada,
+      novaPostagem,
       ...atual,
     ]);
 
     limparCompositor();
     mostrarMensagem(
-      "Sua publicação foi salva na comunidade."
+      "Sua publicação foi adicionada à comunidade."
     );
   }
 
-  async function alternarCurtida(id: number) {
+  function alternarCurtida(id: number) {
     if (!exigirConta()) {
       return;
     }
 
-    const { data: usuarioAuth, error: erroUsuario } =
-      await supabase.auth.getUser();
-
-    if (erroUsuario || !usuarioAuth.user) {
-      mostrarMensagem(
-        "Sua sessão expirou. Entre novamente para continuar."
-      );
-      return;
-    }
-
-    const post = postagens.find(
-      (item) => item.id === id
-    );
-
-    if (!post) {
-      return;
-    }
-
-    if (post.curtido) {
-      const { error } = await supabase
-        .from("curtidas")
-        .delete()
-        .eq("publicacao_id", id)
-        .eq("usuario_id", usuarioAuth.user.id);
-
-      if (error) {
-        mostrarMensagem(
-          "Não foi possível remover sua curtida."
-        );
-        return;
-      }
-    } else {
-      const { error } = await supabase
-        .from("curtidas")
-        .insert({
-          publicacao_id: id,
-          usuario_id: usuarioAuth.user.id,
-        });
-
-      if (error && error.code !== "23505") {
-        mostrarMensagem(
-          "Não foi possível registrar sua curtida."
-        );
-        return;
-      }
-    }
-
-    const { count } = await supabase
-      .from("curtidas")
-      .select("id", { count: "exact", head: true })
-      .eq("publicacao_id", id);
-
     setPostagens((atual) =>
-      atual.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              curtido: !post.curtido,
-              curtidas: count ?? 0,
-            }
-          : item
-      )
+      atual.map((post) => {
+        if (post.id !== id) {
+          return post;
+        }
+
+        return {
+          ...post,
+          curtido: !post.curtido,
+          curtidas: post.curtido
+            ? Math.max(
+                0,
+                post.curtidas - 1
+              )
+            : post.curtidas + 1,
+        };
+      })
     );
   }
 
@@ -893,7 +580,7 @@ const [comentariosAbertos, setComentariosAbertos] =
     );
   }
 
-  async function adicionarComentario(id: number) {
+  function adicionarComentario(id: number) {
     if (!exigirConta()) {
       return;
     }
@@ -905,77 +592,26 @@ const [comentariosAbertos, setComentariosAbertos] =
       return;
     }
 
-    if (novoTexto.length > 1000) {
-      mostrarMensagem(
-        "O comentário pode ter no máximo 1000 caracteres."
-      );
-      return;
-    }
-
-    const { data: usuarioAuth, error: erroUsuario } =
-      await supabase.auth.getUser();
-
-    if (erroUsuario || !usuarioAuth.user) {
-      mostrarMensagem(
-        "Sua sessão expirou. Entre novamente para comentar."
-      );
-      return;
-    }
-
-    const { data: novoComentario, error } =
-      await supabase
-        .from("comentarios")
-        .insert({
-          publicacao_id: id,
-          usuario_id: usuarioAuth.user.id,
-          texto: novoTexto,
-        })
-        .select(
-          "id, publicacao_id, usuario_id, texto, created_at"
-        )
-        .single();
-
-    if (error || !novoComentario) {
-      mostrarMensagem(
-        "Não foi possível publicar seu comentário."
-      );
-      return;
-    }
-
-    const { data: perfil } = await supabase
-      .from("profiles")
-      .select("id, nome, username")
-      .eq("id", usuarioAuth.user.id)
-      .maybeSingle();
-
-    const nome =
-      perfil?.nome ||
-      perfil?.username ||
-      "Você";
-
-    const comentario: Comentario = {
-      id: novoComentario.id,
-      usuario: nome,
-      texto: novoComentario.texto,
-    };
-
-    const { count } = await supabase
-      .from("comentarios")
-      .select("id", { count: "exact", head: true })
-      .eq("publicacao_id", id);
-
     setPostagens((atual) =>
       atual.map((post) => {
         if (post.id !== id) {
           return post;
         }
 
+        const comentariosExistentes =
+          post.comentariosLista ?? [];
+
         return {
           ...post,
-          comentarios: count ?? post.comentarios + 1,
+          comentarios:
+            post.comentarios + 1,
           comentariosLista: [
-            ...(post.comentariosLista ?? []),
-            comentario,
+            ...comentariosExistentes,
+            {
+              id: Date.now(),
+              usuario: "Você",
+              texto: novoTexto,
+            },
           ],
         };
       })
@@ -1041,85 +677,40 @@ const [comentariosAbertos, setComentariosAbertos] =
           AVELUNE
         </button>
 
-        <nav className="comunidade-nav" aria-label="Navegação principal">
+        <nav className="comunidade-nav">
           <button
             type="button"
-            onClick={() => onNavigate?.("biblioteca")}
-          >
-        Biblioteca
-         </button>
-
-      <button
-        type="button"
-        className="ativo"
-        onClick={() => onNavigate?.("comunidade")}
-      >
-      Comunidade
-    </button>
-
-    <button
-      type="button"
-      onClick={() => onNavigate?.("perfil")}
-    >
-      Perfil
-    </button>
-  </nav>
-
-        <button
-          type="button"
-          className={`comunidade-menu-mobile ${menuAberto ? "aberto" : ""}`}
-          aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={menuAberto}
-          onClick={() => setMenuAberto((atual) => !atual)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-
-        {menuAberto && (
-          <div className="comunidade-menu-dropdown">
-            <button type="button" onClick={() => { setMenuAberto(false); onNavigate?.("biblioteca"); }}>Biblioteca</button>
-            <button type="button" className="ativo" onClick={() => setMenuAberto(false)}>Comunidade</button>
-            <button type="button" onClick={() => { setMenuAberto(false); onNavigate?.("perfil"); }}>Perfil</button>
-          </div>
-        )}
-
-        <div className="comunidade-acoes">
-          <button
-            type="button"
-            className="comunidade-icone"
-            aria-label="Pesquisar"
             onClick={() =>
-              mostrarMensagem(
-                "A busca da comunidade ficará disponível em breve."
-              )
+              onNavigate?.("biblioteca")
             }
           >
-            ⌕
+            Biblioteca
+          </button>
+
+
+          <button
+            type="button"
+            className="ativo"
+            onClick={() =>
+              onNavigate?.("comunidade")
+            }
+          >
+            Comunidade
           </button>
 
           <button
             type="button"
-            className="comunidade-perfil"
-            aria-label={
-              visitante
-                ? "Entrar no Avelune"
-                : "Abrir seu perfil"
-            }
             onClick={() =>
-              onNavigate?.(
-                visitante
-                  ? "auth-login"
-                  : "perfil"
-              )
+              onNavigate?.("perfil")
             }
           >
-            {visitante ? "ENTRAR" : "VC"}
+            Perfil
           </button>
-        </div>
+        </nav>
+
       </header>
-<section className="comunidade-conteudo">
+
+      <section className="comunidade-conteudo">
         <div className="comunidade-introducao">
           <span>UM LUGAR PARA LEITORES</span>
 
@@ -1276,17 +867,6 @@ const [comentariosAbertos, setComentariosAbertos] =
                   </div>
                 )}
 
-                <label className="comunidade-spoiler-opcao">
-                  <input
-                    type="checkbox"
-                    checked={marcarSpoiler}
-                    onChange={(evento) =>
-                      setMarcarSpoiler(evento.target.checked)
-                    }
-                  />
-                  <span>Marcar publicação como spoiler</span>
-                </label>
-
                 {fotoSelecionada && (
                   <div className="comunidade-preview-foto">
                     <img
@@ -1310,92 +890,28 @@ const [comentariosAbertos, setComentariosAbertos] =
                   <div>
                     <button
                       type="button"
-                      aria-label="Escrever uma resenha"
-                      title="Escrever uma resenha"
+                      aria-label="Criar resenha"
                       className={
                         modoResenha
-                          ? "comunidade-acao comunidade-acao-resenha selecionado"
-                          : "comunidade-acao comunidade-acao-resenha"
+                          ? "selecionado"
+                          : ""
                       }
                       onClick={ativarResenha}
                     >
-                      <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M5 5.5A3.5 3.5 0 0 1 8.5 2H19v19H8.5A3.5 3.5 0 0 0 5 24V5.5Z"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M5 5.5A3.5 3.5 0 0 1 8.5 2"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M9 7h6.5M9 10.5h6.5M9 14h4.5"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="m17.5 15.5.8 1.8 1.8.8-1.8.8-.8 1.8-.8-1.8-1.8-.8 1.8-.8.8-1.8Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                      <span>Resenha</span>
+                      ♧
                     </button>
 
                     <button
                       type="button"
-                      className="comunidade-acao"
                       aria-label="Adicionar imagem"
-                      title="Adicionar imagem"
                       onClick={abrirImagem}
                     >
-                      <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <rect
-                          x="3"
-                          y="4"
-                          width="18"
-                          height="16"
-                          rx="2"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                        />
-                        <circle
-                          cx="8"
-                          cy="9"
-                          r="1.5"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="m4.5 17 5-5 3.5 3 2.5-2.5 4 4"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span>Foto</span>
+                      ◫
                     </button>
 
                     <button
                       type="button"
-                      className="comunidade-acao"
                       aria-label="Adicionar citação"
-                      title="Adicionar citação"
                       onClick={() => {
                         if (!exigirConta()) {
                           return;
@@ -1408,28 +924,7 @@ const [comentariosAbertos, setComentariosAbertos] =
                         );
                       }}
                     >
-                      <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M10 7H6.5A3.5 3.5 0 0 0 3 10.5v1A3.5 3.5 0 0 0 6.5 15H10v-4H6.5"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M21 7h-3.5a3.5 3.5 0 0 0-3.5 3.5v1a3.5 3.5 0 0 0 3.5 3.5H21v-4h-3.5"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1.7"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      <span>Citação</span>
+                      ❝
                     </button>
 
                     <input
@@ -1520,34 +1015,33 @@ const [comentariosAbertos, setComentariosAbertos] =
                       </button>
                     </div>
 
-                    {post.spoiler && !post.spoilerRevelado ? (
-                      <div className="comunidade-spoiler-midia">
-                        {post.foto ? (
-                          <img src={post.foto} alt="Conteúdo protegido por spoiler" />
-                        ) : (
-                          <div className={`comunidade-post-foto comunidade-post-foto--arte ${post.cor ?? "simples"}`}>
-                            <div className="comunidade-foto-luz" />
-                            <span>{post.simbolo ?? "✦"}</span>
-                            {post.livro && <strong>{post.livro}</strong>}
-                            {post.autorLivro && <small>{post.autorLivro}</small>}
-                          </div>
-                        )}
-                        <div className="comunidade-spoiler-midia-overlay">
-                          <span>✦</span>
-                          <strong>Contém spoiler</strong>
-                          <button type="button" onClick={() => setPostagens((atual) => atual.map((item) => item.id === post.id ? { ...item, spoilerRevelado: true } : item))}>REVELAR SPOILER ✦</button>
-                        </div>
-                      </div>
-                    ) : post.foto ? (
+                    {post.foto ? (
                       <div className="comunidade-post-foto">
-                        <img src={post.foto} alt={`Publicação de ${post.usuario}`} />
+                        <img
+                          src={post.foto}
+                          alt={`Publicação de ${post.usuario}`}
+                        />
                       </div>
                     ) : (
-                      <div className={`comunidade-post-foto comunidade-post-foto--arte ${post.cor ?? "simples"}`}>
+                      <div
+                        className={`comunidade-post-foto comunidade-post-foto--arte ${
+                          post.cor ?? "simples"
+                        }`}
+                      >
                         <div className="comunidade-foto-luz" />
-                        <span>{post.simbolo ?? "✦"}</span>
-                        {post.livro && <strong>{post.livro}</strong>}
-                        {post.autorLivro && <small>{post.autorLivro}</small>}
+                        <span>
+                          {post.simbolo ?? "✦"}
+                        </span>
+                        {post.livro && (
+                          <strong>
+                            {post.livro}
+                          </strong>
+                        )}
+                        {post.autorLivro && (
+                          <small>
+                            {post.autorLivro}
+                          </small>
+                        )}
                       </div>
                     )}
 
@@ -1629,37 +1123,12 @@ const [comentariosAbertos, setComentariosAbertos] =
                         : "curtidas"}
                     </div>
 
-                    {post.spoiler && !post.spoilerRevelado ? (
-                      <div className="comunidade-spoiler-bloqueio">
-                        <span className="comunidade-spoiler-brilho">✦</span>
-                        <strong>Contém spoiler</strong>
-                        <p>Esta publicação esconde uma parte da leitura.</p>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setPostagens((atual) =>
-                              atual.map((item) =>
-                                item.id === post.id
-                                  ? { ...item, spoilerRevelado: true }
-                                  : item
-                              )
-                            )
-                          }
-                        >
-                          REVELAR SPOILER ✦
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="comunidade-post-legenda">
-                        <strong>
-                          {post.usuario}
-                        </strong>{" "}
-                        {post.texto}
-                        {post.spoiler && (
-                          <span className="comunidade-spoiler-revelado"> · spoiler revelado</span>
-                        )}
-                      </div>
-                    )}
+                    <div className="comunidade-post-legenda">
+                      <strong>
+                        {post.usuario}
+                      </strong>{" "}
+                      {post.texto}
+                    </div>
 
                     {post.livro && (
                       <div className="comunidade-resenha-livro">
@@ -1812,58 +1281,211 @@ const [comentariosAbertos, setComentariosAbertos] =
           </section>
 
           <aside className="comunidade-sidebar">
-            {postagens.length > 0 && (
-              <>
-                <div className="comunidade-card">
-                  <div className="comunidade-card-titulo">
-                    <span>✦</span>
-                    <div>
-                      <span>EM DESTAQUE</span>
-                      <strong>Leitores da semana</strong>
-                    </div>
-                  </div>
-                  {[...new Map(postagens.map((post) => [post.usuario, post])).values()]
-                    .slice(0, 3)
-                    .map((post) => (
-                      <div className="comunidade-destaque" key={post.usuario}>
-                        <div className="comunidade-avatar pequeno">
-                          {post.iniciais}
-                        </div>
-                        <div className="comunidade-destaque-dados">
-                          <strong>{post.usuario}</strong>
-                          <span>{postagens.filter((item) => item.usuario === post.usuario).length} publicação(ões)</span>
-                        </div>
-                      </div>
-                    ))}
+            <div className="comunidade-card">
+              <div className="comunidade-card-titulo">
+                <span>✦</span>
+                <div>
+                  <span>EM DESTAQUE</span>
+                  <strong>
+                    Leitores da semana
+                  </strong>
                 </div>
-
-                <div className="comunidade-card comunidade-tendencias">
-                  <div className="comunidade-card-titulo">
-                    <span>⌁</span>
-                    <div>
-                      <span>AGORA NA COMUNIDADE</span>
-                      <strong>Livros em conversa</strong>
-                    </div>
-                  </div>
-                  {[...new Set(postagens.map((post) => post.livro).filter(Boolean))]
-                    .slice(0, 3)
-                    .map((livro) => (
-                      <div className="comunidade-sidebar-link comunidade-sidebar-link--estatico" key={livro}>
-                        <span>{livro}</span>
-                        <small>{postagens.filter((post) => post.livro === livro).length} publicação(ões)</small>
-                      </div>
-                    ))}
-                </div>
-              </>
-            )}
-
-            {postagens.length === 0 && (
-              <div className="comunidade-card comunidade-card-vazio">
-                <span className="comunidade-vazio-brilho">✦</span>
-                <span>O salão ainda está silencioso</span>
-                <strong>Quando leitores reais publicarem, eles aparecerão aqui.</strong>
               </div>
-            )}
+
+              <div className="comunidade-destaque">
+                <div className="comunidade-avatar pequeno">
+                  LV
+                </div>
+
+                <div className="comunidade-destaque-dados">
+                  <strong>
+                    Luna Valmont
+                  </strong>
+                  <span>
+                    128 curtidas recebidas
+                  </span>
+                </div>
+              </div>
+
+              <div className="comunidade-destaque">
+                <div className="comunidade-avatar pequeno">
+                  CM
+                </div>
+
+                <div className="comunidade-destaque-dados">
+                  <strong>
+                    Clara Moon
+                  </strong>
+                  <span>
+                    107 interações
+                  </span>
+                </div>
+              </div>
+
+              <div className="comunidade-destaque">
+                <div className="comunidade-avatar pequeno">
+                  AB
+                </div>
+
+                <div className="comunidade-destaque-dados">
+                  <strong>
+                    Arthur Black
+                  </strong>
+                  <span>
+                    94 curtidas recebidas
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="comunidade-card comunidade-tendencias">
+              <div className="comunidade-card-titulo">
+                <span>⌁</span>
+                <div>
+                  <span>
+                    AGORA NA COMUNIDADE
+                  </span>
+                  <strong>
+                    Tendências
+                  </strong>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="comunidade-sidebar-link"
+                onClick={() => {
+                  if (!exigirConta()) return;
+                  setTexto(
+                    "Estou lendo A Corte das Sombras e..."
+                  );
+                }}
+              >
+                <span>
+                  #ACortedasSombras
+                </span>
+                <small>
+                  128 publicações
+                </small>
+              </button>
+
+              <button
+                type="button"
+                className="comunidade-sidebar-link"
+                onClick={() => {
+                  if (!exigirConta()) return;
+                  setTexto(
+                    "Qual foi o último livro que..."
+                  );
+                }}
+              >
+                <span>
+                  #LeituraDoMomento
+                </span>
+                <small>
+                  86 publicações
+                </small>
+              </button>
+
+              <button
+                type="button"
+                className="comunidade-sidebar-link"
+                onClick={() => {
+                  if (!exigirConta()) return;
+                  setTexto(
+                    "Minha próxima leitura será..."
+                  );
+                }}
+              >
+                <span>
+                  #ProximaLeitura
+                </span>
+                <small>
+                  54 publicações
+                </small>
+              </button>
+            </div>
+
+            <div className="comunidade-card">
+              <div className="comunidade-card-titulo">
+                <span>☾</span>
+                <div>
+                  <span>DESCUBRA</span>
+                  <strong>
+                    Leitores para seguir
+                  </strong>
+                </div>
+              </div>
+
+              <div className="comunidade-leitor">
+                <div className="comunidade-avatar mini">
+                  NE
+                </div>
+
+                <div>
+                  <strong>
+                    Noah Evernight
+                  </strong>
+                  <span>
+                    Fantasia · Ficção
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!exigirConta()) return;
+
+                    setPostagens((atual) =>
+                      atual.map((post) =>
+                        post.usuario ===
+                        "Noah Evernight"
+                          ? {
+                              ...post,
+                              seguindo:
+                                !post.seguindo,
+                            }
+                          : post
+                      )
+                    );
+
+                    mostrarMensagem(
+                      "Preferência de acompanhamento atualizada."
+                    );
+                  }}
+                >
+                  SEGUIR
+                </button>
+              </div>
+
+              <div className="comunidade-leitor">
+                <div className="comunidade-avatar mini">
+                  AW
+                </div>
+
+                <div>
+                  <strong>
+                    Amelia Whitmore
+                  </strong>
+                  <span>
+                    Romance · Mistério
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!exigirConta()) return;
+
+                    mostrarMensagem(
+                      "Você começará a seguir Amelia quando a conta estiver conectada."
+                    );
+                  }}
+                >
+                  SEGUIR
+                </button>
+              </div>
+            </div>
           </aside>
         </div>
 
