@@ -381,7 +381,7 @@
 
   margin: 0 auto;
 
-  padding: 62px 70px;
+  padding: 54px 70px;
 }
 
 /* =========================
@@ -410,7 +410,7 @@
 
   font-family: "Cinzel", serif;
 
-  font-size: clamp(42px, 5vw, 70px);
+  font-size: clamp(38px, 4vw, 58px);
 
   line-height: 1.05;
 
@@ -428,7 +428,7 @@
 .biblioteca-introducao p {
   max-width: 540px;
 
-  margin-top: 25px;
+  margin-top: 18px;
 
   color:
     rgba(215, 195, 169, 0.55);
@@ -446,12 +446,12 @@
 
 .biblioteca-busca {
   width: 100%;
-  height: 68px;
+  height: 58px;
 
   display: flex;
   align-items: center;
 
-  margin-top: 38px;
+  margin-top: 34px;
 
   padding: 0 8px 0 24px;
 
@@ -553,7 +553,7 @@
 ========================= */
 
 .categorias {
-  margin-top: 48px;
+  margin-top: 42px;
 }
 
 .secao-titulo {
@@ -644,7 +644,7 @@
 ========================= */
 
 .destaques {
-  margin-top: 52px;
+  margin-top: 46px;
 }
 
 .secao-cabecalho {
@@ -652,7 +652,7 @@
   align-items: flex-end;
   justify-content: space-between;
 
-  margin-bottom: 34px;
+  margin-bottom: 24px;
 }
 
 .secao-eyebrow {
@@ -1787,8 +1787,8 @@
   flex-wrap: wrap;
   gap: 10px;
 
-  margin-top: 28px;
-  padding-top: 22px;
+  margin-top: 20px;
+  padding-top: 16px;
 
   border-top:
     1px solid rgba(169, 102, 44, 0.13);
@@ -1911,7 +1911,7 @@
 ========================= */
 
 .biblioteca-filtros + .destaques {
-  margin-top: 48px;
+  margin-top: 42px;
 }
 
 
@@ -2145,17 +2145,12 @@
 .biblioteca {
   isolation: isolate;
   background:
-    linear-gradient(
-      90deg,
-      rgba(7, 3, 3, .18) 0%,
-      rgba(7, 3, 3, .07) 48%,
-      rgba(7, 3, 3, .20) 100%
-    ),
+    linear-gradient(90deg, rgba(7, 3, 3, .16) 0%, rgba(7, 3, 3, .05) 50%, rgba(7, 3, 3, .18) 100%),
     url('/avelune-castelo.png') center top / cover fixed no-repeat,
     #090504;
 }
 
-/* Atmosfera leve — o castelo continua vivo e detalhado. */
+/* Atmosfera discreta: não apaga o castelo. */
 .biblioteca::before {
   content: "";
   position: fixed;
@@ -2163,13 +2158,8 @@
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 52% 22%, rgba(218, 157, 78, .07), transparent 34%),
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, .02) 0%,
-      rgba(0, 0, 0, .08) 58%,
-      rgba(0, 0, 0, .18) 100%
-    );
+    radial-gradient(circle at 52% 22%, rgba(218, 157, 78, .06), transparent 34%),
+    linear-gradient(to bottom, rgba(0,0,0,.02), rgba(0,0,0,.08) 60%, rgba(0,0,0,.16));
 }
 
 .biblioteca::after {
@@ -2391,16 +2381,11 @@
     inset: 9px;
   }
 
-  /* No mobile, mantém o castelo visível. */
+  /* No mobile, mantém o fundo visível. */
   .biblioteca::before {
     background:
-      radial-gradient(circle at 50% 18%, rgba(218, 157, 78, .07), transparent 30%),
-      linear-gradient(
-        to bottom,
-        rgba(0,0,0,.03) 0%,
-        rgba(0,0,0,.10) 60%,
-        rgba(0,0,0,.20) 100%
-      );
+      radial-gradient(circle at 50% 18%, rgba(218,157,78,.06), transparent 30%),
+      linear-gradient(to bottom, rgba(0,0,0,.03), rgba(0,0,0,.10) 60%, rgba(0,0,0,.18));
   }
 }
 
@@ -2426,5 +2411,28 @@
   .biblioteca-nav button,
   .biblioteca-nav button::after {
     transition: none !important;
+  }
+}
+
+/* =========================
+   ÚLTIMAS ADIÇÕES — PROTÓTIPO
+========================= */
+.ultimas-adicoes {
+  margin-top: 64px;
+}
+
+.ultimas-adicoes .secao-cabecalho {
+  margin-bottom: 24px;
+}
+
+/* Não aplica filtros/opacity sobre as capas reais. */
+.capa-imagem-real {
+  opacity: 1;
+  filter: none;
+}
+
+@media (max-width: 650px) {
+  .ultimas-adicoes {
+    margin-top: 52px;
   }
 }
