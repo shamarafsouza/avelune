@@ -233,12 +233,7 @@ function Comunidade({
 
   const [fotoSelecionada, setFotoSelecionada] =
     useState("");
-
-  const [secaoComunidade, setSecaoComunidade] = useState<
-    "publicacoes" | "resenhas"
-  >("publicacoes");
-
-  const [comentariosAbertos, setComentariosAbertos] =
+const [comentariosAbertos, setComentariosAbertos] =
     useState<number | null>(null);
 
   const [comentarioDigitado, setComentarioDigitado] =
@@ -1133,34 +1128,7 @@ function Comunidade({
           </button>
         </div>
       </header>
-
-      <div className="comunidade-secoes">
-  <button
-    type="button"
-    className={
-      secaoComunidade === "publicacoes"
-        ? "secao-ativa"
-        : ""
-    }
-    onClick={() => setSecaoComunidade("publicacoes")}
-  >
-    Publicações
-  </button>
-
-  <button
-    type="button"
-    className={
-      secaoComunidade === "resenhas"
-        ? "secao-ativa"
-        : ""
-    }
-    onClick={() => setSecaoComunidade("resenhas")}
-  >
-    Resenhas
-  </button>
-</div>
-
-      <section className="comunidade-conteudo">
+<section className="comunidade-conteudo">
         <div className="comunidade-introducao">
           <span>UM LUGAR PARA LEITORES</span>
 
