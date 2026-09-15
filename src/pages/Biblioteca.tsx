@@ -1,7 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import "./Biblioteca.css";
-import type { Livro } from "../types/livro";
-import { useLivros } from "../hooks/useLivros";
+import { buscarLivros, type Livro as LivroSupabase } from "../data/livros";
+
+type Livro = LivroSupabase & {
+  autor: string;
+  avaliacao?: string;
+  cor: string;
+  simbolo: string;
+  amazonUrl?: string;
+  capaUrl?: string;
+  real?: boolean;
+};
 
 type FiltroBiblioteca =
   | "todos"
@@ -33,8 +42,40 @@ function Biblioteca({
     "Dark Romance",
   ];
 
-  const { livros, carregando, erro } = useLivros();
+  const [livros, setLivros] = useState<Livro[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
+  useEffect(() => {
+    async function carregarLivros() {
+      try {
+        setCarregando(true);
+        setErro("");
+        const dados = await buscarLivros();
+        setLivros(
+          dados.map((livro) => ({
+            ...livro,
+            autor: livro.autora,
+            amazonUrl: livro.amazon_url ?? undefined,
+            capaUrl: livro.capa_url ?? undefined,
+            real: Boolean(livro.capa_url),
+            avaliacao: undefined,
+            cor: "vinho",
+            simbolo: "✦",
+            tropes: Array.isArray(livro.tropes) ? livro.tropes : [],
+            vibes: Array.isArray(livro.vibes) ? livro.vibes : [],
+          }))
+        );
+      } catch (error) {
+        console.error(error);
+        setErro("Não foi possível carregar a biblioteca.");
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarLivros();
+  }, []);
 
   const [categoriaAtiva, setCategoriaAtiva] =
     useState("Todos");
@@ -106,9 +147,9 @@ function Biblioteca({
       const pertenceFiltro =
         filtroBiblioteca === "todos" ||
         (filtroBiblioteca === "estante" &&
-          queroLer.includes(livro.titulo)) ||
+          queroLer.includes(livro.id)) ||
         (filtroBiblioteca === "favoritos" &&
-          favoritos.includes(livro.titulo));
+          favoritos.includes(livro.id));
 
       const correspondeBusca =
         texto === "" ||
@@ -129,7 +170,6 @@ function Biblioteca({
       );
     });
   }, [
-    livros,
     categoriaAtiva,
     filtroBiblioteca,
     busca,
@@ -141,13 +181,13 @@ function Biblioteca({
     titulo: string
   ) {
     setFavoritos((atuais) => {
-      if (atuais.includes(titulo)) {
+      if (atuais.includes(id)) {
         return atuais.filter(
-          (item) => item !== titulo
+          (item) => item !== id
         );
       }
 
-      return [...atuais, titulo];
+      return [...atuais, id];
     });
   }
 
@@ -155,13 +195,13 @@ function Biblioteca({
     titulo: string
   ) {
     setQueroLer((atuais) => {
-      if (atuais.includes(titulo)) {
+      if (atuais.includes(id)) {
         return atuais.filter(
-          (item) => item !== titulo
+          (item) => item !== id
         );
       }
 
-      return [...atuais, titulo];
+      return [...atuais, id];
     });
   }
 
@@ -204,9 +244,19 @@ function Biblioteca({
       <div className="biblioteca-particulas" />
 
       <header className="biblioteca-topo">
-        <div className="biblioteca-logo">
-          AVELUNE
-        </div>
+        <button
+          type="button"
+          className="biblioteca-logo-link"
+          aria-label="Avelune"
+          onClick={() => onNavigate?.("biblioteca")}
+        >
+          <img
+            className="biblioteca-brasao"
+            src="/avelune-brasao.png"
+            alt="Brasão da Avelune"
+          />
+          <span className="biblioteca-logo">AVELUNE</span>
+        </button>
 
         <nav className="biblioteca-nav">
           <button
@@ -455,6 +505,22 @@ function Biblioteca({
           </button>
         </section>
 
+        {carregando ? (
+          <div className="nenhum-livro">
+            <span>✦</span>
+            <h3>Consultando o acervo...</h3>
+            <p>As histórias da Avelune estão sendo carregadas.</p>
+          </div>
+        ) : erro ? (
+          <div className="nenhum-livro">
+            <span>✦</span>
+            <h3>A biblioteca não abriu.</h3>
+            <p>{erro}</p>
+            <button type="button" onClick={() => window.location.reload()}>
+              TENTAR NOVAMENTE
+            </button>
+          </div>
+        ) : (
         <section className="destaques">
           <div className="secao-cabecalho">
             <div>
@@ -481,37 +547,25 @@ function Biblioteca({
             </button>
           </div>
 
-          {carregando ? (
-            <div className="nenhum-livro">
-              <span>✦</span>
-              <h3>Abrindo a biblioteca...</h3>
-              <p>Buscando os livros do catálogo.</p>
-            </div>
-          ) : erro ? (
-            <div className="nenhum-livro">
-              <span>✦</span>
-              <h3>{erro}</h3>
-              <p>Tente recarregar a página em instantes.</p>
-            </div>
-          ) : livrosFiltrados.length >
+          {livrosFiltrados.length >
           0 ? (
             <div className="livros-grid">
               {livrosFiltrados.map(
                 (livro, index) => {
                   const estaFavoritado =
                     favoritos.includes(
-                      livro.titulo
+                      livro.id
                     );
 
                   const estaNaLista =
                     queroLer.includes(
-                      livro.titulo
+                      livro.id
                     );
 
                   return (
                     <article
                       className="livro-card"
-                      key={livro.titulo}
+                      key={livro.id}
                       onClick={() =>
                         setLivroSelecionado(
                           livro
@@ -574,7 +628,7 @@ function Biblioteca({
                               </strong>
 
                               <small>
-                                {livro.autor}
+                                {livro.autora}
                               </small>
                             </div>
                           </>
@@ -653,14 +707,10 @@ function Biblioteca({
                           </h3>
 
                           <p>
-                            {livro.autor}
+                            {livro.autora}
                           </p>
                         </div>
 
-                        <span className="avaliacao">
-                          ★{" "}
-                          {livro.avaliacao}
-                        </span>
                       </div>
 
                       <span className="livro-genero">
@@ -723,6 +773,8 @@ function Biblioteca({
           )}
         </section>
 
+        )}
+
         {filtroBiblioteca ===
           "todos" && (
           <section className="biblioteca-estante">
@@ -755,12 +807,12 @@ function Biblioteca({
                 {livros
                   .filter((livro) =>
                     queroLer.includes(
-                      livro.titulo
+                      livro.id
                     )
                   )
                   .map((livro) => (
                     <button
-                      key={livro.titulo}
+                      key={livro.id}
                       type="button"
                       className="estante-livro"
                       onClick={() =>
@@ -783,7 +835,7 @@ function Biblioteca({
                         </strong>
 
                         <small>
-                          {livro.autor}
+                          {livro.autora}
                         </small>
                       </span>
                     </button>
@@ -903,7 +955,7 @@ function Biblioteca({
 
                     <small>
                       {
-                        livroSelecionado.autor
+                        livroSelecionado.autora
                       }
                     </small>
                   </div>
@@ -928,24 +980,10 @@ function Biblioteca({
                 por{" "}
                 <strong>
                   {
-                    livroSelecionado.autor
+                    livroSelecionado.autora
                   }
                 </strong>
               </p>
-
-              <div className="modal-avaliacao">
-                <span>★</span>
-
-                <strong>
-                  {
-                    livroSelecionado.avaliacao
-                  }
-                </strong>
-
-                <small>
-                  avaliação da biblioteca
-                </small>
-              </div>
 
               <div className="modal-divisor" />
 
@@ -960,19 +998,19 @@ function Biblioteca({
                   type="button"
                   className={
                     queroLer.includes(
-                      livroSelecionado.titulo
+                      livroSelecionado.id
                     )
                       ? "modal-botao principal ativo"
                       : "modal-botao principal"
                   }
                   onClick={() =>
                     alternarQueroLer(
-                      livroSelecionado.titulo
+                      livroSelecionado.id
                     )
                   }
                 >
                   {queroLer.includes(
-                    livroSelecionado.titulo
+                    livroSelecionado.id
                   )
                     ? "✓ NA MINHA ESTANTE"
                     : "＋ QUERO LER"}
@@ -982,19 +1020,19 @@ function Biblioteca({
                   type="button"
                   className={
                     favoritos.includes(
-                      livroSelecionado.titulo
+                      livroSelecionado.id
                     )
                       ? "modal-botao secundario ativo"
                       : "modal-botao secundario"
                   }
                   onClick={() =>
                     alternarFavorito(
-                      livroSelecionado.titulo
+                      livroSelecionado.id
                     )
                   }
                 >
                   {favoritos.includes(
-                    livroSelecionado.titulo
+                    livroSelecionado.id
                   )
                     ? "♥ FAVORITADO"
                     : "♡ FAVORITAR"}
