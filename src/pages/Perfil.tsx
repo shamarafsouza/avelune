@@ -7,6 +7,7 @@ import {
 import type { ChangeEvent } from "react";
 import { supabase } from "../lib/supabase";
 import "./Perfil.css";
+import AveluneHeader from "../components/AveluneHeader";
 
 type Pagina =
   | "inicio"
@@ -473,42 +474,10 @@ function Perfil({ onNavigate }: PerfilProps) {
 
   return (
     <main className="perfil">
-      <header className="perfil-topo">
-        <button
-          className="perfil-logo"
-          type="button"
-          onClick={() => navegar("inicio")}
-          aria-label="Voltar para o início"
-        >
-          AVELUNE
-        </button>
-
-        <nav className="perfil-nav">
-          <button
-            type="button"
-            onClick={() => navegar("biblioteca")}
-          >
-            Biblioteca
-          </button>
-
-
-          <button
-            type="button"
-            onClick={() => navegar("comunidade")}
-          >
-            Comunidade
-          </button>
-
-          <button
-            type="button"
-            className="ativo"
-            onClick={() => navegar("perfil")}
-          >
-            Perfil
-          </button>
-        </nav>
-
-      </header>
+      <AveluneHeader
+        paginaAtual="perfil"
+        onNavigate={(pagina) => onNavigate?.(pagina)}
+      />
 
       <div className="perfil-conteudo">
         <section className="perfil-cabecalho">

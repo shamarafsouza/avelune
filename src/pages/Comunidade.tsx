@@ -1,11 +1,12 @@
 import {
-  type ChangeEvent,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
+import type { ChangeEvent } from "react";
 import "./Comunidade.css";
+import AveluneHeader from "../components/AveluneHeader";
 
 type Pagina =
   | "inicio"
@@ -665,50 +666,10 @@ function Comunidade({
         <span />
       </div>
 
-      <header className="comunidade-topo">
-        <button
-          type="button"
-          className="comunidade-logo"
-          onClick={() =>
-            onNavigate?.("inicio")
-          }
-          aria-label="Voltar para o início"
-        >
-          AVELUNE
-        </button>
-
-        <nav className="comunidade-nav">
-          <button
-            type="button"
-            onClick={() =>
-              onNavigate?.("biblioteca")
-            }
-          >
-            Biblioteca
-          </button>
-
-
-          <button
-            type="button"
-            className="ativo"
-            onClick={() =>
-              onNavigate?.("comunidade")
-            }
-          >
-            Comunidade
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              onNavigate?.("perfil")
-            }
-          >
-            Perfil
-          </button>
-        </nav>
-
-      </header>
+      <AveluneHeader
+        paginaAtual="comunidade"
+        onNavigate={(pagina) => onNavigate?.(pagina)}
+      />
 
       <section className="comunidade-conteudo">
         <div className="comunidade-introducao">

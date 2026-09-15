@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import "./Biblioteca.css";
+import AveluneHeader from "../components/AveluneHeader";
 import { supabase } from "../lib/supabase";
 import type { Livro as LivroBase } from "../types/livro";
 
@@ -117,8 +118,6 @@ function Biblioteca({
     useState<FiltroBiblioteca>("todos");
 
   const [busca, setBusca] = useState("");
-
-  const [menuAberto, setMenuAberto] = useState(false);
 
   const [livroSelecionado, setLivroSelecionado] =
     useState<Livro | null>(null);
@@ -276,125 +275,13 @@ function Biblioteca({
     <main className="biblioteca">
       <div className="biblioteca-particulas" />
 
-      <header className="biblioteca-topo">
-        <button
-          type="button"
-          className="biblioteca-logo-link"
-          aria-label="Avelune"
-          onClick={() => onNavigate?.("biblioteca")}
-        >
-          <img
-            className="biblioteca-brasao"
-            src="/avelune-brasao.png"
-            alt="Brasão da Avelune"
-          />
-          <span className="biblioteca-logo">AVELUNE</span>
-        </button>
-
-        <nav className="biblioteca-nav">
-          <button
-            className="ativo"
-            type="button"
-            onClick={() =>
-              onNavigate?.("biblioteca")
-            }
-          >
-            Biblioteca
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              onNavigate?.("comunidade")
-            }
-          >
-            Comunidade
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              onNavigate?.("perfil")
-            }
-          >
-            Perfil
-          </button>
-        </nav>
-
-        <button
-          type="button"
-          className={`biblioteca-menu-mobile ${menuAberto ? "aberto" : ""}`}
-          aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={menuAberto}
-          onClick={() => setMenuAberto((atual) => !atual)}
-        >
-          <span />
-          <span />
-          <span />
-        </button>
-
-        {menuAberto && (
-          <div className="biblioteca-menu-dropdown">
-            <button
-              type="button"
-              className="ativo"
-              onClick={() => setMenuAberto(false)}
-            >
-              Biblioteca
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setMenuAberto(false);
-                onNavigate?.("comunidade");
-              }}
-            >
-              Comunidade
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setMenuAberto(false);
-                onNavigate?.("perfil");
-              }}
-            >
-              Perfil
-            </button>
-          </div>
-        )}
-
-        <div className="biblioteca-acoes">
-          <button
-            className="icone-botao"
-            aria-label="Pesquisar"
-            type="button"
-            onClick={() => {
-              document
-                .querySelector<HTMLInputElement>(
-                  ".biblioteca-busca input"
-                )
-                ?.focus();
-            }}
-          >
-            ⌕
-          </button>
-
-          <button
-            className="perfil-botao"
-            aria-label="Perfil"
-            type="button"
-          >
-            ◇
-          </button>
-        </div>
-      </header>
+      <AveluneHeader
+        paginaAtual="biblioteca"
+        onNavigate={(pagina) => onNavigate?.(pagina)}
+      />
 
       <section className="biblioteca-conteudo">
-        <section className="biblioteca-hero" aria-label="Apresentação da biblioteca">
-          <div className="biblioteca-hero-conteudo">
-            <div className="biblioteca-introducao">
+        <div className="biblioteca-introducao">
           <span className="biblioteca-eyebrow">
             A GRANDE BIBLIOTECA
           </span>
@@ -410,9 +297,9 @@ function Biblioteca({
             personagens e mundos esperando
             para serem descobertos.
           </p>
-            </div>
+        </div>
 
-            <div className="biblioteca-busca">
+        <div className="biblioteca-busca">
           <span>⌕</span>
 
           <input
@@ -431,10 +318,8 @@ function Biblioteca({
             }
           >
             BUSCAR
-            </button>
-            </div>
-          </div>
-        </section>
+          </button>
+        </div>
 
         <section className="categorias">
           <div className="secao-titulo">
@@ -686,6 +571,7 @@ function Biblioteca({
             )}
           </section>
         )}
+
 
         {filtroBiblioteca ===
           "todos" && (

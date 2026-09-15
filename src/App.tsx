@@ -54,7 +54,6 @@ function App() {
     );
   }
 
-
   if (pagina === "comunidade") {
     return (
       <Comunidade
@@ -75,8 +74,12 @@ function App() {
     return (
       <Auth
         modoInicial="cadastro"
-        onAuthenticated={() => setPagina("comunidade")}
-        onBack={() => setPagina("comunidade")}
+        onAuthenticated={() =>
+          setPagina("comunidade")
+        }
+        onBack={() =>
+          setPagina("comunidade")
+        }
       />
     );
   }
@@ -85,8 +88,12 @@ function App() {
     return (
       <Auth
         modoInicial="login"
-        onAuthenticated={() => setPagina("comunidade")}
-        onBack={() => setPagina("comunidade")}
+        onAuthenticated={() =>
+          setPagina("comunidade")
+        }
+        onBack={() =>
+          setPagina("comunidade")
+        }
       />
     );
   }
@@ -123,7 +130,6 @@ function App() {
             Biblioteca
           </button>
 
-
           <button
             type="button"
             onClick={() =>
@@ -131,15 +137,6 @@ function App() {
             }
           >
             Comunidade
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              setPagina("perfil")
-            }
-          >
-            Perfil
           </button>
         </nav>
       </header>

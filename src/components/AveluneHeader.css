@@ -1,0 +1,103 @@
+.avelune-header {
+    width: 100%;
+    height: 82px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6vw;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom, rgba(8, 4, 3, .98), rgba(12, 6, 4, .96));
+    border-bottom: 1px solid rgba(211, 159, 87, .16);
+    position: relative;
+    z-index: 50
+}
+
+.avelune-header-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: #ead7b8;
+    cursor: pointer
+}
+
+.avelune-header-logo img {
+    width: 43px;
+    height: 43px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px rgba(211, 151, 63, .18))
+}
+
+.avelune-header-logo span {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 22px;
+    letter-spacing: .28em
+}
+
+.avelune-header-nav {
+    display: flex;
+    align-items: center;
+    gap: 48px
+}
+
+.avelune-header-nav button {
+    position: relative;
+    border: 0;
+    padding: 30px 0;
+    background: transparent;
+    color: rgba(224, 204, 173, .62);
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    cursor: pointer
+}
+
+.avelune-header-nav button::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    width: 0;
+    height: 1px;
+    background: #c9954d;
+    transform: translateX(-50%);
+    transition: width .25s ease
+}
+
+.avelune-header-nav button:hover,
+.avelune-header-nav button.ativo {
+    color: #ead7b8
+}
+
+.avelune-header-nav button.ativo::after {
+    width: 32px
+}
+
+@media(max-width:700px) {
+    .avelune-header {
+        height: 74px;
+        padding: 0 20px
+    }
+
+    .avelune-header-logo img {
+        width: 37px;
+        height: 37px
+    }
+
+    .avelune-header-logo span {
+        font-size: 16px
+    }
+
+    .avelune-header-nav {
+        gap: 20px
+    }
+
+    .avelune-header-nav button {
+        font-size: 8px;
+        letter-spacing: .1em
+    }
+}
