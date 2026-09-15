@@ -84,13 +84,6 @@ function App() {
     );
   }
 
-  if (pagina === "resenhas") {
-    return (
-      <Resenhas
-        onNavigate={navegar}
-      />
-    );
-  }
 
   if (pagina === "auth-cadastro") {
     return (
@@ -159,15 +152,6 @@ function App() {
             }
           >
             Explorar
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              navegar("resenhas")
-            }
-          >
-            Resenhas
           </button>
 
           <button
