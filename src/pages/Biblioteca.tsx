@@ -178,7 +178,7 @@ function Biblioteca({
   ]);
 
   function alternarFavorito(
-    titulo: string
+    id: string
   ) {
     setFavoritos((atuais) => {
       if (atuais.includes(id)) {
@@ -192,7 +192,7 @@ function Biblioteca({
   }
 
   function alternarQueroLer(
-    titulo: string
+    id: string
   ) {
     setQueroLer((atuais) => {
       if (atuais.includes(id)) {
