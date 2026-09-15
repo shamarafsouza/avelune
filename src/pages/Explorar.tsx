@@ -349,15 +349,6 @@ function Explorar({
           <button
             type="button"
             onClick={() =>
-              onNavigate?.("resenhas")
-            }
-          >
-            Resenhas
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
               onNavigate?.("comunidade")
             }
           >
