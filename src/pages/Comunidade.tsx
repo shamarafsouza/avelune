@@ -11,7 +11,6 @@ import "./Comunidade.css";
 type Pagina =
   | "inicio"
   | "biblioteca"
-  | "explorar"
   | "comunidade"
   | "perfil"
   | "auth-cadastro"
