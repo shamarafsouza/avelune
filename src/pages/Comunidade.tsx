@@ -1137,6 +1137,32 @@ function Comunidade({
         </div>
       </header>
 
+      <div className="comunidade-secoes">
+  <button
+    type="button"
+    className={
+      secaoComunidade === "publicacoes"
+        ? "secao-ativa"
+        : ""
+    }
+    onClick={() => setSecaoComunidade("publicacoes")}
+  >
+    Publicações
+  </button>
+
+  <button
+    type="button"
+    className={
+      secaoComunidade === "resenhas"
+        ? "secao-ativa"
+        : ""
+    }
+    onClick={() => setSecaoComunidade("resenhas")}
+  >
+    Resenhas
+  </button>
+</div>
+
       <section className="comunidade-conteudo">
         <div className="comunidade-introducao">
           <span>UM LUGAR PARA LEITORES</span>
