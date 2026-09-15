@@ -1,0 +1,745 @@
+.resenhas {
+  min-height:100vh;
+  background:radial-gradient(circle at 50% -10%,rgba(129,77,29,.18),transparent 42%),linear-gradient(180deg,#0c0806 0%,#100a07 52%,#090604 100%);
+  color:#eee2d2;
+  font-family:Inter,Arial,sans-serif;
+  overflow:auto;
+}
+.resenhas * {
+  box-sizing:border-box;
+}
+.resenhas button,.resenhas input,.resenhas select,.resenhas textarea {
+  font:inherit;
+}
+.resenhas-topo {
+  height:82px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 6%;
+  border-bottom:1px solid rgba(201,150,82,.14);
+  background:rgba(9,5,4,.94);
+  position:sticky;
+  top:0;
+  z-index:30;
+  backdrop-filter:blur(12px);
+}
+.resenhas-logo {
+  border:0;
+  background:none;
+  color:#d9b873;
+  font:400 18px Georgia,serif;
+  letter-spacing:7px;
+  cursor:pointer;
+}
+.resenhas-nav-desktop {
+  display:flex;
+  gap:32px;
+}
+.resenhas-nav-desktop button,.resenhas-voltar {
+  border:0;
+  background:none;
+  color:#9f9283;
+  text-transform:uppercase;
+  letter-spacing:1.6px;
+  font-size:10px;
+  cursor:pointer;
+  transition:.2s;
+}
+.resenhas-nav-desktop button:hover,.resenhas-nav-desktop .ativo {
+  color:#d8b36d;
+}
+.resenhas-voltar {
+  border:1px solid rgba(201,150,82,.22);
+  padding:11px 15px;
+  color:#b8a997;
+}
+.resenhas-menu-botao,.resenhas-menu-mobile {
+  display:none;
+}
+.resenhas-hero {
+  max-width:950px;
+  margin:0 auto;
+  text-align:center;
+  padding:105px 30px 92px;
+}
+.resenhas-eyebrow {
+  display:block;
+  color:#c99652;
+  font-size:10px;
+  letter-spacing:4px;
+}
+.resenhas-hero h1 {
+  font:400 clamp(55px,7vw,82px)/.96 Georgia,serif;
+  margin:19px 0 22px;
+  color:#f0e5d2;
+}
+.resenhas-hero h1 em {
+  display:block;
+  color:#c99652;
+  font-size:.72em;
+  font-style:italic;
+  margin-top:9px;
+}
+.resenhas-ornamento {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  margin:0 auto 30px;
+}
+.resenhas-ornamento span {
+  height:1px;
+  width:145px;
+  background:linear-gradient(90deg,transparent,rgba(201,150,82,.55));
+}
+.resenhas-ornamento span:last-child {
+  transform:rotate(180deg);
+}
+.resenhas-ornamento strong {
+  font-size:17px;
+  color:#c99652;
+}
+.resenhas-hero>p {
+  max-width:650px;
+  margin:0 auto;
+  color:#a99b8a;
+  line-height:1.85;
+  font:400 16px/1.85 Georgia,serif;
+}
+.resenhas-cta {
+  margin-top:32px;
+  padding:15px 21px;
+  border:1px solid rgba(201,150,82,.38);
+  background:rgba(201,150,82,.05);
+  color:#d7b26c;
+  letter-spacing:2px;
+  font-size:10px;
+  cursor:pointer;
+  transition:.25s;
+}
+.resenhas-cta:hover {
+  background:rgba(201,150,82,.12);
+  border-color:rgba(201,150,82,.7);
+  transform:translateY(-2px);
+}
+.resenhas-cta strong {
+  margin-left:15px;
+}
+.resenhas-corpo {
+  max-width:1100px;
+  margin:auto;
+  padding:0 30px 90px;
+}
+.resenhas-secao-cabecalho {
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  border-top:1px solid rgba(201,150,82,.17);
+  border-bottom:1px solid rgba(201,150,82,.17);
+  padding:28px 0 24px;
+}
+.resenhas-secao-cabecalho>div:first-child {
+  display:flex;
+  align-items:baseline;
+  gap:22px;
+}
+.resenhas-secao-cabecalho span {
+  font-size:10px;
+  letter-spacing:3px;
+  color:#c99652;
+}
+.resenhas-secao-cabecalho h2 {
+  font:400 31px Georgia,serif;
+  margin:0;
+}
+.resenhas-secao-cabecalho p {
+  margin:7px 0 0 62px;
+  color:#84786b;
+  font-size:12px;
+}
+.resenhas-contagem {
+  color:#74685b;
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+.resenhas-ferramentas {
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  padding:24px 0;
+}
+.resenhas-busca {
+  height:43px;
+  min-width:320px;
+  border-bottom:1px solid rgba(201,150,82,.25);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#c99652;
+}
+.resenhas-busca input {
+  width:100%;
+  border:0;
+  outline:0;
+  background:none;
+  color:#d9cbbb;
+  font-size:12px;
+}
+.resenhas-busca input::placeholder {
+  color:#645a50;
+}
+.resenhas-filtros {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:7px;
+}
+.resenhas-filtros button {
+  border:1px solid rgba(201,150,82,.14);
+  background:rgba(255,255,255,.015);
+  color:#897d70;
+  padding:9px 12px;
+  font-size:9px;
+  letter-spacing:1px;
+  cursor:pointer;
+}
+.resenhas-filtros button.selecionado,.resenhas-filtros button:hover {
+  color:#d5ad68;
+  border-color:rgba(201,150,82,.42);
+}
+.resenhas-vazio {
+  margin-top:35px;
+  min-height:390px;
+  border:1px solid rgba(201,150,82,.16);
+  background:linear-gradient(145deg,rgba(32,19,13,.62),rgba(13,8,6,.8));
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:50px;
+}
+.resenhas-selo {
+  width:70px;
+  height:70px;
+  border:1px solid rgba(201,150,82,.35);
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:#c99652;
+  font-size:20px;
+  margin-bottom:25px;
+}
+.resenhas-vazio>span {
+  color:#c99652;
+  font-size:9px;
+  letter-spacing:4px;
+}
+.resenhas-vazio h3 {
+  font:400 31px Georgia,serif;
+  margin:15px 0 10px;
+}
+.resenhas-vazio p {
+  max-width:570px;
+  color:#8e8173;
+  font:400 14px/1.8 Georgia,serif;
+  margin:0;
+}
+.resenhas-vazio button {
+  margin-top:26px;
+  border:0;
+  background:none;
+  color:#d0a660;
+  letter-spacing:2px;
+  font-size:9px;
+  cursor:pointer;
+}
+.resenhas-sem-resultado {
+  text-align:center;
+  padding:90px 20px;
+  color:#83776a;
+}
+.resenhas-sem-resultado span {
+  color:#c99652;
+  font-size:25px;
+}
+.resenhas-sem-resultado h3 {
+  font:400 27px Georgia,serif;
+  color:#d8c9b6;
+}
+.resenhas-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+  margin-top:28px;
+}
+.resenha-card {
+  background:linear-gradient(145deg,rgba(39,24,17,.95),rgba(15,9,7,.98));
+  border:1px solid rgba(201,150,82,.15);
+  cursor:pointer;
+  overflow:hidden;
+  transition:.25s;
+}
+.resenha-card:hover {
+  transform:translateY(-5px);
+  border-color:rgba(201,150,82,.45);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
+.resenha-capa {
+  height:310px;
+  padding:30px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  text-align:center;
+  background:linear-gradient(145deg,#3a171d,#140908);
+}
+.resenha-capa.capa-1 {
+  background:linear-gradient(145deg,#241b38,#0d0a14);
+}
+.resenha-capa.capa-2 {
+  background:linear-gradient(145deg,#183329,#0b1511);
+}
+.resenha-capa.capa-3 {
+  background:linear-gradient(145deg,#352714,#100b07);
+}
+.capa-selo {
+  font-size:8px;
+  letter-spacing:5px;
+  color:#c99652;
+}
+.resenha-capa strong {
+  font:400 27px/1.15 Georgia,serif;
+  color:#f0dfc6;
+  margin:25px 0 13px;
+}
+.resenha-capa small {
+  color:#b9aa98;
+}
+.resenha-info {
+  padding:22px;
+}
+.resenha-meta {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#8f8172;
+  font-size:9px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+}
+.resenha-meta b {
+  font-size:10px;
+  color:#d3ad68;
+}
+.resenha-meta b i,.leitura-estrelas i {
+  font-style:normal;
+  color:#584d43;
+}
+.resenha-info h3 {
+  font:400 25px/1.15 Georgia,serif;
+  margin:17px 0 10px;
+  color:#eee1ce;
+}
+.resenha-info>p {
+  color:#9c8e7f;
+  font:400 13px/1.7 Georgia,serif;
+  display:-webkit-box;
+  -webkit-line-clamp:4;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  min-height:88px;
+}
+.resenha-rodape-card {
+  border-top:1px solid rgba(201,150,82,.12);
+  margin-top:17px;
+  padding-top:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.resenha-rodape-card span {
+  font-size:8px;
+  color:#655b51;
+  letter-spacing:1px;
+}
+.resenha-rodape-card button {
+  border:0;
+  background:none;
+  color:#c99f5b;
+  font-size:9px;
+  letter-spacing:1.7px;
+  cursor:pointer;
+}
+.resenhas-manifesto {
+  border-top:1px solid rgba(201,150,82,.12);
+  border-bottom:1px solid rgba(201,150,82,.12);
+  padding:75px 25px;
+  text-align:center;
+}
+.resenhas-manifesto>span {
+  color:#c99652;
+  font-size:18px;
+}
+.resenhas-manifesto p {
+  max-width:720px;
+  margin:20px auto 0;
+  color:#b4a494;
+  font:italic 26px/1.45 Georgia,serif;
+}
+.resenhas footer {
+  padding:27px 6%;
+  display:flex;
+  justify-content:space-between;
+  color:#62584f;
+  font-size:8px;
+  letter-spacing:2px;
+}
+.resenhas footer span:nth-child(2) {
+  color:#c99652;
+}
+.resenha-overlay {
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:rgba(0,0,0,.82);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:25px;
+  backdrop-filter:blur(7px);
+  overflow:auto;
+}
+.resenha-form,.resenha-leitura {
+  width:min(700px,100%);
+  max-height:90vh;
+  overflow:auto;
+  position:relative;
+  background:linear-gradient(145deg,#1d100a,#0e0806);
+  border:1px solid rgba(201,150,82,.3);
+  box-shadow:0 30px 100px rgba(0,0,0,.7);
+  padding:45px;
+}
+.resenha-form::-webkit-scrollbar,.resenha-leitura::-webkit-scrollbar {
+  width:5px;
+}
+.resenha-form::-webkit-scrollbar-thumb,.resenha-leitura::-webkit-scrollbar-thumb {
+  background:#4c3725;
+}
+.fechar {
+  position:absolute;
+  right:19px;
+  top:12px;
+  border:0;
+  background:none;
+  color:#c99652;
+  font-size:30px;
+  cursor:pointer;
+}
+.form-eyebrow,.leitura-meta {
+  color:#c99652;
+  font-size:9px;
+  letter-spacing:3px;
+}
+.resenha-form h2,.resenha-leitura h2 {
+  font:400 42px/1.05 Georgia,serif;
+  margin:15px 0 7px;
+  color:#efe0ca;
+}
+.form-intro {
+  color:#897d70;
+  font:400 14px/1.7 Georgia,serif;
+  margin:0 0 30px;
+}
+.resenha-form label {
+  display:block;
+  color:#ad9d8a;
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-top:18px;
+}
+.resenha-form input,.resenha-form select,.resenha-form textarea {
+  display:block;
+  width:100%;
+  margin-top:8px;
+  padding:13px 14px;
+  background:#0e0907;
+  border:1px solid rgba(201,150,82,.2);
+  outline:0;
+  color:#d9cbbb;
+  font-size:12px;
+}
+.resenha-form textarea {
+  resize:vertical;
+  line-height:1.65;
+}
+.resenha-form input:focus,.resenha-form select:focus,.resenha-form textarea:focus {
+  border-color:rgba(201,150,82,.55);
+}
+.nota-campo {
+  margin-top:22px;
+}
+.nota-campo>span {
+  display:block;
+  color:#ad9d8a;
+  font-size:10px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.estrelas {
+  display:flex;
+  gap:3px;
+  margin-top:8px;
+}
+.estrelas button {
+  border:0;
+  background:none;
+  color:#4f4338;
+  font-size:25px;
+  cursor:pointer;
+  padding:0 2px;
+}
+.estrelas button.ativo,.estrelas button:hover {
+  color:#d3ad68;
+}
+.form-acoes {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:25px;
+}
+.form-acoes>span {
+  font-size:9px;
+  color:#62584f;
+}
+.form-acoes button {
+  border:1px solid rgba(201,150,82,.4);
+  background:rgba(201,150,82,.07);
+  color:#d5ad68;
+  padding:13px 17px;
+  font-size:9px;
+  letter-spacing:1.7px;
+  cursor:pointer;
+}
+.form-acoes button:disabled {
+  opacity:.35;
+  cursor:not-allowed;
+}
+.resenha-leitura h3 {
+  font:400 20px Georgia,serif;
+  color:#d2c0a9;
+  margin:22px 0 4px;
+}
+.leitura-autor {
+  color:#817568;
+  font-size:12px;
+  margin:0;
+}
+.leitura-estrelas {
+  color:#d3ad68;
+  font-size:16px;
+  margin:23px 0;
+}
+.leitura-linha {
+  height:1px;
+  background:rgba(201,150,82,.16);
+  margin:24px 0;
+}
+.leitura-texto {
+  color:#c0b09d;
+  font:400 16px/1.9 Georgia,serif;
+  white-space:pre-wrap;
+}
+.leitura-final {
+  border-top:1px solid rgba(201,150,82,.13);
+  margin-top:30px;
+  padding-top:17px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+.leitura-final span {
+  font-size:8px;
+  letter-spacing:2px;
+  color:#64594f;
+}
+.leitura-final button {
+  border:0;
+  background:none;
+  color:#765e4a;
+  font-size:8px;
+  letter-spacing:1px;
+  cursor:pointer;
+}
+.leitura-final button:hover {
+  color:#ba6e58;
+}
+@media(max-width:900px) {
+  .resenhas-nav-desktop {
+    display:none;
+  }
+  .resenhas-menu-botao {
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    border:0;
+    background:none;
+    padding:8px;
+    cursor:pointer;
+  }
+  .resenhas-menu-botao span {
+    width:22px;
+    height:1px;
+    background:#c9ad7f;
+  }
+  .resenhas-voltar {
+    display:none;
+  }
+  .resenhas-menu-mobile {
+    display:flex;
+    position:fixed;
+    top:82px;
+    right:18px;
+    z-index:29;
+    width:210px;
+    flex-direction:column;
+    background:#120b08;
+    border:1px solid rgba(201,150,82,.25);
+    box-shadow:0 20px 50px #000;
+  }
+  .resenhas-menu-mobile button {
+    border:0;
+    border-bottom:1px solid rgba(201,150,82,.1);
+    background:none;
+    color:#ad9f90;
+    padding:15px;
+    text-align:left;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-size:10px;
+  }
+  .resenhas-menu-mobile .ativo {
+    color:#d5ad68;
+  }
+  .resenhas-secao-cabecalho {
+    align-items:flex-start;
+    gap:15px;
+  }
+  .resenhas-secao-cabecalho>div:first-child {
+    gap:13px;
+  }
+  .resenhas-secao-cabecalho p {
+    margin-left:0;
+  }
+  .resenhas-ferramentas {
+    flex-direction:column;
+  }
+  .resenhas-busca {
+    min-width:0;
+  }
+  .resenhas-filtros {
+    justify-content:flex-start;
+  }
+  .resenhas-grid {
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+@media(max-width:600px) {
+  .resenhas-topo {
+    height:70px;
+    padding:0 20px;
+  }
+  .resenhas-menu-mobile {
+    top:70px;
+  }
+  .resenhas-logo {
+    font-size:15px;
+    letter-spacing:5px;
+  }
+  .resenhas-hero {
+    padding:70px 22px 65px;
+  }
+  .resenhas-hero h1 {
+    font-size:52px;
+  }
+  .resenhas-ornamento span {
+    width:65px;
+  }
+  .resenhas-hero>p {
+    font-size:14px;
+  }
+  .resenhas-corpo {
+    padding:0 18px 65px;
+  }
+  .resenhas-secao-cabecalho {
+    display:block;
+  }
+  .resenhas-secao-cabecalho>div:first-child {
+    display:block;
+  }
+  .resenhas-secao-cabecalho span {
+    display:block;
+    margin-bottom:12px;
+  }
+  .resenhas-secao-cabecalho h2 {
+    font-size:27px;
+  }
+  .resenhas-secao-cabecalho p {
+    margin:7px 0 0;
+    line-height:1.6;
+  }
+  .resenhas-contagem {
+    margin-top:18px;
+  }
+  .resenhas-grid {
+    grid-template-columns:1fr;
+  }
+  .resenha-capa {
+    height:300px;
+  }
+  .resenhas-vazio {
+    padding:40px 22px;
+    min-height:430px;
+  }
+  .resenhas-vazio h3 {
+    font-size:27px;
+  }
+  .resenhas-manifesto {
+    padding:55px 25px;
+  }
+  .resenhas-manifesto p {
+    font-size:21px;
+  }
+  .resenhas footer {
+    padding:25px 20px;
+    gap:12px;
+    flex-direction:column;
+  }
+  .resenha-overlay {
+    padding:12px;
+  }
+  .resenha-form,.resenha-leitura {
+    padding:35px 22px;
+    max-height:94vh;
+  }
+  .resenha-form h2,.resenha-leitura h2 {
+    font-size:34px;
+  }
+  .form-acoes {
+    align-items:flex-end;
+    flex-direction:column;
+    gap:15px;
+  }
+  .form-acoes button {
+    width:100%;
+  }
+  .leitura-final {
+    align-items:flex-start;
+    flex-direction:column;
+  }
+}
