@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import "./Resenhas.css";
+import { useLivros } from "../hooks/useLivros";
 
 type Pagina =
   | "inicio"
@@ -27,37 +28,6 @@ type Resenha = {
   data: string;
 };
 
-const livros = [
-  ["GÊNESIS | \"JUDAS\" PELOS OLHOS DELE", "Larissa Abreu", "Romance"],
-  ["Judas (Volume 1)", "Larissa Abreu", "Romance"],
-  ["A Hipótese do Amor: Capítulo Extra", "Ali Hazelwood", "Romance"],
-  ["OBLÍVIO", "Leonor Carvalho", "Romance"],
-  ["VULTUS", "Leonor Carvalho", "Romance"],
-  ["INCIPIT", "Leonor Carvalho", "Romance"],
-  ["EXÍMIO — ROSTOS VAZIOS — LIVRO 3", "Leonor Carvalho", "Romance"],
-  ["O Acordo", "Elle Kennedy", "Romance"],
-  ["O Erro", "Elle Kennedy", "Romance"],
-  ["O Jogo", "Elle Kennedy", "Romance"],
-  ["Box - Amores Improváveis (Nova Edição)", "Elle Kennedy", "Romance"],
-  ["INDOMÁVEL", "Zoe X", "Dark Romance"],
-  ["INCONSEQUENTE", "Zoe X", "Dark Romance"],
-  ["IMPROVÁVEL", "Zoe X", "Dark Romance"],
-  ["INVULNERÁVEL", "Zoe X", "Dark Romance"],
-  ["IMORAL", "Zoe X", "Dark Romance"],
-  ["BAD PRINCE", "Zoe X", "Dark Romance"],
-  ["UNDER YOUR SKIN", "Zoe X", "Dark Romance"],
-  ["BAILANDO NO INFERNO", "Zoe X", "Dark Romance"],
-  ["Maldição de Amor", "Zoe X", "Romance"],
-  ["A Corte das Sombras", "Elena Beaumont", "Fantasia"],
-  ["O Jardim das Estrelas", "Clara Whitmore", "Fantasia"],
-  ["Entre Mundos", "Adrian Blackwood", "Fantasia"],
-  ["A Última Lua", "Victoria Ashford", "Romance"],
-  ["O Reino Esquecido", "Arthur Evernight", "Fantasia"],
-  ["Cartas Para a Lua", "Isabelle Laurent", "Romance"],
-  ["A Casa das Chaves", "Nathaniel Crow", "Mistério"],
-  ["Depois do Crepúsculo", "Evelyn Rose", "Romance"],
-] as const;
-
 const STORAGE_KEY = "avelune-resenhas";
 
 function carregarResenhas(): Resenha[] {
@@ -72,6 +42,7 @@ function carregarResenhas(): Resenha[] {
 }
 
 function Resenhas({ onNavigate }: ResenhasProps) {
+  const { livros } = useLivros();
   const [resenhas, setResenhas] = useState<Resenha[]>(carregarResenhas);
   const [selecionada, setSelecionada] = useState<Resenha | null>(null);
   const [criando, setCriando] = useState(false);
@@ -89,8 +60,8 @@ function Resenhas({ onNavigate }: ResenhasProps) {
   }, [resenhas]);
 
   const generos = useMemo(() => {
-    return ["Todos", ...Array.from(new Set(livros.map((item) => item[2])))];
-  }, []);
+    return ["Todos", ...Array.from(new Set(livros.map((item) => item.genero)))];
+  }, [livros]);
 
   const filtradas = useMemo(() => {
     const termo = busca.trim().toLowerCase();
@@ -122,14 +93,14 @@ function Resenhas({ onNavigate }: ResenhasProps) {
     e.preventDefault();
     if (!livro || !titulo.trim() || !texto.trim() || nota < 1) return;
 
-    const escolhido = livros.find((item) => item[0] === livro);
+    const escolhido = livros.find((item) => item.titulo === livro);
     if (!escolhido) return;
 
     const nova: Resenha = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      livro: escolhido[0],
-      autor: escolhido[1],
-      genero: escolhido[2],
+      livro: escolhido.titulo,
+      autor: escolhido.autor,
+      genero: escolhido.genero,
       nota,
       titulo: titulo.trim(),
       texto: texto.trim(),
@@ -330,8 +301,8 @@ function Resenhas({ onNavigate }: ResenhasProps) {
               Livro
               <select value={livro} onChange={(e) => setLivro(e.target.value)} required>
                 <option value="">Selecione um livro da Biblioteca</option>
-                {livros.map(([nome, autor]) => (
-                  <option key={nome} value={nome}>{nome} — {autor}</option>
+                {livros.map((item) => (
+                  <option key={item.titulo} value={item.titulo}>{item.titulo} — {item.autor}</option>
                 ))}
               </select>
             </label>
