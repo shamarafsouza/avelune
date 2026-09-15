@@ -93,7 +93,7 @@ function Biblioteca({
               livro.avaliacao !== null &&
               livro.avaliacao !== undefined
                 ? String(livro.avaliacao)
-                : undefined,
+                : "",
             cor: livro.cor ?? "vinho",
             simbolo: livro.simbolo ?? "✦",
             tropes: Array.isArray(livro.tropes) ? livro.tropes : [],
