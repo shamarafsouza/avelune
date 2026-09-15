@@ -1,15 +1,32 @@
 import { useEffect, useMemo, useState } from "react";
 import "./Biblioteca.css";
-import { buscarLivros, type Livro as LivroSupabase } from "../data/livros";
+import { supabase } from "../lib/supabase";
+import type { Livro as LivroBase } from "../types/livro";
 
-type Livro = LivroSupabase & {
-  autor: string;
+type Livro = LivroBase & {
+  id: string;
   avaliacao?: string;
   cor: string;
   simbolo: string;
   amazonUrl?: string;
   capaUrl?: string;
   real?: boolean;
+};
+
+type LivroBanco = {
+  id: string;
+  titulo: string;
+  autora?: string | null;
+  autor?: string | null;
+  genero: string;
+  sinopse?: string | null;
+  avaliacao?: string | number | null;
+  cor?: string | null;
+  simbolo?: string | null;
+  amazon_url?: string | null;
+  capa_url?: string | null;
+  tropes?: string[] | null;
+  vibes?: string[] | null;
 };
 
 type FiltroBiblioteca =
@@ -22,7 +39,6 @@ type BibliotecaProps = {
     pagina:
       | "inicio"
       | "biblioteca"
-      | "explorar"
       | "comunidade"
       | "perfil"
   ) => void;
@@ -51,17 +67,34 @@ function Biblioteca({
       try {
         setCarregando(true);
         setErro("");
-        const dados = await buscarLivros();
+        const { data, error: erroSupabase } = await supabase
+          .from("livros")
+          .select("*")
+          .order("created_at", { ascending: false });
+
+        if (erroSupabase) {
+          throw erroSupabase;
+        }
+
+        const dados = (data ?? []) as LivroBanco[];
+
         setLivros(
           dados.map((livro) => ({
-            ...livro,
-            autor: livro.autora,
+            id: livro.id,
+            titulo: livro.titulo,
+            autor: livro.autor ?? livro.autora ?? "Autor desconhecido",
+            genero: livro.genero,
+            sinopse: livro.sinopse ?? "",
             amazonUrl: livro.amazon_url ?? undefined,
             capaUrl: livro.capa_url ?? undefined,
             real: Boolean(livro.capa_url),
-            avaliacao: undefined,
-            cor: "vinho",
-            simbolo: "✦",
+            avaliacao:
+              livro.avaliacao !== null &&
+              livro.avaliacao !== undefined
+                ? String(livro.avaliacao)
+                : "",
+            cor: livro.cor ?? "vinho",
+            simbolo: livro.simbolo ?? "✦",
             tropes: Array.isArray(livro.tropes) ? livro.tropes : [],
             vibes: Array.isArray(livro.vibes) ? livro.vibes : [],
           }))
@@ -272,15 +305,6 @@ function Biblioteca({
           <button
             type="button"
             onClick={() =>
-              onNavigate?.("explorar")
-            }
-          >
-            Explorar
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
               onNavigate?.("comunidade")
             }
           >
@@ -378,7 +402,8 @@ function Biblioteca({
       </header>
 
       <section className="biblioteca-conteudo">
-        <div className="biblioteca-introducao">
+        <section className="biblioteca-hero">
+          <div className="biblioteca-introducao">
           <span className="biblioteca-eyebrow">
             A GRANDE BIBLIOTECA
           </span>
@@ -416,7 +441,8 @@ function Biblioteca({
           >
             BUSCAR
           </button>
-        </div>
+          </div>
+        </section>
 
         <section className="categorias">
           <div className="secao-titulo">
@@ -520,421 +546,155 @@ function Biblioteca({
               TENTAR NOVAMENTE
             </button>
           </div>
-        ) : (
-        <section className="destaques">
-          <div className="secao-cabecalho">
-            <div>
-              <span className="secao-eyebrow">
-                {eyebrowSecao}
-              </span>
+        ) : filtroBiblioteca === "todos" && categoriaAtiva === "Todos" && busca.trim() === "" ? (
+          <>
+            <section className="destaques biblioteca-secao-livros">
+              <div className="secao-cabecalho">
+                <div>
+                  <span className="secao-eyebrow">ESCOLHAS DA BIBLIOTECA</span>
+                  <h2>Em destaque</h2>
+                </div>
+                <button className="ver-todos" type="button" onClick={limparFiltros}>
+                  VER TODOS →
+                </button>
+              </div>
 
-              <h2>
-                {categoriaAtiva !==
-                  "Todos" &&
-                filtroBiblioteca ===
-                  "todos"
-                  ? categoriaAtiva
-                  : tituloSecao}
-              </h2>
-            </div>
+              {livros.length > 0 ? (
+                <div className="livros-grid">
+                  {livros.slice(0, 4).map((livro, index) => {
+                    const estaFavoritado = favoritos.includes(livro.id);
+                    const estaNaLista = queroLer.includes(livro.id);
 
-            <button
-              className="ver-todos"
-              type="button"
-              onClick={limparFiltros}
-            >
-              VER TODOS →
-            </button>
-          </div>
-
-          {livrosFiltrados.length >
-          0 ? (
-            <div className="livros-grid">
-              {livrosFiltrados.slice(0, 4).map(
-                (livro, index) => {
-                  const estaFavoritado =
-                    favoritos.includes(
-                      livro.id
-                    );
-
-                  const estaNaLista =
-                    queroLer.includes(
-                      livro.id
-                    );
-
-                  return (
-                    <article
-                      className="livro-card"
-                      key={livro.id}
-                      onClick={() =>
-                        setLivroSelecionado(
-                          livro
-                        )
-                      }
-                    >
-                      <div
-                        className={`livro-capa ${livro.cor}`}
-                      >
-                        {livro.real && livro.capaUrl && (
-                          <img
-                            className="capa-imagem-real"
-                            src={livro.capaUrl}
-                            alt={`Capa de ${livro.titulo}`}
-                            loading="lazy"
-                            referrerPolicy="no-referrer"
-                          />
-                        )}
-
-                        {livro.real && (
-                          <span className="livro-selo-amazon">
-                            AMAZON
-                          </span>
-                        )}
-                        <div className="capa-moldura">
-                          <span className="moldura-canto superior-esquerdo">
-                            ❖
-                          </span>
-
-                          <span className="moldura-canto superior-direito">
-                            ❖
-                          </span>
-
-                          <span className="moldura-canto inferior-esquerdo">
-                            ❖
-                          </span>
-
-                          <span className="moldura-canto inferior-direito">
-                            ❖
-                          </span>
-
-                          <div className="moldura-linha" />
-                        </div>
-
-                        {!livro.real && (
-                          <>
-                            <div className="capa-brilho" />
-
-                            <div className="capa-ornamento">
-                              {livro.simbolo}
-                            </div>
-
-                            <div className="capa-conteudo">
-                              <span>
-                                AVELUNE
-                              </span>
-
-                              <strong>
-                                {livro.titulo}
-                              </strong>
-
-                              <small>
-                                {livro.autora}
-                              </small>
-                            </div>
-                          </>
-                        )}
-
-                        <div className="capa-numero">
-                          {String(
-                            index + 1
-                          ).padStart(
-                            2,
-                            "0"
+                    return (
+                      <article className="livro-card" key={livro.id} onClick={() => setLivroSelecionado(livro)}>
+                        <div className={`livro-capa ${livro.cor}`}>
+                          {livro.real && livro.capaUrl && (
+                            <img className="capa-imagem-real" src={livro.capaUrl} alt={`Capa de ${livro.titulo}`} loading="lazy" referrerPolicy="no-referrer" />
                           )}
+                          {livro.real && <span className="livro-selo-amazon">AMAZON</span>}
+                          <div className="capa-moldura">
+                            <span className="moldura-canto superior-esquerdo">❖</span>
+                            <span className="moldura-canto superior-direito">❖</span>
+                            <span className="moldura-canto inferior-esquerdo">❖</span>
+                            <span className="moldura-canto inferior-direito">❖</span>
+                            <div className="moldura-linha" />
+                          </div>
+                          {!livro.real && (
+                            <>
+                              <div className="capa-brilho" />
+                              <div className="capa-ornamento">{livro.simbolo}</div>
+                              <div className="capa-conteudo">
+                                <span>AVELUNE</span>
+                                <strong>{livro.titulo}</strong>
+                                <small>{livro.autor}</small>
+                              </div>
+                            </>
+                          )}
+                          <div className="capa-numero">{String(index + 1).padStart(2, "0")}</div>
+                          <div className="capa-acoes">
+                            <button type="button" className={estaFavoritado ? "capa-acao ativo" : "capa-acao"} onClick={(event) => { event.stopPropagation(); alternarFavorito(livro.id); }} aria-label="Favoritar livro">
+                              {estaFavoritado ? "♥" : "♡"}
+                            </button>
+                            <button type="button" className={estaNaLista ? "capa-acao ativo" : "capa-acao"} onClick={(event) => { event.stopPropagation(); alternarQueroLer(livro.id); }} aria-label="Adicionar à estante">
+                              {estaNaLista ? "✓" : "+"}
+                            </button>
+                          </div>
                         </div>
-
-                        <div className="capa-acoes">
-                          <button
-                            type="button"
-                            className={
-                              estaFavoritado
-                                ? "capa-acao ativo"
-                                : "capa-acao"
-                            }
-                            aria-label={
-                              estaFavoritado
-                                ? "Remover dos favoritos"
-                                : "Favoritar livro"
-                            }
-                            onClick={(
-                              event
-                            ) => {
-                              event.stopPropagation();
-
-                              alternarFavorito(
-                                livro.titulo
-                              );
-                            }}
-                          >
-                            {estaFavoritado
-                              ? "♥"
-                              : "♡"}
-                          </button>
-
-                          <button
-                            type="button"
-                            className={
-                              estaNaLista
-                                ? "capa-acao ativo"
-                                : "capa-acao"
-                            }
-                            aria-label={
-                              estaNaLista
-                                ? "Remover da estante"
-                                : "Adicionar à estante"
-                            }
-                            onClick={(
-                              event
-                            ) => {
-                              event.stopPropagation();
-
-                              alternarQueroLer(
-                                livro.titulo
-                              );
-                            }}
-                          >
-                            {estaNaLista
-                              ? "✓"
-                              : "+"}
-                          </button>
+                        <div className="livro-informacoes">
+                          <div><h3>{livro.titulo}</h3><p>{livro.autor}</p></div>
                         </div>
-                      </div>
-
-                      <div className="livro-informacoes">
-                        <div>
-                          <h3>
-                            {livro.titulo}
-                          </h3>
-
-                          <p>
-                            {livro.autora}
-                          </p>
-                        </div>
-
-                      </div>
-
-                      <span className="livro-genero">
-                        {livro.genero}
-                      </span>
-
-                      {livro.real && livro.amazonUrl && (
-                        <a
-                          className="livro-amazon"
-                          href={livro.amazonUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(event) => event.stopPropagation()}
-                        >
-                          COMPRAR NA AMAZON ↗
-                        </a>
-                      )}
-                    </article>
-                  );
-                }
+                        <span className="livro-genero">{livro.genero}</span>
+                        {livro.real && livro.amazonUrl && (
+                          <a className="livro-amazon" href={livro.amazonUrl} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>
+                            COMPRAR NA AMAZON ↗
+                          </a>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="nenhum-livro compacto">
+                  <span>✦</span>
+                  <h3>Nenhuma história encontrada.</h3>
+                  <p>O acervo retornou vazio. Verifique a conexão com o Supabase.</p>
+                </div>
               )}
-            </div>
-          ) : (
-            <div className="nenhum-livro">
-              <span>
-        
+            </section>
 
-            {filtroBiblioteca === "todos" && categoriaAtiva === "Todos" && busca.trim() === "" && livrosFiltrados.length > 4 && (
-              <section className="biblioteca-ultimas">
+            {livros.length > 4 && (
+              <section className="destaques biblioteca-secao-livros biblioteca-ultimas">
                 <div className="secao-cabecalho">
                   <div>
                     <span className="secao-eyebrow">RECÉM-CHEGADOS</span>
                     <h2>Últimas adições</h2>
                   </div>
-                  <button className="ver-todos" type="button" onClick={limparFiltros}>
-                    VER TODOS →
-                  </button>
+                  <button className="ver-todos" type="button" onClick={limparFiltros}>VER TODOS →</button>
                 </div>
-            <div className="livros-grid">
-              {livrosFiltrados.slice(4, 8).map(
-                (livro, index) => {
-                  const estaFavoritado =
-                    favoritos.includes(
-                      livro.id
+                <div className="livros-grid">
+                  {livros.slice(4, 8).map((livro, index) => {
+                    const estaFavoritado = favoritos.includes(livro.id);
+                    const estaNaLista = queroLer.includes(livro.id);
+                    return (
+                      <article className="livro-card" key={livro.id} onClick={() => setLivroSelecionado(livro)}>
+                        <div className={`livro-capa ${livro.cor}`}>
+                          {livro.real && livro.capaUrl && <img className="capa-imagem-real" src={livro.capaUrl} alt={`Capa de ${livro.titulo}`} loading="lazy" referrerPolicy="no-referrer" />}
+                          {livro.real && <span className="livro-selo-amazon">AMAZON</span>}
+                          <div className="capa-moldura"><span className="moldura-canto superior-esquerdo">❖</span><span className="moldura-canto superior-direito">❖</span><span className="moldura-canto inferior-esquerdo">❖</span><span className="moldura-canto inferior-direito">❖</span><div className="moldura-linha" /></div>
+                          {!livro.real && <><div className="capa-brilho" /><div className="capa-ornamento">{livro.simbolo}</div><div className="capa-conteudo"><span>AVELUNE</span><strong>{livro.titulo}</strong><small>{livro.autor}</small></div></>}
+                          <div className="capa-numero">{String(index + 5).padStart(2, "0")}</div>
+                          <div className="capa-acoes">
+                            <button type="button" className={estaFavoritado ? "capa-acao ativo" : "capa-acao"} onClick={(event) => { event.stopPropagation(); alternarFavorito(livro.id); }}>{estaFavoritado ? "♥" : "♡"}</button>
+                            <button type="button" className={estaNaLista ? "capa-acao ativo" : "capa-acao"} onClick={(event) => { event.stopPropagation(); alternarQueroLer(livro.id); }}>{estaNaLista ? "✓" : "+"}</button>
+                          </div>
+                        </div>
+                        <div className="livro-informacoes"><div><h3>{livro.titulo}</h3><p>{livro.autor}</p></div></div>
+                        <span className="livro-genero">{livro.genero}</span>
+                        {livro.real && livro.amazonUrl && <a className="livro-amazon" href={livro.amazonUrl} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>COMPRAR NA AMAZON ↗</a>}
+                      </article>
                     );
-
-                  const estaNaLista =
-                    queroLer.includes(
-                      livro.id
-                    );
-
-                  return (
-                    <article
-                      className="livro-card"
-                      key={livro.id}
-                      onClick={() =>
-                        setLivroSelecionado(
-                          livro
-                        )
-                      }
-                    >
-                      <div
-                        className={`livro-capa ${livro.cor}`}
-                      >
-                        {livro.real && livro.capaUrl && (
-                          <img
-                            className="capa-imagem-real"
-                            src={livro.capaUrl}
-                            alt={`Capa de ${livro.titulo}`}
-                            loading="lazy"
-                            referrerPolicy="no-referrer"
-                          />
-                        )}
-
-                        {livro.real && (
-                          <span className="livro-selo-amazon">
-                            AMAZON
-                          </span>
-                        )}
-                        <div className="capa-moldura">
-                          <span className="moldura-canto superior-esquerdo">
-                            ❖
-                          </span>
-
-                          <span className="moldura-canto superior-direito">
-                            ❖
-                          </span>
-
-                          <span className="moldura-canto inferior-esquerdo">
-                            ❖
-                          </span>
-
-                          <span className="moldura-canto inferior-direito">
-                            ❖
-                          </span>
-
-                          <div className="moldura-linha" />
-                        </div>
-
-                        {!livro.real && (
-                          <>
-                            <div className="capa-brilho" />
-
-                            <div className="capa-ornamento">
-                              {livro.simbolo}
-                            </div>
-
-                            <div className="capa-conteudo">
-                              <span>
-                                AVELUNE
-                              </span>
-
-                              <strong>
-                                {livro.titulo}
-                              </strong>
-
-                              <small>
-                                {livro.autora}
-                              </small>
-                            </div>
-                          </>
-                        )}
-
-                        <div className="capa-numero">
-                          {String(
-                            index + 5
-                          ).padStart(
-                            2,
-                            "0"
-                          )}
-                        </div>
-
-                        <div className="capa-acoes">
-                          <button
-                            type="button"
-                            className={
-                              estaFavoritado
-                                ? "capa-acao ativo"
-                                : "capa-acao"
-                            }
-                            aria-label={
-                              estaFavoritado
-                                ? "Remover dos favoritos"
-                                : "Favoritar livro"
-                            }
-                            onClick={(
-                              event
-                            ) => {
-                              event.stopPropagation();
-
-                              alternarFavorito(
-                                livro.titulo
-                              );
-                            }}
-                          >
-                            {estaFavoritado
-                              ? "♥"
-                              : "♡"}
-                          </button>
-
-                          <button
-                            type="button"
-                            className={
-                              estaNaLista
-                                ? "capa-acao ativo"
-                                : "capa-acao"
-                            }
-                            aria-label={
-                              estaNaLista
-                                ? "Remover da estante"
-                                : "Adicionar à estante"
-                            }
-                            onClick={(
-                              event
-                            ) => {
-                              event.stopPropagation();
-
-                              alternarQueroLer(
-                                livro.titulo
-                              );
-                            }}
-                          >
-                            {estaNaLista
-                              ? "✓"
-                              : "+"}
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="livro-informacoes">
-                        <div>
-                          <h3>
-                            {livro.titulo}
-                          </h3>
-
-                          <p>
-                            {livro.autora}
-                          </p>
-                        </div>
-
-                      </div>
-
-                      <span className="livro-genero">
-                        {livro.genero}
-                      </span>
-
-                      {livro.real && livro.amazonUrl && (
-                        <a
-                          className="livro-amazon"
-                          href={livro.amazonUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(event) => event.stopPropagation()}
-                        >
-                          COMPRAR NA AMAZON ↗
-                        </a>
-                      )}
-                    </article>
-                  );
-                }
-              )}
-            </div>
+                  })}
+                </div>
               </section>
             )}
+          </>
+        ) : (
+          <section className="destaques biblioteca-secao-livros">
+            <div className="secao-cabecalho">
+              <div>
+                <span className="secao-eyebrow">{eyebrowSecao}</span>
+                <h2>{categoriaAtiva !== "Todos" && filtroBiblioteca === "todos" ? categoriaAtiva : tituloSecao}</h2>
+              </div>
+              <button className="ver-todos" type="button" onClick={limparFiltros}>VER TODOS →</button>
+            </div>
+            {livrosFiltrados.length > 0 ? (
+              <div className="livros-grid">
+                {livrosFiltrados.map((livro, index) => {
+                  const estaFavoritado = favoritos.includes(livro.id);
+                  const estaNaLista = queroLer.includes(livro.id);
+                  return (
+                    <article className="livro-card" key={livro.id} onClick={() => setLivroSelecionado(livro)}>
+                      <div className={`livro-capa ${livro.cor}`}>
+                        {livro.real && livro.capaUrl && <img className="capa-imagem-real" src={livro.capaUrl} alt={`Capa de ${livro.titulo}`} loading="lazy" referrerPolicy="no-referrer" />}
+                        {livro.real && <span className="livro-selo-amazon">AMAZON</span>}
+                        <div className="capa-moldura"><span className="moldura-canto superior-esquerdo">❖</span><span className="moldura-canto superior-direito">❖</span><span className="moldura-canto inferior-esquerdo">❖</span><span className="moldura-canto inferior-direito">❖</span><div className="moldura-linha" /></div>
+                        {!livro.real && <><div className="capa-brilho" /><div className="capa-ornamento">{livro.simbolo}</div><div className="capa-conteudo"><span>AVELUNE</span><strong>{livro.titulo}</strong><small>{livro.autor}</small></div></>}
+                        <div className="capa-numero">{String(index + 1).padStart(2, "0")}</div>
+                        <div className="capa-acoes"><button type="button" className={estaFavoritado ? "capa-acao ativo" : "capa-acao"} onClick={(event) => { event.stopPropagation(); alternarFavorito(livro.id); }}>{estaFavoritado ? "♥" : "♡"}</button><button type="button" className={estaNaLista ? "capa-acao ativo" : "capa-acao"} onClick={(event) => { event.stopPropagation(); alternarQueroLer(livro.id); }}>{estaNaLista ? "✓" : "+"}</button></div>
+                      </div>
+                      <div className="livro-informacoes"><div><h3>{livro.titulo}</h3><p>{livro.autor}</p></div></div>
+                      <span className="livro-genero">{livro.genero}</span>
+                      {livro.real && livro.amazonUrl && <a className="livro-amazon" href={livro.amazonUrl} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>COMPRAR NA AMAZON ↗</a>}
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="nenhum-livro"><span>{filtroBiblioteca === "favoritos" ? "♥" : "✦"}</span><h3>{filtroBiblioteca === "estante" ? "Sua estante está vazia." : filtroBiblioteca === "favoritos" ? "Você ainda não tem favoritos." : "Nenhuma história encontrada."}</h3><p>{filtroBiblioteca === "estante" ? "Escolha uma história na biblioteca para começar sua coleção." : "Tente buscar por outro título, autor ou categoria."}</p><button type="button" onClick={limparFiltros}>EXPLORAR TODAS AS HISTÓRIAS</button></div>
+            )}
+          </section>
+        )}
+
         {filtroBiblioteca ===
                 "favoritos"
                   ? "♥"
@@ -1034,7 +794,7 @@ function Biblioteca({
                         </strong>
 
                         <small>
-                          {livro.autora}
+                          {livro.autor}
                         </small>
                       </span>
                     </button>
@@ -1154,7 +914,7 @@ function Biblioteca({
 
                     <small>
                       {
-                        livroSelecionado.autora
+                        livroSelecionado.autor
                       }
                     </small>
                   </div>
@@ -1179,7 +939,7 @@ function Biblioteca({
                 por{" "}
                 <strong>
                   {
-                    livroSelecionado.autora
+                    livroSelecionado.autor
                   }
                 </strong>
               </p>
