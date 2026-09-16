@@ -511,9 +511,15 @@ function Biblioteca({
                           <div><h3>{livro.titulo}</h3><p>{livro.autor}</p></div>
                         </div>
                         <span className="livro-genero">{livro.genero}</span>
-                        {livro.real && livro.amazonUrl && (
-                          <a className="livro-amazon" href={livro.amazonUrl} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>
-                            COMPRAR NA AMAZON ↗
+                        {livro.amazonUrl && (
+                          <a
+                            className="livro-amazon"
+                            href={livro.amazonUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(event) => event.stopPropagation()}
+                            >
+                              COMPRAR NA AMAZON ↗
                           </a>
                         )}
                       </article>
