@@ -2093,18 +2093,7 @@
    Performance: sem blur pesado, sombras menores, atmosfera leve
    ========================================================= */
 
-.biblioteca {
-  isolation: isolate;
-  background:
-    linear-gradient(90deg,
-      rgba(7, 3, 3, .20) 0%,
-      rgba(7, 3, 3, .08) 48%,
-      rgba(7, 3, 3, .22) 100%),
-    url('/avelune-cabecalho.png') center top / cover fixed no-repeat,
-    #090504;
-}
-
-/* Atmosfera leve: mantém o castelo vivo e visível. */
+/* Atmosfera leve: mantém o cabeçalho visível sem aplicar a imagem na página inteira. */
 .biblioteca::before {
   content: "";
   position: fixed;
@@ -2134,13 +2123,6 @@
   background-size: 190px 190px;
   background-position: 25px 35px;
   mask-image: linear-gradient(to bottom, black, transparent 88%);
-}
-
-/* Cabeçalho: mantém o acabamento dourado sem backdrop-filter. */
-.biblioteca-topo {
-  background: linear-gradient(to bottom, rgba(8, 4, 3, .98), rgba(12, 6, 4, .94));
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
 }
 
 .biblioteca-logo-link {
