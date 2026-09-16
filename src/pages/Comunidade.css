@@ -2493,7 +2493,7 @@
   min-height: 100vh;
   background:
     linear-gradient(90deg, rgba(7, 3, 3, .22), rgba(7, 3, 3, .08) 50%, rgba(7, 3, 3, .20)),
-    url('/avelune-castelo.png') center top / cover fixed no-repeat,
+    url('/avelune-cabecalho.png') center top / cover fixed no-repeat,
     #090504;
   color: #eee2d2;
 }
