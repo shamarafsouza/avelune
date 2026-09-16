@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { criarCena } from "./three/Scene";
 import Biblioteca from "./pages/Biblioteca";
+import Explorar from "./pages/Explorar";
 import Comunidade from "./pages/Comunidade";
 import Perfil from "./pages/Perfil";
-import Auth from "./pages/Auth";
+import Cadastro from "./pages/Cadastro";
 import "./App.css";
 
 type Pagina =
   | "inicio"
   | "biblioteca"
+  | "explorar"
   | "comunidade"
   | "perfil"
+  | "cadastro"
   | "auth-cadastro"
   | "auth-login";
 
@@ -54,6 +57,14 @@ function App() {
     );
   }
 
+  if (pagina === "explorar") {
+    return (
+      <Explorar
+        onNavigate={setPagina}
+      />
+    );
+  }
+
   if (pagina === "comunidade") {
     return (
       <Comunidade
@@ -70,30 +81,10 @@ function App() {
     );
   }
 
-  if (pagina === "auth-cadastro") {
+  if (pagina === "cadastro") {
     return (
-      <Auth
-        modoInicial="cadastro"
-        onAuthenticated={() =>
-          setPagina("comunidade")
-        }
-        onBack={() =>
-          setPagina("comunidade")
-        }
-      />
-    );
-  }
-
-  if (pagina === "auth-login") {
-    return (
-      <Auth
-        modoInicial="login"
-        onAuthenticated={() =>
-          setPagina("comunidade")
-        }
-        onBack={() =>
-          setPagina("comunidade")
-        }
+      <Cadastro
+        onNavigate={setPagina}
       />
     );
   }
@@ -128,6 +119,15 @@ function App() {
             }
           >
             Biblioteca
+          </button>
+
+          <button
+            type="button"
+            onClick={() =>
+              setPagina("explorar")
+            }
+          >
+            Explorar
           </button>
 
           <button
