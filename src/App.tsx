@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { criarCena } from "./three/Scene";
 import Biblioteca from "./pages/Biblioteca";
-import Explorar from "./pages/Explorar";
 import Comunidade from "./pages/Comunidade";
 import Perfil from "./pages/Perfil";
-import Cadastro from "./pages/Cadastro";
+import Auth from "./pages/Auth";
 import "./App.css";
 
 type Pagina =
@@ -13,30 +12,25 @@ type Pagina =
   | "explorar"
   | "comunidade"
   | "perfil"
-  | "cadastro"
   | "auth-cadastro"
   | "auth-login";
 
 function App() {
-  const containerRef =
-    useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [entrando, setEntrando] =
-    useState(false);
+  const [entrando, setEntrando] = useState(false);
+  const [pagina, setPagina] = useState<Pagina>("inicio");
 
-  const [pagina, setPagina] =
-    useState<Pagina>("inicio");
+  function navegar(novaPagina: Pagina) {
+    setPagina(novaPagina);
+  }
 
   useEffect(() => {
-    if (
-      pagina !== "inicio" ||
-      !containerRef.current
-    ) {
+    if (pagina !== "inicio" || !containerRef.current) {
       return;
     }
 
-    const limparCena =
-      criarCena(containerRef.current);
+    const limparCena = criarCena(containerRef.current);
 
     return limparCena;
   }, [pagina]);
@@ -44,47 +38,39 @@ function App() {
   function entrarNaBiblioteca() {
     setEntrando(true);
 
-    setTimeout(() => {
-      setPagina("biblioteca");
+    window.setTimeout(() => {
+      navegar("biblioteca");
     }, 1800);
   }
 
   if (pagina === "biblioteca") {
-    return (
-      <Biblioteca
-        onNavigate={setPagina}
-      />
-    );
-  }
-
-  if (pagina === "explorar") {
-    return (
-      <Explorar
-        onNavigate={setPagina}
-      />
-    );
+    return <Biblioteca onNavigate={navegar} />;
   }
 
   if (pagina === "comunidade") {
-    return (
-      <Comunidade
-        onNavigate={setPagina}
-      />
-    );
+    return <Comunidade onNavigate={navegar} />;
   }
 
   if (pagina === "perfil") {
+    return <Perfil onNavigate={navegar} />;
+  }
+
+  if (pagina === "auth-cadastro") {
     return (
-      <Perfil
-        onNavigate={setPagina}
+      <Auth
+        modoInicial="cadastro"
+        onAuthenticated={() => navegar("comunidade")}
+        onBack={() => navegar("comunidade")}
       />
     );
   }
 
-  if (pagina === "cadastro") {
+  if (pagina === "auth-login") {
     return (
-      <Cadastro
-        onNavigate={setPagina}
+      <Auth
+        modoInicial="login"
+        onAuthenticated={() => navegar("comunidade")}
+        onBack={() => navegar("comunidade")}
       />
     );
   }
@@ -92,51 +78,37 @@ function App() {
   return (
     <main
       className={`avelune ${
-        entrando
-          ? "avelune--entrando"
-          : ""
+        entrando ? "avelune--entrando" : ""
       }`}
     >
-      <div
-        ref={containerRef}
-        className="scene"
-      />
+      <div ref={containerRef} className="scene" />
 
       <div className="vignette" />
-
       <div className="brilho-central" />
 
       <header className="topo">
-        <div className="mini-logo">
-          AVELUNE
-        </div>
+        <div className="mini-logo">AVELUNE</div>
 
         <nav>
           <button
             type="button"
-            onClick={() =>
-              setPagina("biblioteca")
-            }
+            onClick={() => navegar("biblioteca")}
           >
             Biblioteca
           </button>
 
           <button
             type="button"
-            onClick={() =>
-              setPagina("explorar")
-            }
+            onClick={() => navegar("comunidade")}
           >
-            Explorar
+            Comunidade
           </button>
 
           <button
             type="button"
-            onClick={() =>
-              setPagina("comunidade")
-            }
+            onClick={() => navegar("perfil")}
           >
-            Comunidade
+            Perfil
           </button>
         </nav>
       </header>
@@ -144,6 +116,7 @@ function App() {
       <section className="hero">
         <p className="eyebrow">
           UMA BIBLIOTECA PARA QUEM AMA
+          <br />
           HISTÓRIAS
         </p>
 
@@ -157,6 +130,7 @@ function App() {
 
         <p className="subtitulo">
           Onde cada história encontra
+          <br />
           seu leitor.
         </p>
 
