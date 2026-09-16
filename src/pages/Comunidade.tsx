@@ -1380,23 +1380,7 @@ function Comunidade({
                   </strong>
                 </div>
               </div>
-          
-              <div className="comunidade-destaque">
-                <div className="comunidade-avatar pequeno">
-                  AB
-                </div>
-
-                <div className="comunidade-destaque-dados">
-                  <strong>
-                    Arthur Black
-                  </strong>
-                  <span>
-                    94 curtidas recebidas
-                  </span>
-                </div>
-              </div>
             </div>
-
             <div className="comunidade-card comunidade-tendencias">
               <div className="comunidade-card-titulo">
                 <span>⌁</span>
