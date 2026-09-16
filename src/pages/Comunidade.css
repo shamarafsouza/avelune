@@ -2970,6 +2970,43 @@
     #090504;
   color:#eee2d2;
 }
+
+.comunidade-seletor-livro-resenha {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  max-width: 100%;
+}
+
+.comunidade-seletor-livro-resenha label {
+  color: #c8b49a;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.comunidade-seletor-livro-resenha select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  color: #e6d7c2;
+  background: #100806;
+  border: 1px solid rgba(181, 138, 77, 0.38);
+  border-radius: 0;
+  font: inherit;
+}
+
+.comunidade-seletor-livro-resenha select:focus {
+  outline: 1px solid #b58a4d;
+  outline-offset: 2px;
+}
+
+.comunidade-seletor-livro-resenha small {
+  color: #8f7b69;
+  font-size: 0.78rem;
+}
+
 .comunidade > .comunidade-topo { display:none !important; }
 .comunidade-conteudo { width:min(1180px,88%); padding:75px 0 90px; }
 .comunidade-introducao h1 { font-family:"Cinzel",Georgia,serif; color:#eee0cb; }
