@@ -3392,6 +3392,156 @@
   line-height: 1.3;
 }
 
+.comunidade-resenhas-area {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.comunidade-livros-resenha,
+.comunidade-resenhas-publicadas {
+  border: 1px solid rgba(174, 108, 47, 0.2);
+  background: rgba(18, 9, 7, 0.72);
+  padding: 24px;
+}
+
+.comunidade-secao-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.comunidade-secao-cabecalho > div:first-child {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.comunidade-secao-cabecalho > div:first-child > span {
+  color: #c9a36a;
+}
+
+.comunidade-secao-cabecalho small {
+  display: block;
+  color: #9c806d;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  margin-bottom: 6px;
+}
+
+.comunidade-secao-cabecalho h2 {
+  margin: 0;
+  color: #ead8c2;
+  font-size: 22px;
+}
+
+.comunidade-secao-cabecalho p {
+  max-width: 260px;
+  margin: 0;
+  color: #9c8a7d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.comunidade-busca-livro-resenha {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  padding: 13px 15px;
+  border: 1px solid rgba(174, 108, 47, 0.25);
+  background: #0c0706;
+  color: #ead8c2;
+  outline: none;
+}
+
+.comunidade-busca-livro-resenha:focus {
+  border-color: rgba(201, 163, 106, 0.8);
+}
+
+.comunidade-livros-resenha-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comunidade-livro-resenha-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 15px;
+  border: 1px solid rgba(174, 108, 47, 0.14);
+  background: rgba(9, 5, 4, 0.7);
+  color: #ead8c2;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.comunidade-livro-resenha-item:hover {
+  border-color: rgba(201, 163, 106, 0.65);
+  background: rgba(39, 18, 14, 0.8);
+}
+
+.comunidade-livro-resenha-simbolo {
+  color: #c9a36a;
+  font-size: 18px;
+}
+
+.comunidade-livro-resenha-dados {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.comunidade-livro-resenha-dados strong {
+  overflow: hidden;
+  color: #ead8c2;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.comunidade-livro-resenha-dados small {
+  color: #9c806d;
+  font-size: 12px;
+}
+
+.comunidade-livro-resenha-acao {
+  color: #c9a36a;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+@media (max-width: 650px) {
+  .comunidade-livros-resenha,
+  .comunidade-resenhas-publicadas {
+    padding: 18px;
+  }
+
+  .comunidade-secao-cabecalho {
+    flex-direction: column;
+  }
+
+  .comunidade-secao-cabecalho p {
+    max-width: none;
+  }
+
+  .comunidade-livro-resenha-item {
+    align-items: flex-start;
+  }
+
+  .comunidade-livro-resenha-acao {
+    display: none;
+  }
+}
+
+
 .comunidade-tendencia-item span {
   font-size: 12px;
   line-height: 1.5;
