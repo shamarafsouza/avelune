@@ -202,6 +202,7 @@ function Biblioteca({
       );
     });
   }, [
+    livros,
     categoriaAtiva,
     filtroBiblioteca,
     busca,
