@@ -2087,13 +2087,7 @@
   }
 }
 
-/* =========================================================
-   AVELUNE — BIBLIOTECA
-   Visual: fantasia gótica + dark romance + paranormal
-   Performance: sem blur pesado, sombras menores, atmosfera leve
-   ========================================================= */
-
-/* Atmosfera leve: mantém o cabeçalho visível sem aplicar a imagem na página inteira. */
+/* Atmosfera leve: mantém o castelo vivo e visível. */
 .biblioteca::before {
   content: "";
   position: fixed;
@@ -2124,6 +2118,7 @@
   background-position: 25px 35px;
   mask-image: linear-gradient(to bottom, black, transparent 88%);
 }
+
 
 .biblioteca-logo-link {
   display: inline-flex;
