@@ -458,7 +458,7 @@ function Biblioteca({
 
               {livros.length > 0 ? (
                 <div className="livros-grid">
-                  {livros.slice(0, 4).map((livro, index) => {
+                  {livros.map((livro, index) => {
                     const estaFavoritado = favoritos.includes(livro.id);
                     const estaNaLista = queroLer.includes(livro.id);
 
