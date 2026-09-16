@@ -5,13 +5,13 @@ import {
   useState,
 } from "react";
 import type { ChangeEvent } from "react";
+import { supabase } from "../lib/supabase";
 import "./Comunidade.css";
-import AveluneHeader from "../components/AveluneHeader";
-import { useLivros } from "../hooks/useLivros";
 
 type Pagina =
   | "inicio"
   | "biblioteca"
+  | "explorar"
   | "comunidade"
   | "perfil"
   | "auth-cadastro"
@@ -27,6 +27,28 @@ type Comentario = {
   usuario: string;
   texto: string;
 };
+
+type Publicacao = {
+  id: number;
+  usuario: string;
+  iniciais: string;
+  tempo: string;
+  texto: string;
+  livro?: string;
+  autorLivro?: string;
+  avaliacao?: number;
+  cor?: string;
+  simbolo?: string;
+  foto?: string;
+  curtidas: number;
+  comentarios: number;
+  curtido: boolean;
+  salva: boolean;
+  seguindo?: boolean;
+  origemUsuario?: boolean;
+  comentariosLista?: Comentario[];
+};
+
 type Personagem = {
   id: number;
   nome: string;
@@ -54,7 +76,13 @@ type Historia = {
   capitulos: { id: number; titulo: string }[];
 };
 
-type AbaComunidade = "publicacoes" | "resenhas" | "historias";
+
+type ComunidadeProps = {
+  onNavigate?: (pagina: Pagina) => void;
+};
+
+const STORAGE_SALVOS =
+  "avelune-comunidade-salvos";
 
 const STORAGE_HISTORIAS = "avelune-comunidade-historias";
 
@@ -80,56 +108,134 @@ function carregarHistorias(): Historia[] {
   }
   return [];
 }
-type Publicacao = {
-  id: number;
-  usuario: string;
-  iniciais: string;
-  tempo: string;
-  texto: string;
-  livro?: string;
-  autorLivro?: string;
-  linkLivro?: string;
-  avaliacao?: number;
-  cor?: string;
-  simbolo?: string;
-  foto?: string;
-  curtidas: number;
-  comentarios: number;
-  curtido: boolean;
-  salva: boolean;
-  seguindo?: boolean;
-  origemUsuario?: boolean;
-  comentariosLista?: Comentario[];
-};
 
-type ComunidadeProps = {
-  onNavigate?: (pagina: Pagina) => void;
-};
+const postagensIniciais: Publicacao[] = [
+  {
+    id: 1,
+    usuario: "Luna Valmont",
+    iniciais: "LV",
+    tempo: "há 18 min",
+    texto:
+      "Terminei A Corte das Sombras e ainda estou tentando processar tudo. A atmosfera desse livro é simplesmente maravilhosa. Preciso conversar com alguém sobre esse final.",
+    livro: "A Corte das Sombras",
+    autorLivro: "Elena Beaumont",
+    avaliacao: 5,
+    cor: "vinho",
+    simbolo: "✦",
+    curtidas: 128,
+    comentarios: 24,
+    curtido: false,
+    salva: false,
+    seguindo: true,
+    comentariosLista: [
+      {
+        id: 101,
+        usuario: "Clara Moon",
+        texto:
+          "SIM! O final me deixou olhando para o teto por uns dez minutos.",
+      },
+      {
+        id: 102,
+        usuario: "Noah Evernight",
+        texto:
+          "Essa é definitivamente uma leitura que merece uma releitura.",
+      },
+    ],
+  },
+  {
+    id: 2,
+    usuario: "Arthur Black",
+    iniciais: "AB",
+    tempo: "há 42 min",
+    texto:
+      "O Jardim das Estrelas tem aquela sensação rara de livro que parece existir fora do tempo. Cada capítulo parece uma pequena lembrança.",
+    livro: "O Jardim das Estrelas",
+    autorLivro: "Clara Whitmore",
+    avaliacao: 4,
+    cor: "azul",
+    simbolo: "✧",
+    curtidas: 94,
+    comentarios: 16,
+    curtido: false,
+    salva: false,
+    seguindo: false,
+    comentariosLista: [
+      {
+        id: 201,
+        usuario: "Luna Valmont",
+        texto:
+          "Você descreveu exatamente a sensação que eu tive lendo.",
+      },
+    ],
+  },
+  {
+    id: 3,
+    usuario: "Clara Moon",
+    iniciais: "CM",
+    tempo: "há 1 h",
+    texto:
+      "Pergunta séria para a comunidade: qual livro vocês gostariam de esquecer só para poder ler pela primeira vez novamente?",
+    curtidas: 76,
+    comentarios: 31,
+    curtido: false,
+    salva: false,
+    seguindo: true,
+    comentariosLista: [
+      {
+        id: 301,
+        usuario: "Arthur Black",
+        texto:
+          "Entre Mundos. Sem pensar duas vezes.",
+      },
+      {
+        id: 302,
+        usuario: "Luna Valmont",
+        texto:
+          "A Corte das Sombras. Eu queria sentir aquele impacto de novo.",
+      },
+    ],
+  },
+  {
+    id: 4,
+    usuario: "Noah Evernight",
+    iniciais: "NE",
+    tempo: "há 2 h",
+    texto:
+      "Comecei Entre Mundos sem grandes expectativas e agora não consigo parar. A ideia de atravessar realidades diferentes é muito bem construída.",
+    livro: "Entre Mundos",
+    autorLivro: "Adrian Blackwood",
+    avaliacao: 5,
+    cor: "roxo",
+    simbolo: "◇",
+    curtidas: 61,
+    comentarios: 11,
+    curtido: false,
+    salva: false,
+    seguindo: false,
+    comentariosLista: [
+      {
+        id: 401,
+        usuario: "Clara Moon",
+        texto:
+          "Esse livro me pegou completamente de surpresa também.",
+      },
+    ],
+  },
+];
 
-const STORAGE_POSTS =
-  "avelune-comunidade-postagens";
+function dataUrlParaBlob(dataUrl: string): Blob {
+  const partes = dataUrl.split(",");
+  const tipo = partes[0].match(/data:(.*?);base64/)?.[1] ||
+    "image/jpeg";
 
-const STORAGE_SALVOS =
-  "avelune-comunidade-salvos";
+  const binario = atob(partes[1]);
+  const bytes = new Uint8Array(binario.length);
 
-const postagensIniciais: Publicacao[] = [];
-function carregarPostagens(): Publicacao[] {
-  try {
-    const salvas =
-      localStorage.getItem(STORAGE_POSTS);
-
-    if (salvas) {
-      const dados = JSON.parse(salvas);
-
-      if (Array.isArray(dados)) {
-        return dados;
-      }
-    }
-  } catch {
-    // Usa os dados iniciais.
+  for (let indice = 0; indice < binario.length; indice += 1) {
+    bytes[indice] = binario.charCodeAt(indice);
   }
 
-  return postagensIniciais;
+  return new Blob([bytes], { type: tipo });
 }
 
 function redimensionarImagem(
@@ -146,7 +252,7 @@ function redimensionarImagem(
         const escala = Math.min(
           1,
           limite /
-          Math.max(imagem.width, imagem.height)
+            Math.max(imagem.width, imagem.height)
         );
 
         const largura = Math.max(
@@ -212,22 +318,61 @@ function redimensionarImagem(
   });
 }
 
+type PublicacaoBanco = {
+  id: number;
+  usuario_id: string;
+  texto: string;
+  livro: string | null;
+  autor_livro: string | null;
+  avaliacao: number | null;
+  foto_url: string | null;
+  curtidas: number;
+  comentarios: number;
+  created_at: string;
+};
+
+type ComentarioBanco = {
+  id: number;
+  publicacao_id: number;
+  usuario_id: string;
+  texto: string;
+  created_at: string;
+};
+
+function formatarTempo(data: string) {
+  const diferenca = Math.max(
+    0,
+    Date.now() - new Date(data).getTime()
+  );
+  const minutos = Math.floor(diferenca / 60000);
+
+  if (minutos < 1) {
+    return "agora";
+  }
+
+  if (minutos < 60) {
+    return `há ${minutos} min`;
+  }
+
+  const horas = Math.floor(minutos / 60);
+
+  if (horas < 24) {
+    return `há ${horas} h`;
+  }
+
+  const dias = Math.floor(horas / 24);
+  return `há ${dias} ${dias === 1 ? "dia" : "dias"}`;
+}
+
 function Comunidade({
   onNavigate,
 }: ComunidadeProps) {
   const [postagens, setPostagens] =
     useState<Publicacao[]>(
-      carregarPostagens
+      postagensIniciais
     );
 
-  const [abaComunidade, setAbaComunidade] = useState<AbaComunidade>("publicacoes");
-
   const [historias, setHistorias] = useState<Historia[]>(carregarHistorias);
-
-  const { livros, carregando: livrosCarregando, erro: livrosErro } = useLivros();
-  const [buscaLivroResenha, setBuscaLivroResenha] = useState("");
-  const [subAbaResenha, setSubAbaResenha] = useState<"biblioteca" | "link">("biblioteca");
-  const [linkLivroDigitado, setLinkLivroDigitado] = useState("");
 
   useEffect(() => {
     try {
@@ -332,6 +477,7 @@ function Comunidade({
     mostrarMensagem("Sua história foi publicada.");
   }
 
+
   const [filtro, setFiltro] =
     useState<Filtro>("para-voce");
 
@@ -365,21 +511,24 @@ function Comunidade({
   const [mostrarAvisoConta, setMostrarAvisoConta] =
     useState(false);
 
+  const [autenticado, setAutenticado] =
+    useState(false);
+
+  const [seguindoIds, setSeguindoIds] =
+    useState<Set<string>>(new Set());
+
+  const [leitoresParaSeguir, setLeitoresParaSeguir] =
+    useState<
+      {
+        id: string;
+        nome: string;
+        username: string;
+        iniciais: string;
+      }[]
+    >([]);
+
   const inputImagemRef =
     useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(
-        STORAGE_POSTS,
-        JSON.stringify(postagens)
-      );
-    } catch {
-      setMensagem(
-        "A postagem foi criada, mas a imagem não pôde ser salva no navegador."
-      );
-    }
-  }, [postagens]);
 
   useEffect(() => {
     const salvos = postagens
@@ -396,18 +545,344 @@ function Comunidade({
     }
   }, [postagens]);
 
-  function estaAutenticado() {
-    try {
-      return localStorage.getItem(
-        "avelune-usuario-logado"
-      ) === "true";
-    } catch {
-      return false;
+  useEffect(() => {
+    let montado = true;
+
+    async function carregarSessao() {
+      const { data } =
+        await supabase.auth.getSession();
+
+      if (montado) {
+        setAutenticado(Boolean(data.session));
+      }
     }
-  }
+
+    carregarSessao();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      (_evento, session) => {
+        setAutenticado(Boolean(session));
+      }
+    );
+
+    return () => {
+      montado = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    let montado = true;
+
+    async function carregarPublicacoes() {
+      if (!autenticado) {
+        if (montado) {
+          setPostagens(postagensIniciais);
+        }
+        return;
+      }
+
+      const { data: usuarioAtual } =
+        await supabase.auth.getUser();
+
+      if (!usuarioAtual.user) {
+        if (montado) {
+          setPostagens([]);
+        }
+        return;
+      }
+
+      const { data: seguidores, error: erroSeguidores } =
+        await supabase
+          .from("seguidores")
+          .select("seguido_id")
+          .eq("seguidor_id", usuarioAtual.user.id);
+
+      if (erroSeguidores) {
+        setMensagem(
+          "Não foi possível carregar quem você segue."
+        );
+      }
+
+      const idsSeguindo = new Set<string>(
+        (seguidores ?? []).map(
+          (item: { seguido_id: string }) => item.seguido_id
+        )
+      );
+
+      const { data: perfisParaSeguir } = await supabase
+        .from("profiles")
+        .select("id, nome, username")
+        .neq("id", usuarioAtual.user.id)
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      if (montado) {
+        setSeguindoIds(idsSeguindo);
+        setLeitoresParaSeguir(
+          (perfisParaSeguir ?? []).map(
+            (perfil: {
+              id: string;
+              nome: string | null;
+              username: string;
+            }) => {
+              const nome =
+                perfil.nome || perfil.username || "Leitor";
+
+              return {
+                id: perfil.id,
+                nome,
+                username: perfil.username,
+                iniciais:
+                  nome
+                    .split(" ")
+                    .filter(Boolean)
+                    .slice(0, 2)
+                    .map((parte: string) => parte[0])
+                    .join("")
+                    .toUpperCase() || "LE",
+              };
+            }
+          )
+        );
+      }
+
+      const { data, error } = await supabase
+        .from("publicacoes")
+        .select(
+          "id, usuario_id, texto, livro, autor_livro, avaliacao, foto_url, curtidas, comentarios, created_at"
+        )
+        .order("created_at", { ascending: false });
+
+      if (!montado) {
+        return;
+      }
+
+      if (error) {
+        setMensagem(
+          "Não foi possível carregar as publicações da comunidade."
+        );
+        return;
+      }
+
+      const publicacoes =
+        (data ?? []) as PublicacaoBanco[];
+
+      if (publicacoes.length === 0) {
+        setPostagens([]);
+        return;
+      }
+
+      const idsPublicacoes = publicacoes.map(
+        (publicacao) => publicacao.id
+      );
+
+      const idsUsuarios = [
+        ...new Set(
+          publicacoes.map(
+            (publicacao) => publicacao.usuario_id
+          )
+        ),
+      ];
+
+      const [resultadoPerfis, resultadoCurtidas, resultadoComentarios] =
+        await Promise.all([
+          supabase
+            .from("profiles")
+            .select("id, nome, username")
+            .in("id", idsUsuarios),
+          supabase
+            .from("curtidas")
+            .select("publicacao_id, usuario_id")
+            .in("publicacao_id", idsPublicacoes),
+          supabase
+            .from("comentarios")
+            .select("id, publicacao_id, usuario_id, texto, created_at")
+            .in("publicacao_id", idsPublicacoes)
+            .order("created_at", { ascending: true }),
+        ]);
+
+      const mapaPerfis = new Map(
+        (resultadoPerfis.data ?? []).map(
+          (perfil: {
+            id: string;
+            nome: string | null;
+            username: string;
+          }) => [perfil.id, perfil]
+        )
+      );
+
+      const idsCurtidos = new Set(
+        (resultadoCurtidas.data ?? [])
+          .filter(
+            (curtida: {
+              publicacao_id: number;
+              usuario_id: string;
+            }) =>
+              curtida.usuario_id ===
+              usuarioAtual.user.id
+          )
+          .map(
+            (curtida: { publicacao_id: number }) =>
+              curtida.publicacao_id
+          )
+      );
+
+      const curtidasPorPublicacao = new Map<number, number>();
+
+      (resultadoCurtidas.data ?? []).forEach(
+        (curtida: { publicacao_id: number }) => {
+          curtidasPorPublicacao.set(
+            curtida.publicacao_id,
+            (curtidasPorPublicacao.get(curtida.publicacao_id) ?? 0) + 1
+          );
+        }
+      );
+
+      const comentariosBanco =
+        (resultadoComentarios.data ?? []) as ComentarioBanco[];
+
+      const idsUsuariosComentarios = [
+        ...new Set(
+          comentariosBanco.map(
+            (comentario) => comentario.usuario_id
+          )
+        ),
+      ];
+
+      let mapaPerfisComentarios = mapaPerfis;
+
+      if (idsUsuariosComentarios.length > 0) {
+        const { data: perfisComentarios } = await supabase
+          .from("profiles")
+          .select("id, nome, username")
+          .in("id", idsUsuariosComentarios);
+
+        mapaPerfisComentarios = new Map(
+          (perfisComentarios ?? []).map(
+            (perfil: {
+              id: string;
+              nome: string | null;
+              username: string;
+            }) => [perfil.id, perfil]
+          )
+        );
+
+        mapaPerfis.forEach((perfil, id) => {
+          if (!mapaPerfisComentarios.has(id)) {
+            mapaPerfisComentarios.set(id, perfil);
+          }
+        });
+      }
+
+      const comentariosPorPublicacao = new Map<
+        number,
+        Comentario[]
+      >();
+
+      comentariosBanco.forEach((comentario) => {
+        const perfil = mapaPerfisComentarios.get(
+          comentario.usuario_id
+        );
+        const nome =
+          perfil?.nome ||
+          perfil?.username ||
+          "Leitor";
+
+        const lista =
+          comentariosPorPublicacao.get(
+            comentario.publicacao_id
+          ) ?? [];
+
+        lista.push({
+          id: comentario.id,
+          usuario: nome,
+          texto: comentario.texto,
+        });
+
+        comentariosPorPublicacao.set(
+          comentario.publicacao_id,
+          lista
+        );
+      });
+
+      const convertidas: Publicacao[] =
+        publicacoes.map((publicacao) => {
+          const perfil = mapaPerfis.get(
+            publicacao.usuario_id
+          );
+          const nome =
+            perfil?.nome ||
+            perfil?.username ||
+            "Leitor";
+          const comentariosDaPublicacao =
+            comentariosPorPublicacao.get(publicacao.id) ?? [];
+
+          return {
+            id: publicacao.id,
+            usuario: nome,
+            iniciais: nome
+              .split(" ")
+              .filter(Boolean)
+              .slice(0, 2)
+              .map((parte: string) => parte[0])
+              .join("")
+              .toUpperCase() || "LE",
+            tempo: formatarTempo(
+              publicacao.created_at
+            ),
+            texto: publicacao.texto,
+            livro: publicacao.livro ?? undefined,
+            autorLivro:
+              publicacao.autor_livro ?? undefined,
+            avaliacao:
+              publicacao.avaliacao ?? undefined,
+            foto: publicacao.foto_url ?? undefined,
+            curtidas: curtidasPorPublicacao.get(publicacao.id) ?? 0,
+            comentarios: comentariosDaPublicacao.length,
+            curtido: idsCurtidos.has(publicacao.id),
+            salva: false,
+            seguindo: idsSeguindo.has(publicacao.usuario_id),
+            origemUsuario:
+              publicacao.usuario_id === usuarioAtual.user.id,
+            comentariosLista: comentariosDaPublicacao,
+          };
+        });
+
+      if (montado) {
+        setPostagens(convertidas);
+      }
+    }
+
+    carregarPublicacoes();
+
+    const canalPublicacoes = supabase
+      .channel("comunidade-publicacoes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "publicacoes",
+        },
+        () => {
+          if (montado) {
+            carregarPublicacoes();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      montado = false;
+      supabase.removeChannel(canalPublicacoes);
+    };
+  }, [autenticado]);
 
   function exigirConta() {
-    if (estaAutenticado()) {
+    if (autenticado) {
       return true;
     }
 
@@ -415,7 +890,7 @@ function Comunidade({
     return false;
   }
 
-  const visitante = !estaAutenticado();
+  const visitante = !autenticado;
 
   const postagensVisiveis = useMemo(() => {
     if (!visitante) {
@@ -442,17 +917,6 @@ function Comunidade({
 
     return postagensVisiveis;
   }, [filtro, postagensVisiveis]);
-
-  // DIVIDE O FEED ENTRE PUBLICAÇÕES E RESENHAS
-  const feedPublicacoes = useMemo(
-    () => feed.filter((post) => !post.livro),
-    [feed]
-  );
-
-  const feedResenhas = useMemo(
-    () => feed.filter((post) => Boolean(post.livro)),
-    [feed]
-  );
 
   function mostrarMensagem(textoMensagem: string) {
     setMensagem(textoMensagem);
@@ -525,13 +989,12 @@ function Comunidade({
     setTexto("");
     setLivroDigitado("");
     setAutorDigitado("");
-    setLinkLivroDigitado("");
     setAvaliacaoDigitada(5);
     setFotoSelecionada("");
     setModoResenha(false);
   }
 
-  function publicar() {
+  async function publicar() {
     if (!exigirConta()) {
       return;
     }
@@ -539,7 +1002,6 @@ function Comunidade({
     const textoLimpo = texto.trim();
     const livroLimpo = livroDigitado.trim();
     const autorLimpo = autorDigitado.trim();
-    const linkLivroLimpo = linkLivroDigitado.trim();
 
     if (
       !textoLimpo &&
@@ -559,24 +1021,106 @@ function Comunidade({
       return;
     }
 
-    const novaPostagem: Publicacao = {
-      id: Date.now(),
-      usuario: "Você",
-      iniciais: "VC",
+    const { data: usuarioAuth, error: erroUsuario } =
+      await supabase.auth.getUser();
+
+    if (erroUsuario || !usuarioAuth.user) {
+      mostrarMensagem(
+        "Sua sessão expirou. Entre novamente para publicar."
+      );
+      return;
+    }
+
+    let fotoUrl: string | null = null;
+
+    if (fotoSelecionada) {
+      const arquivoFoto = dataUrlParaBlob(
+        fotoSelecionada
+      );
+
+      const caminhoFoto =
+        `${usuarioAuth.user.id}/${Date.now()}.jpg`;
+
+      const { error: erroUpload } =
+        await supabase.storage
+          .from("comunidade")
+          .upload(caminhoFoto, arquivoFoto, {
+            contentType: "image/jpeg",
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+      if (erroUpload) {
+        mostrarMensagem(
+          "Não foi possível enviar a foto. Tente novamente."
+        );
+        return;
+      }
+
+      const { data: urlPublica } =
+        supabase.storage
+          .from("comunidade")
+          .getPublicUrl(caminhoFoto);
+
+      fotoUrl = urlPublica.publicUrl;
+    }
+
+    const { data: novaPublicacao, error } =
+      await supabase
+        .from("publicacoes")
+        .insert({
+          usuario_id: usuarioAuth.user.id,
+          texto:
+            textoLimpo ||
+            "Minha nova leitura no Avelune.",
+          livro: livroLimpo || null,
+          autor_livro: autorLimpo || null,
+          avaliacao: livroLimpo
+            ? avaliacaoDigitada
+            : null,
+          foto_url: fotoUrl,
+        })
+        .select(
+          "id, usuario_id, texto, livro, autor_livro, avaliacao, foto_url, curtidas, comentarios, created_at"
+        )
+        .single();
+
+    if (error || !novaPublicacao) {
+      mostrarMensagem(
+        "Não foi possível publicar sua resenha. Tente novamente."
+      );
+      return;
+    }
+
+    const { data: perfil } = await supabase
+      .from("profiles")
+      .select("id, nome, username")
+      .eq("id", usuarioAuth.user.id)
+      .maybeSingle();
+
+    const nome =
+      perfil?.nome ||
+      perfil?.username ||
+      "Você";
+
+    const postagemCriada: Publicacao = {
+      id: novaPublicacao.id,
+      usuario: nome,
+      iniciais: nome
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((parte: string) => parte[0])
+        .join("")
+        .toUpperCase() || "VC",
       tempo: "agora",
-      texto:
-        textoLimpo ||
-        "Minha nova leitura no Avelune.",
-      livro: livroLimpo || undefined,
+      texto: novaPublicacao.texto,
+      livro: novaPublicacao.livro ?? undefined,
       autorLivro:
-        autorLimpo || undefined,
-      linkLivro:
-        linkLivroLimpo || undefined,
+        novaPublicacao.autor_livro ?? undefined,
       avaliacao:
-        livroLimpo
-          ? avaliacaoDigitada
-          : undefined,
-      foto: fotoSelecionada || undefined,
+        novaPublicacao.avaliacao ?? undefined,
+      foto: novaPublicacao.foto_url ?? undefined,
       curtidas: 0,
       comentarios: 0,
       curtido: false,
@@ -587,38 +1131,83 @@ function Comunidade({
     };
 
     setPostagens((atual) => [
-      novaPostagem,
+      postagemCriada,
       ...atual,
     ]);
 
     limparCompositor();
     mostrarMensagem(
-      "Sua publicação foi adicionada à comunidade."
+      "Sua publicação foi salva na comunidade."
     );
   }
 
-  function alternarCurtida(id: number) {
+  async function alternarCurtida(id: number) {
     if (!exigirConta()) {
       return;
     }
 
-    setPostagens((atual) =>
-      atual.map((post) => {
-        if (post.id !== id) {
-          return post;
-        }
+    const { data: usuarioAuth, error: erroUsuario } =
+      await supabase.auth.getUser();
 
-        return {
-          ...post,
-          curtido: !post.curtido,
-          curtidas: post.curtido
-            ? Math.max(
-              0,
-              post.curtidas - 1
-            )
-            : post.curtidas + 1,
-        };
-      })
+    if (erroUsuario || !usuarioAuth.user) {
+      mostrarMensagem(
+        "Sua sessão expirou. Entre novamente para continuar."
+      );
+      return;
+    }
+
+    const post = postagens.find(
+      (item) => item.id === id
+    );
+
+    if (!post) {
+      return;
+    }
+
+    if (post.curtido) {
+      const { error } = await supabase
+        .from("curtidas")
+        .delete()
+        .eq("publicacao_id", id)
+        .eq("usuario_id", usuarioAuth.user.id);
+
+      if (error) {
+        mostrarMensagem(
+          "Não foi possível remover sua curtida."
+        );
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from("curtidas")
+        .insert({
+          publicacao_id: id,
+          usuario_id: usuarioAuth.user.id,
+        });
+
+      if (error && error.code !== "23505") {
+        mostrarMensagem(
+          "Não foi possível registrar sua curtida."
+        );
+        return;
+      }
+    }
+
+    const { count } = await supabase
+      .from("curtidas")
+      .select("id", { count: "exact", head: true })
+      .eq("publicacao_id", id);
+
+    setPostagens((atual) =>
+      atual.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              curtido: !post.curtido,
+              curtidas: count ?? 0,
+            }
+          : item
+      )
     );
   }
 
@@ -631,9 +1220,9 @@ function Comunidade({
       atual.map((post) =>
         post.id === id
           ? {
-            ...post,
-            salva: !post.salva,
-          }
+              ...post,
+              salva: !post.salva,
+            }
           : post
       )
     );
@@ -649,7 +1238,7 @@ function Comunidade({
     );
   }
 
-  function adicionarComentario(id: number) {
+  async function adicionarComentario(id: number) {
     if (!exigirConta()) {
       return;
     }
@@ -661,26 +1250,77 @@ function Comunidade({
       return;
     }
 
+    if (novoTexto.length > 1000) {
+      mostrarMensagem(
+        "O comentário pode ter no máximo 1000 caracteres."
+      );
+      return;
+    }
+
+    const { data: usuarioAuth, error: erroUsuario } =
+      await supabase.auth.getUser();
+
+    if (erroUsuario || !usuarioAuth.user) {
+      mostrarMensagem(
+        "Sua sessão expirou. Entre novamente para comentar."
+      );
+      return;
+    }
+
+    const { data: novoComentario, error } =
+      await supabase
+        .from("comentarios")
+        .insert({
+          publicacao_id: id,
+          usuario_id: usuarioAuth.user.id,
+          texto: novoTexto,
+        })
+        .select(
+          "id, publicacao_id, usuario_id, texto, created_at"
+        )
+        .single();
+
+    if (error || !novoComentario) {
+      mostrarMensagem(
+        "Não foi possível publicar seu comentário."
+      );
+      return;
+    }
+
+    const { data: perfil } = await supabase
+      .from("profiles")
+      .select("id, nome, username")
+      .eq("id", usuarioAuth.user.id)
+      .maybeSingle();
+
+    const nome =
+      perfil?.nome ||
+      perfil?.username ||
+      "Você";
+
+    const comentario: Comentario = {
+      id: novoComentario.id,
+      usuario: nome,
+      texto: novoComentario.texto,
+    };
+
+    const { count } = await supabase
+      .from("comentarios")
+      .select("id", { count: "exact", head: true })
+      .eq("publicacao_id", id);
+
     setPostagens((atual) =>
       atual.map((post) => {
         if (post.id !== id) {
           return post;
         }
 
-        const comentariosExistentes =
-          post.comentariosLista ?? [];
-
         return {
           ...post,
-          comentarios:
-            post.comentarios + 1,
+          comentarios: count ?? post.comentarios + 1,
           comentariosLista: [
-            ...comentariosExistentes,
-            {
-              id: Date.now(),
-              usuario: "Você",
-              texto: novoTexto,
-            },
+            ...(post.comentariosLista ?? []),
+            comentario,
           ],
         };
       })
@@ -704,6 +1344,90 @@ function Comunidade({
     }));
   }
 
+  async function alternarSeguir(id: string) {
+    if (!exigirConta()) {
+      return;
+    }
+
+    const { data: usuarioAuth, error: erroUsuario } =
+      await supabase.auth.getUser();
+
+    if (erroUsuario || !usuarioAuth.user) {
+      mostrarMensagem(
+        "Sua sessão expirou. Entre novamente para continuar."
+      );
+      return;
+    }
+
+    if (usuarioAuth.user.id === id) {
+      return;
+    }
+
+    const estaSeguindo = seguindoIds.has(id);
+
+    if (estaSeguindo) {
+      const { error } = await supabase
+        .from("seguidores")
+        .delete()
+        .eq("seguidor_id", usuarioAuth.user.id)
+        .eq("seguido_id", id);
+
+      if (error) {
+        mostrarMensagem(
+          "Não foi possível deixar de seguir este leitor."
+        );
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from("seguidores")
+        .insert({
+          seguidor_id: usuarioAuth.user.id,
+          seguido_id: id,
+        });
+
+      if (error && error.code !== "23505") {
+        mostrarMensagem(
+          "Não foi possível seguir este leitor."
+        );
+        return;
+      }
+    }
+
+    const novoEstado = new Set(seguindoIds);
+
+    if (estaSeguindo) {
+      novoEstado.delete(id);
+    } else {
+      novoEstado.add(id);
+    }
+
+    setSeguindoIds(novoEstado);
+
+    const leitor = leitoresParaSeguir.find(
+      (item) => item.id === id
+    );
+
+    if (leitor) {
+      setPostagens((atual) =>
+        atual.map((post) =>
+          post.usuario === leitor.nome
+            ? {
+                ...post,
+                seguindo: !estaSeguindo,
+              }
+            : post
+        )
+      );
+    }
+
+    mostrarMensagem(
+      estaSeguindo
+        ? "Você deixou de seguir este leitor."
+        : "Você começou a seguir este leitor."
+    );
+  }
+
   function renderEstrelas(
     avaliacao: number
   ) {
@@ -724,326 +1448,6 @@ function Comunidade({
     );
   }
 
-  function renderPost(post: Publicacao) {
-    const comentarios = post.comentariosLista ?? [];
-    const primeiroComentario = comentarios[0];
-
-    return (
-      <article className="comunidade-post" key={post.id}>
-                    <div className="comunidade-post-cabecalho">
-                      <div className="comunidade-avatar">
-                        {post.iniciais}
-                      </div>
-
-                      <div className="comunidade-post-usuario">
-                        <strong>
-                          {post.usuario}
-                        </strong>
-                        <span>{post.tempo}</span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="comunidade-post-menu"
-                        aria-label="Mais opções"
-                        onClick={() =>
-                          mostrarMensagem(
-                            "As opções desta publicação serão adicionadas depois."
-                          )
-                        }
-                      >
-                        ···
-                      </button>
-                    </div>
-
-                    {post.foto ? (
-                      <div className="comunidade-post-foto">
-                        <img
-                          src={post.foto}
-                          alt={`Publicação de ${post.usuario}`}
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className={`comunidade-post-foto comunidade-post-foto--arte ${post.cor ?? "simples"
-                          }`}
-                      >
-                        <div className="comunidade-foto-luz" />
-                        <span>
-                          {post.simbolo ?? "✦"}
-                        </span>
-                        {post.livro && (
-                          <strong>
-                            {post.livro}
-                          </strong>
-                        )}
-                        {post.autorLivro && (
-                          <small>
-                            {post.autorLivro}
-                          </small>
-                        )}
-                      </div>
-                    )}
-
-                    <div className="comunidade-post-acoes">
-                      <div>
-                        <button
-                          type="button"
-                          className={
-                            post.curtido
-                              ? "ativo"
-                              : ""
-                          }
-                          onClick={() =>
-                            alternarCurtida(
-                              post.id
-                            )
-                          }
-                          aria-label="Curtir"
-                        >
-                          <span>
-                            {post.curtido
-                              ? "♥"
-                              : "♡"}
-                          </span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            alternarComentarios(
-                              post.id
-                            )
-                          }
-                          aria-label="Comentários"
-                        >
-                          <span>◌</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          className={
-                            post.salva
-                              ? "ativo-salvo"
-                              : ""
-                          }
-                          onClick={() =>
-                            alternarSalvo(
-                              post.id
-                            )
-                          }
-                          aria-label="Salvar"
-                        >
-                          <span>
-                            {post.salva
-                              ? "◆"
-                              : "◇"}
-                          </span>
-                        </button>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="compartilhar"
-                        onClick={() =>
-                          mostrarMensagem(
-                            "Compartilhamento ficará disponível quando o sistema de usuários estiver conectado."
-                          )
-                        }
-                        aria-label="Compartilhar"
-                      >
-                        <span>↗</span>
-                      </button>
-                    </div>
-
-                    <div className="comunidade-post-curtidas">
-                      {post.curtidas}{" "}
-                      {post.curtidas === 1
-                        ? "curtida"
-                        : "curtidas"}
-                    </div>
-
-                    <div className="comunidade-post-legenda">
-                      <strong>
-                        {post.usuario}
-                      </strong>{" "}
-                      {post.texto}
-                    </div>
-
-                    {post.livro && (
-                      <div className="comunidade-resenha-livro">
-                        <div>
-                          <span>
-                            RESENHA · LIVRO
-                          </span>
-                          <strong>
-                            {post.livro}
-                          </strong>
-                          <small>
-                            {post.autorLivro ||
-                              "Autor não informado"}
-                          </small>
-                          {post.linkLivro && (
-                            <a
-                              href={post.linkLivro}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="comunidade-link-livro"
-                            >
-                              VER LIVRO ↗
-                            </a>
-                          )}
-                        </div>
-
-                        {post.avaliacao && (
-                          <div className="comunidade-avaliacao">
-                            <div>
-                              {renderEstrelas(
-                                post.avaliacao
-                              )}
-                              
-                                
-                            </div>
-                            <strong>
-                              {post.avaliacao}.0
-                            </strong>
-                          </div>
-                        )}
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            onNavigate?.(
-                              "biblioteca"
-                            )
-                          }
-                        >
-                          VER LIVRO →
-                        </button>
-                      </div>
-                    )}
-
-                    <button
-                      type="button"
-                      className="comunidade-ver-comentarios"
-                      onClick={() =>
-                        alternarComentarios(
-                          post.id
-                        )
-                      }
-                    >
-                      {post.comentarios > 0
-                        ? `Ver todos os ${post.comentarios} comentários`
-                        : "Adicionar comentário"}
-                    </button>
-
-                    {primeiroComentario &&
-                      comentariosAbertos !==
-                      post.id && (
-                        <div className="comunidade-comentario-preview">
-                          <div className="comunidade-avatar mini">
-                            {primeiroComentario.usuario
-                              .slice(0, 2)
-                              .toUpperCase()}
-                          </div>
-
-                          <p>
-                            <strong>
-                              {
-                                primeiroComentario.usuario
-                              }
-                            </strong>{" "}
-                            {
-                              primeiroComentario.texto
-                            }
-                          </p>
-                        </div>
-                      )}
-
-                    {comentariosAbertos ===
-                      post.id && (
-                        <div className="comunidade-comentarios-abertos">
-                          {comentarios.length > 0 &&
-                            comentarios.map(
-                              (comentario) => (
-                                <p
-                                  key={
-                                    comentario.id
-                                  }
-                                >
-                                  <strong>
-                                    {
-                                      comentario.usuario
-                                    }
-                                  </strong>{" "}
-                                  {comentario.texto}
-                                </p>
-                              )
-                            )}
-
-                          <div className="comunidade-comentario-form">
-                            <div className="comunidade-avatar mini">
-                              VC
-                            </div>
-
-                            <input
-                              value={
-                                comentarioDigitado[
-                                post.id
-                                ] ?? ""
-                              }
-                              onChange={(evento) =>
-                                atualizarComentario(
-                                  post.id,
-                                  evento.target.value
-                                )
-                              }
-                              onKeyDown={(evento) => {
-                                if (
-                                  evento.key ===
-                                  "Enter"
-                                ) {
-                                  evento.preventDefault();
-                                  adicionarComentario(
-                                    post.id
-                                  );
-                                }
-                              }}
-                              placeholder="Adicione um comentário..."
-                              maxLength={500}
-                            />
-
-                            <button
-                              type="button"
-                              onClick={() =>
-                                adicionarComentario(
-                                  post.id
-                                )
-                              }
-                            >
-                              ENVIAR
-                            </button>
-                          </div>
-                        </div>
-                      )}
-      </article>
-    );
-  }
-
-  const destaquesReais = [...postagens].sort((a, b) => b.curtidas - a.curtidas).slice(0, 3);
-
-  const leitoresReais = Array.from(new Map(postagens.map((post) => [post.usuario, { usuario: post.usuario, iniciais: post.iniciais, seguindo: post.seguindo ?? false }])).values()).slice(0, 3);
-
-  const contagemHashtags = new Map<string, number>();
-  postagens.forEach((post) => {
-    const hashtags = post.texto.match(/#[\wÀ-ÿ]+/g) ?? [];
-    hashtags.forEach((hashtag) => {
-      const normalizada = hashtag.toLowerCase();
-      contagemHashtags.set(normalizada, (contagemHashtags.get(normalizada) ?? 0) + 1);
-    });
-  });
-  const tendenciasReais = Array.from(contagemHashtags.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5);
-
   return (
     <main className="comunidade">
       <div className="comunidade-particulas">
@@ -1054,10 +1458,82 @@ function Comunidade({
         <span />
       </div>
 
-      <AveluneHeader
-        paginaAtual="comunidade"
-        onNavigate={(pagina) => onNavigate?.(pagina)}
-      />
+      <header className="comunidade-topo">
+        <button
+          type="button"
+          className="comunidade-logo"
+          onClick={() =>
+            onNavigate?.("inicio")
+          }
+          aria-label="Voltar para o início"
+        >
+          AVELUNE
+        </button>
+
+        <nav className="comunidade-nav">
+          <button
+            type="button"
+            onClick={() =>
+              onNavigate?.("biblioteca")
+            }
+          >
+            Biblioteca
+          </button>
+
+          <button
+            type="button"
+            onClick={() =>
+              onNavigate?.("explorar")
+            }
+          >
+            Explorar
+          </button>
+
+          <button
+            type="button"
+            className="ativo"
+            onClick={() =>
+              onNavigate?.("comunidade")
+            }
+          >
+            Comunidade
+          </button>
+        </nav>
+
+        <div className="comunidade-acoes">
+          <button
+            type="button"
+            className="comunidade-icone"
+            aria-label="Pesquisar"
+            onClick={() =>
+              mostrarMensagem(
+                "A busca da comunidade ficará disponível em breve."
+              )
+            }
+          >
+            ⌕
+          </button>
+
+          <button
+            type="button"
+            className="comunidade-perfil"
+            aria-label={
+              visitante
+                ? "Entrar no Avelune"
+                : "Abrir seu perfil"
+            }
+            onClick={() =>
+              onNavigate?.(
+                visitante
+                  ? "auth-login"
+                  : "perfil"
+              )
+            }
+          >
+            {visitante ? "ENTRAR" : "VC"}
+          </button>
+        </div>
+      </header>
 
       <section className="comunidade-conteudo">
         <div className="comunidade-introducao">
@@ -1072,22 +1548,8 @@ function Comunidade({
           </p>
         </div>
 
-        <div className="comunidade-abas-principais">
-          <button type="button" className={abaComunidade === "publicacoes" ? "ativo" : ""} onClick={() => setAbaComunidade("publicacoes")}>
-            PUBLICAÇÕES
-          </button>
-          <button type="button" className={abaComunidade === "resenhas" ? "ativo" : ""} onClick={() => setAbaComunidade("resenhas")}>
-            RESENHAS
-          </button>
-          <button type="button" className={abaComunidade === "historias" ? "ativo" : ""} onClick={() => setAbaComunidade("historias")}>
-            HISTÓRIAS
-          </button>
-        </div>
-
         <div className="comunidade-layout">
           <section className="comunidade-feed">
-            {abaComunidade === "publicacoes" && (
-              <>
             <div className="comunidade-feed-topo">
               <div className="comunidade-filtros">
                 <button
@@ -1194,16 +1656,6 @@ function Comunidade({
                       maxLength={100}
                     />
 
-                    <input
-                      type="url"
-                      value={linkLivroDigitado}
-                      onChange={(evento) =>
-                        setLinkLivroDigitado(evento.target.value)
-                      }
-                      placeholder="Link do livro (opcional)"
-                      maxLength={500}
-                    />
-
                     <div className="comunidade-nota">
                       <span>MINHA NOTA</span>
 
@@ -1216,7 +1668,7 @@ function Comunidade({
                               key={indice}
                               className={
                                 indice <
-                                  avaliacaoDigitada
+                                avaliacaoDigitada
                                   ? "ativa"
                                   : ""
                               }
@@ -1341,7 +1793,7 @@ function Comunidade({
               </div>
             )}
 
-            {feedPublicacoes.length === 0 ? (
+            {feed.length === 0 ? (
               <div className="comunidade-post">
                 <p className="comunidade-post-texto">
                   Você ainda não segue nenhum leitor.
@@ -1350,165 +1802,306 @@ function Comunidade({
                 </p>
               </div>
             ) : (
-              feedPublicacoes.map((post) => renderPost(post))
-            )}
-              </>
-            )}
+              feed.map((post) => {
+                const comentarios =
+                  post.comentariosLista ?? [];
 
-            {abaComunidade === "resenhas" && (
-              <div className="comunidade-resenhas-area">
-                <section className="comunidade-livros-resenha">
-                  <div className="comunidade-secao-cabecalho">
-                    <div>
-                      <span>✦</span>
-                      <div>
-                        <small>ESCOLHA COMO COMEÇAR</small>
-                        <h2>Escreva uma resenha</h2>
+                const primeiroComentario =
+                  comentarios[0];
+
+                return (
+                  <article
+                    className="comunidade-post"
+                    key={post.id}
+                  >
+                    <div className="comunidade-post-cabecalho">
+                      <div className="comunidade-avatar">
+                        {post.iniciais}
                       </div>
-                    </div>
-                    <p>Escolha um livro da Biblioteca ou informe o link de qualquer livro.</p>
-                  </div>
 
-                  <div className="comunidade-submenu-resenha" role="tablist" aria-label="Origem do livro">
-                    <button
-                      type="button"
-                      className={subAbaResenha === "biblioteca" ? "ativo" : ""}
-                      onClick={() => setSubAbaResenha("biblioteca")}
-                    >
-                      DA BIBLIOTECA
-                    </button>
-                    <button
-                      type="button"
-                      className={subAbaResenha === "link" ? "ativo" : ""}
-                      onClick={() => setSubAbaResenha("link")}
-                    >
-                      USAR LINK
-                    </button>
-                  </div>
+                      <div className="comunidade-post-usuario">
+                        <strong>
+                          {post.usuario}
+                        </strong>
+                        <span>{post.tempo}</span>
+                      </div>
 
-                  {subAbaResenha === "biblioteca" ? (
-                    <>
-                      <input
-                        className="comunidade-busca-livro-resenha"
-                        value={buscaLivroResenha}
-                        onChange={(evento) => setBuscaLivroResenha(evento.target.value)}
-                        placeholder="Buscar livro ou autor..."
-                        aria-label="Buscar livro para fazer uma resenha"
-                      />
-
-                      {livrosCarregando ? (
-                        <p className="comunidade-sidebar-vazio">Carregando livros...</p>
-                      ) : livrosErro ? (
-                        <p className="comunidade-sidebar-vazio">{livrosErro}</p>
-                      ) : (
-                        <div className="comunidade-seletor-livro-resenha">
-                          <label htmlFor="selecionar-livro-resenha">
-                            Selecione um livro da Biblioteca
-                          </label>
-                          <select
-                            id="selecionar-livro-resenha"
-                            defaultValue=""
-                            onChange={(evento) => {
-                              const livroSelecionado = livros.find(
-                                (livro) => livro.titulo === evento.target.value
-                              );
-
-                              if (!livroSelecionado) return;
-                              if (!exigirConta()) return;
-
-                              setLivroDigitado(livroSelecionado.titulo);
-                              setAutorDigitado(livroSelecionado.autor);
-                              setLinkLivroDigitado("");
-                              setModoResenha(true);
-                              setAbaComunidade("publicacoes");
-                              mostrarMensagem(`Livro selecionado: ${livroSelecionado.titulo}`);
-                            }}
-                          >
-                            <option value="">Escolha um livro...</option>
-                            {livros
-                              .filter((livro) => {
-                                const termo = buscaLivroResenha.trim().toLowerCase();
-                                return (
-                                  !termo ||
-                                  livro.titulo.toLowerCase().includes(termo) ||
-                                  livro.autor.toLowerCase().includes(termo)
-                                );
-                              })
-                              .map((livro) => (
-                                <option key={`${livro.titulo}-${livro.autor}`} value={livro.titulo}>
-                                  {livro.titulo} — {livro.autor}
-                                </option>
-                              ))}
-                          </select>
-                          <small>
-                            Selecione uma opção para abrir o formulário de resenha.
-                          </small>
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <div className="comunidade-resenha-link-form">
-                      <label>Nome do livro *
-                        <input
-                          value={livroDigitado}
-                          onChange={(evento) => setLivroDigitado(evento.target.value)}
-                          placeholder="Digite o nome do livro"
-                          maxLength={150}
-                        />
-                      </label>
-                      <label>Autor
-                        <input
-                          value={autorDigitado}
-                          onChange={(evento) => setAutorDigitado(evento.target.value)}
-                          placeholder="Nome do autor"
-                          maxLength={120}
-                        />
-                      </label>
-                      <label>Link do livro *
-                        <input
-                          type="url"
-                          value={linkLivroDigitado}
-                          onChange={(evento) => setLinkLivroDigitado(evento.target.value)}
-                          placeholder="https://..."
-                          required
-                        />
-                      </label>
                       <button
                         type="button"
-                        className="comunidade-usar-livro-link"
-                        onClick={() => {
-                          if (!exigirConta()) return;
-                          if (!livroDigitado.trim() || !linkLivroDigitado.trim()) {
-                            mostrarMensagem("Informe o nome e o link do livro.");
-                            return;
-                          }
-                          setModoResenha(true);
-                          setAbaComunidade("publicacoes");
-                          mostrarMensagem("Livro por link selecionado. Complete sua resenha.");
-                        }}
+                        className="comunidade-post-menu"
+                        aria-label="Mais opções"
+                        onClick={() =>
+                          mostrarMensagem(
+                            "As opções desta publicação serão adicionadas depois."
+                          )
+                        }
                       >
-                        CONTINUAR COM ESTE LIVRO →
+                        ···
                       </button>
                     </div>
-                  )}
-                </section>
 
-                <div className="comunidade-resenhas-publicadas">
-                  <div className="comunidade-secao-cabecalho">
-                    <div>
-                      <span>02</span>
-                      <h2>Resenhas da comunidade</h2>
+                    {post.foto ? (
+                      <div className="comunidade-post-foto">
+                        <img
+                          src={post.foto}
+                          alt={`Publicação de ${post.usuario}`}
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className={`comunidade-post-foto comunidade-post-foto--arte ${
+                          post.cor ?? "simples"
+                        }`}
+                      >
+                        <div className="comunidade-foto-luz" />
+                        <span>
+                          {post.simbolo ?? "✦"}
+                        </span>
+                        {post.livro && (
+                          <strong>
+                            {post.livro}
+                          </strong>
+                        )}
+                        {post.autorLivro && (
+                          <small>
+                            {post.autorLivro}
+                          </small>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="comunidade-post-acoes">
+                      <div>
+                        <button
+                          type="button"
+                          className={
+                            post.curtido
+                              ? "ativo"
+                              : ""
+                          }
+                          onClick={() =>
+                            alternarCurtida(
+                              post.id
+                            )
+                          }
+                          aria-label="Curtir"
+                        >
+                          <span>
+                            {post.curtido
+                              ? "♥"
+                              : "♡"}
+                          </span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            alternarComentarios(
+                              post.id
+                            )
+                          }
+                          aria-label="Comentários"
+                        >
+                          <span>◌</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          className={
+                            post.salva
+                              ? "ativo-salvo"
+                              : ""
+                          }
+                          onClick={() =>
+                            alternarSalvo(
+                              post.id
+                            )
+                          }
+                          aria-label="Salvar"
+                        >
+                          <span>
+                            {post.salva
+                              ? "◆"
+                              : "◇"}
+                          </span>
+                        </button>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="compartilhar"
+                        onClick={() =>
+                          mostrarMensagem(
+                            "Compartilhamento ficará disponível quando o sistema de usuários estiver conectado."
+                          )
+                        }
+                        aria-label="Compartilhar"
+                      >
+                        <span>↗</span>
+                      </button>
                     </div>
-                  </div>
-                {feedResenhas.length === 0 ? (
-                  <div className="comunidade-post">
-                    <p className="comunidade-post-texto">Nenhuma resenha por aqui ainda.</p>
-                  </div>
-                ) : (
-                  feedResenhas.map((post) => renderPost(post))
-                )}
-                </div>
-              </div>
+
+                    <div className="comunidade-post-curtidas">
+                      {post.curtidas}{" "}
+                      {post.curtidas === 1
+                        ? "curtida"
+                        : "curtidas"}
+                    </div>
+
+                    <div className="comunidade-post-legenda">
+                      <strong>
+                        {post.usuario}
+                      </strong>{" "}
+                      {post.texto}
+                    </div>
+
+                    {post.livro && (
+                      <div className="comunidade-resenha-livro">
+                        <div>
+                          <span>
+                            RESENHA · LIVRO
+                          </span>
+                          <strong>
+                            {post.livro}
+                          </strong>
+                          <small>
+                            {post.autorLivro ||
+                              "Autor não informado"}
+                          </small>
+                        </div>
+
+                        {post.avaliacao && (
+                          <div className="comunidade-avaliacao">
+                            <div>
+                              {renderEstrelas(
+                                post.avaliacao
+                              )}
+                            </div>
+                            <strong>
+                              {post.avaliacao}.0
+                            </strong>
+                          </div>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            onNavigate?.(
+                              "biblioteca"
+                            )
+                          }
+                        >
+                          VER LIVRO →
+                        </button>
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      className="comunidade-ver-comentarios"
+                      onClick={() =>
+                        alternarComentarios(
+                          post.id
+                        )
+                      }
+                    >
+                      {post.comentarios > 0
+                        ? `Ver todos os ${post.comentarios} comentários`
+                        : "Adicionar comentário"}
+                    </button>
+
+                    {primeiroComentario &&
+                      comentariosAbertos !==
+                        post.id && (
+                        <div className="comunidade-comentario-preview">
+                          <div className="comunidade-avatar mini">
+                            {primeiroComentario.usuario
+                              .slice(0, 2)
+                              .toUpperCase()}
+                          </div>
+
+                          <p>
+                            <strong>
+                              {
+                                primeiroComentario.usuario
+                              }
+                            </strong>{" "}
+                            {
+                              primeiroComentario.texto
+                            }
+                          </p>
+                        </div>
+                      )}
+
+                    {comentariosAbertos ===
+                      post.id && (
+                      <div className="comunidade-comentarios-abertos">
+                        {comentarios.length > 0 &&
+                          comentarios.map(
+                            (comentario) => (
+                              <p
+                                key={
+                                  comentario.id
+                                }
+                              >
+                                <strong>
+                                  {
+                                    comentario.usuario
+                                  }
+                                </strong>{" "}
+                                {comentario.texto}
+                              </p>
+                            )
+                          )}
+
+                        <div className="comunidade-comentario-form">
+                          <div className="comunidade-avatar mini">
+                            VC
+                          </div>
+
+                          <input
+                            value={
+                              comentarioDigitado[
+                                post.id
+                              ] ?? ""
+                            }
+                            onChange={(evento) =>
+                              atualizarComentario(
+                                post.id,
+                                evento.target.value
+                              )
+                            }
+                            onKeyDown={(evento) => {
+                              if (
+                                evento.key ===
+                                "Enter"
+                              ) {
+                                evento.preventDefault();
+                                adicionarComentario(
+                                  post.id
+                                );
+                              }
+                            }}
+                            placeholder="Adicione um comentário..."
+                            maxLength={500}
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              adicionarComentario(
+                                post.id
+                              )
+                            }
+                          >
+                            ENVIAR
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </article>
+                );
+              })
             )}
             {abaComunidade === "historias" && (
               <div className="comunidade-historias">
@@ -1560,16 +2153,182 @@ function Comunidade({
 
           <aside className="comunidade-sidebar">
             <div className="comunidade-card">
-              <div className="comunidade-card-titulo"><span>✦</span><div><span>EM DESTAQUE</span><strong>Leitores da semana</strong></div></div>
-              {destaquesReais.length === 0 ? <p className="comunidade-sidebar-vazio">Os destaques aparecerão quando houver interações reais.</p> : <div className="comunidade-destaques-lista">{destaquesReais.map((post) => <div key={post.id} className="comunidade-destaque"><div className="comunidade-destaque-avatar">{post.iniciais}</div><div className="comunidade-destaque-dados"><strong>@{post.usuario}</strong><span>{post.curtidas} {post.curtidas === 1 ? "curtida" : "curtidas"}</span></div></div>)}</div>}
+              <div className="comunidade-card-titulo">
+                <span>✦</span>
+                <div>
+                  <span>EM DESTAQUE</span>
+                  <strong>
+                    Leitores da semana
+                  </strong>
+                </div>
+              </div>
+
+              <div className="comunidade-destaque">
+                <div className="comunidade-avatar pequeno">
+                  LV
+                </div>
+
+                <div className="comunidade-destaque-dados">
+                  <strong>
+                    Luna Valmont
+                  </strong>
+                  <span>
+                    128 curtidas recebidas
+                  </span>
+                </div>
+              </div>
+
+              <div className="comunidade-destaque">
+                <div className="comunidade-avatar pequeno">
+                  CM
+                </div>
+
+                <div className="comunidade-destaque-dados">
+                  <strong>
+                    Clara Moon
+                  </strong>
+                  <span>
+                    107 interações
+                  </span>
+                </div>
+              </div>
+
+              <div className="comunidade-destaque">
+                <div className="comunidade-avatar pequeno">
+                  AB
+                </div>
+
+                <div className="comunidade-destaque-dados">
+                  <strong>
+                    Arthur Black
+                  </strong>
+                  <span>
+                    94 curtidas recebidas
+                  </span>
+                </div>
+              </div>
             </div>
+
             <div className="comunidade-card comunidade-tendencias">
-              <div className="comunidade-card-titulo"><span>⌁</span><div><span>AGORA NA COMUNIDADE</span><strong>Tendências</strong></div></div>
-              {tendenciasReais.length === 0 ? <p className="comunidade-sidebar-vazio">As tendências aparecerão conforme os leitores utilizarem hashtags.</p> : <div className="comunidade-tendencias-lista">{tendenciasReais.map(([hashtag, quantidade]) => <div key={hashtag} className="comunidade-tendencia-item"><strong>{hashtag}</strong><span>{quantidade} {quantidade === 1 ? "publicação" : "publicações"}</span></div>)}</div>}
+              <div className="comunidade-card-titulo">
+                <span>⌁</span>
+                <div>
+                  <span>
+                    AGORA NA COMUNIDADE
+                  </span>
+                  <strong>
+                    Tendências
+                  </strong>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="comunidade-sidebar-link"
+                onClick={() => {
+                  if (!exigirConta()) return;
+                  setTexto(
+                    "Estou lendo A Corte das Sombras e..."
+                  );
+                }}
+              >
+                <span>
+                  #ACortedasSombras
+                </span>
+                <small>
+                  128 publicações
+                </small>
+              </button>
+
+              <button
+                type="button"
+                className="comunidade-sidebar-link"
+                onClick={() => {
+                  if (!exigirConta()) return;
+                  setTexto(
+                    "Qual foi o último livro que..."
+                  );
+                }}
+              >
+                <span>
+                  #LeituraDoMomento
+                </span>
+                <small>
+                  86 publicações
+                </small>
+              </button>
+
+              <button
+                type="button"
+                className="comunidade-sidebar-link"
+                onClick={() => {
+                  if (!exigirConta()) return;
+                  setTexto(
+                    "Minha próxima leitura será..."
+                  );
+                }}
+              >
+                <span>
+                  #ProximaLeitura
+                </span>
+                <small>
+                  54 publicações
+                </small>
+              </button>
             </div>
+
             <div className="comunidade-card">
-              <div className="comunidade-card-titulo"><span>☾</span><div><span>DESCUBRA</span><strong>Leitores para seguir</strong></div></div>
-              {leitoresReais.length === 0 ? <p className="comunidade-sidebar-vazio">Novos leitores aparecerão aqui quando começarem a publicar.</p> : <div className="comunidade-leitores-lista">{leitoresReais.map((leitor) => <div key={leitor.usuario} className="comunidade-leitor"><div className="comunidade-avatar mini">{leitor.iniciais}</div><div><strong>@{leitor.usuario}</strong><span>Leitor da comunidade</span></div><button type="button" onClick={() => { if (!exigirConta()) return; mostrarMensagem("O sistema de seguidores será conectado ao perfil do usuário."); }}>{leitor.seguindo ? "SEGUINDO" : "SEGUIR"}</button></div>)}</div>}
+              <div className="comunidade-card-titulo">
+                <span>☾</span>
+                <div>
+                  <span>DESCUBRA</span>
+                  <strong>
+                    Leitores para seguir
+                  </strong>
+                </div>
+              </div>
+
+              {leitoresParaSeguir.length === 0 ? (
+                <p className="comunidade-sidebar-vazio">
+                  Não há novos leitores para sugerir no momento.
+                </p>
+              ) : (
+                leitoresParaSeguir.slice(0, 3).map((leitor) => {
+                  const estaSeguindo = seguindoIds.has(leitor.id);
+
+                  return (
+                    <div
+                      className="comunidade-leitor"
+                      key={leitor.id}
+                    >
+                      <div className="comunidade-avatar mini">
+                        {leitor.iniciais}
+                      </div>
+
+                      <div>
+                        <strong>{leitor.nome}</strong>
+                        <span>@{leitor.username}</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        className={
+                          estaSeguindo
+                            ? "seguindo"
+                            : ""
+                        }
+                        onClick={() =>
+                          alternarSeguir(leitor.id)
+                        }
+                      >
+                        {estaSeguindo
+                          ? "SEGUINDO"
+                          : "SEGUIR"}
+                      </button>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </aside>
         </div>
