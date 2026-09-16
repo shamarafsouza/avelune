@@ -7,6 +7,7 @@ import {
 import type { ChangeEvent } from "react";
 import "./Comunidade.css";
 import AveluneHeader from "../components/AveluneHeader";
+import { useLivros } from "../hooks/useLivros";
 
 type Pagina =
   | "inicio"
@@ -221,6 +222,9 @@ function Comunidade({
   const [abaComunidade, setAbaComunidade] = useState<AbaComunidade>("publicacoes");
 
   const [historias, setHistorias] = useState<Historia[]>(carregarHistorias);
+
+  const { livros, carregando: livrosCarregando, erro: livrosErro } = useLivros();
+  const [buscaLivroResenha, setBuscaLivroResenha] = useState("");
 
   useEffect(() => {
     try {
@@ -1325,7 +1329,75 @@ function Comunidade({
             )}
 
             {abaComunidade === "resenhas" && (
-              <div>
+              <div className="comunidade-resenhas-area">
+                <section className="comunidade-livros-resenha">
+                  <div className="comunidade-secao-cabecalho">
+                    <div>
+                      <span>✦</span>
+                      <div>
+                        <small>ESCOLHA SUA PRÓXIMA LEITURA</small>
+                        <h2>Escreva uma resenha</h2>
+                      </div>
+                    </div>
+                    <p>Selecione um livro da Biblioteca para começar sua resenha.</p>
+                  </div>
+
+                  <input
+                    className="comunidade-busca-livro-resenha"
+                    value={buscaLivroResenha}
+                    onChange={(evento) => setBuscaLivroResenha(evento.target.value)}
+                    placeholder="Buscar livro ou autor..."
+                    aria-label="Buscar livro para fazer uma resenha"
+                  />
+
+                  {livrosCarregando ? (
+                    <p className="comunidade-sidebar-vazio">Carregando livros...</p>
+                  ) : livrosErro ? (
+                    <p className="comunidade-sidebar-vazio">{livrosErro}</p>
+                  ) : (
+                    <div className="comunidade-livros-resenha-lista">
+                      {livros
+                        .filter((livro) => {
+                          const termo = buscaLivroResenha.trim().toLowerCase();
+                          return (
+                            !termo ||
+                            livro.titulo.toLowerCase().includes(termo) ||
+                            livro.autor.toLowerCase().includes(termo)
+                          );
+                        })
+                        .map((livro) => (
+                          <button
+                            type="button"
+                            className="comunidade-livro-resenha-item"
+                            key={livro.titulo}
+                            onClick={() => {
+                              if (!exigirConta()) return;
+                              setLivroDigitado(livro.titulo);
+                              setAutorDigitado(livro.autor);
+                              setModoResenha(true);
+                              setAbaComunidade("publicacoes");
+                              mostrarMensagem(`Livro selecionado: ${livro.titulo}`);
+                            }}
+                          >
+                            <span className="comunidade-livro-resenha-simbolo">✦</span>
+                            <span className="comunidade-livro-resenha-dados">
+                              <strong>{livro.titulo}</strong>
+                              <small>{livro.autor} · {livro.genero}</small>
+                            </span>
+                            <span className="comunidade-livro-resenha-acao">RESENHAR →</span>
+                          </button>
+                        ))}
+                    </div>
+                  )}
+                </section>
+
+                <div className="comunidade-resenhas-publicadas">
+                  <div className="comunidade-secao-cabecalho">
+                    <div>
+                      <span>02</span>
+                      <h2>Resenhas da comunidade</h2>
+                    </div>
+                  </div>
                 {feedResenhas.length === 0 ? (
                   <div className="comunidade-post">
                     <p className="comunidade-post-texto">Nenhuma resenha por aqui ainda.</p>
@@ -1333,6 +1405,7 @@ function Comunidade({
                 ) : (
                   feedResenhas.map((post) => renderPost(post))
                 )}
+                </div>
               </div>
             )}
             {abaComunidade === "historias" && (
