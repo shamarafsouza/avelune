@@ -872,16 +872,6 @@ function Biblioteca({
                     : "♡ FAVORITAR"}
                 </button>
 
-                {livroSelecionado.amazonUrl && (
-                  <a
-                    className="modal-botao amazon"
-                    href={livroSelecionado.amazonUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    🛒 COMPRAR NA AMAZON
-                  </a>
-                )}
               </div>
             </div>
           </div>
