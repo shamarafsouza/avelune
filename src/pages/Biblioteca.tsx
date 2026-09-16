@@ -167,48 +167,57 @@ function Biblioteca({
   }, [queroLer]);
 
   const livrosFiltrados = useMemo(() => {
-    const texto = busca
+  const texto = busca.toLowerCase().trim();
+
+  const categoriaSelecionada = String(categoriaAtiva)
+    .toLowerCase()
+    .trim();
+
+  return livros.filter((livro) => {
+    const genero = String(livro.genero ?? "")
       .toLowerCase()
       .trim();
 
-    return livros.filter((livro) => {
-      const pertenceCategoria =
-        categoriaAtiva === "Todos" ||
-        livro.genero === categoriaAtiva;
+    const titulo = String(livro.titulo ?? "")
+      .toLowerCase()
+      .trim();
 
-      const pertenceFiltro =
-        filtroBiblioteca === "todos" ||
-        (filtroBiblioteca === "estante" &&
-          queroLer.includes(livro.id)) ||
-        (filtroBiblioteca === "favoritos" &&
-          favoritos.includes(livro.id));
+    const autor = String(livro.autor ?? livro.autora ?? "")
+      .toLowerCase()
+      .trim();
 
-      const correspondeBusca =
-        texto === "" ||
-        livro.titulo
-          .toLowerCase()
-          .includes(texto) ||
-        livro.autor
-          .toLowerCase()
-          .includes(texto) ||
-        livro.genero
-          .toLowerCase()
-          .includes(texto);
+    const pertenceCategoria =
+      categoriaSelecionada === "" ||
+      categoriaSelecionada === "todos" ||
+      genero === categoriaSelecionada;
 
-      return (
-        pertenceCategoria &&
-        pertenceFiltro &&
-        correspondeBusca
-      );
-    });
-  }, [
-    livros,
-    categoriaAtiva,
-    filtroBiblioteca,
-    busca,
-    favoritos,
-    queroLer,
-  ]);
+    const pertenceFiltro =
+      filtroBiblioteca === "todos" ||
+      (filtroBiblioteca === "estante" &&
+        queroLer.includes(livro.id)) ||
+      (filtroBiblioteca === "favoritos" &&
+        favoritos.includes(livro.id));
+
+    const correspondeBusca =
+      texto === "" ||
+      titulo.includes(texto) ||
+      autor.includes(texto) ||
+      genero.includes(texto);
+
+    return (
+      pertenceCategoria &&
+      pertenceFiltro &&
+      correspondeBusca
+    );
+  });
+}, [
+  livros,
+  categoriaAtiva,
+  filtroBiblioteca,
+  busca,
+  favoritos,
+  queroLer,
+]);
 
   function alternarFavorito(
     id: string
