@@ -1009,6 +1009,20 @@ function Comunidade({
     );
   }
 
+  const destaquesReais = [...postagens].sort((a, b) => b.curtidas - a.curtidas).slice(0, 3);
+
+  const leitoresReais = Array.from(new Map(postagens.map((post) => [post.usuario, { usuario: post.usuario, iniciais: post.iniciais, seguindo: post.seguindo ?? false }])).values()).slice(0, 3);
+
+  const contagemHashtags = new Map<string, number>();
+  postagens.forEach((post) => {
+    const hashtags = post.texto.match(/#[\wÀ-ÿ]+/g) ?? [];
+    hashtags.forEach((hashtag) => {
+      const normalizada = hashtag.toLowerCase();
+      contagemHashtags.set(normalizada, (contagemHashtags.get(normalizada) ?? 0) + 1);
+    });
+  });
+  const tendenciasReais = Array.from(contagemHashtags.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
   return (
     <main className="comunidade">
       <div className="comunidade-particulas">
@@ -1368,6 +1382,21 @@ function Comunidade({
               </div>
             )}
           </section>
+
+          <aside className="comunidade-sidebar">
+            <div className="comunidade-card">
+              <div className="comunidade-card-titulo"><span>✦</span><div><span>EM DESTAQUE</span><strong>Leitores da semana</strong></div></div>
+              {destaquesReais.length === 0 ? <p className="comunidade-sidebar-vazio">Os destaques aparecerão quando houver interações reais.</p> : <div className="comunidade-destaques-lista">{destaquesReais.map((post) => <div key={post.id} className="comunidade-destaque"><div className="comunidade-destaque-avatar">{post.iniciais}</div><div className="comunidade-destaque-dados"><strong>@{post.usuario}</strong><span>{post.curtidas} {post.curtidas === 1 ? "curtida" : "curtidas"}</span></div></div>)}</div>}
+            </div>
+            <div className="comunidade-card comunidade-tendencias">
+              <div className="comunidade-card-titulo"><span>⌁</span><div><span>AGORA NA COMUNIDADE</span><strong>Tendências</strong></div></div>
+              {tendenciasReais.length === 0 ? <p className="comunidade-sidebar-vazio">As tendências aparecerão conforme os leitores utilizarem hashtags.</p> : <div className="comunidade-tendencias-lista">{tendenciasReais.map(([hashtag, quantidade]) => <div key={hashtag} className="comunidade-tendencia-item"><strong>{hashtag}</strong><span>{quantidade} {quantidade === 1 ? "publicação" : "publicações"}</span></div>)}</div>}
+            </div>
+            <div className="comunidade-card">
+              <div className="comunidade-card-titulo"><span>☾</span><div><span>DESCUBRA</span><strong>Leitores para seguir</strong></div></div>
+              {leitoresReais.length === 0 ? <p className="comunidade-sidebar-vazio">Novos leitores aparecerão aqui quando começarem a publicar.</p> : <div className="comunidade-leitores-lista">{leitoresReais.map((leitor) => <div key={leitor.usuario} className="comunidade-leitor"><div className="comunidade-avatar mini">{leitor.iniciais}</div><div><strong>@{leitor.usuario}</strong><span>Leitor da comunidade</span></div><button type="button" onClick={() => { if (!exigirConta()) return; mostrarMensagem("O sistema de seguidores será conectado ao perfil do usuário."); }}>{leitor.seguindo ? "SEGUINDO" : "SEGUIR"}</button></div>)}</div>}
+            </div>
+          </aside>
         </div>
 
         {modalHistoriaAberto && (
