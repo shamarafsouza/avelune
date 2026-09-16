@@ -3547,3 +3547,97 @@
   line-height: 1.5;
   opacity: 0.62;
 }
+
+
+/* Submenu da área de resenhas */
+.comunidade-submenu-resenha {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(174, 108, 47, 0.18);
+}
+
+.comunidade-submenu-resenha button {
+  border: 1px solid rgba(174, 108, 47, 0.24);
+  background: transparent;
+  color: #a99a88;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  transition: 0.2s ease;
+}
+
+.comunidade-submenu-resenha button:hover,
+.comunidade-submenu-resenha button.ativo {
+  color: #ead7b5;
+  border-color: #b58a4d;
+  background: rgba(181, 138, 77, 0.09);
+}
+
+.comunidade-resenha-link-form {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(174, 108, 47, 0.2);
+  background: rgba(15, 8, 6, 0.45);
+}
+
+.comunidade-resenha-link-form label {
+  display: grid;
+  gap: 7px;
+  color: #b9a58f;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.comunidade-resenha-link-form input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(174, 108, 47, 0.25);
+  background: #0b0706;
+  color: #eadfce;
+  padding: 13px;
+  outline: none;
+}
+
+.comunidade-resenha-link-form input:focus {
+  border-color: #b58a4d;
+}
+
+.comunidade-usar-livro-link {
+  justify-self: start;
+  border: 1px solid #b58a4d;
+  background: #b58a4d;
+  color: #160c08;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.comunidade-link-livro {
+  display: inline-block;
+  margin-top: 8px;
+  color: #c8a56b;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.comunidade-link-livro:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .comunidade-submenu-resenha {
+    flex-direction: column;
+  }
+
+  .comunidade-submenu-resenha button {
+    width: 100%;
+  }
+}
+
