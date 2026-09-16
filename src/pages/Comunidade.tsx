@@ -1401,39 +1401,48 @@ function Comunidade({
                       ) : livrosErro ? (
                         <p className="comunidade-sidebar-vazio">{livrosErro}</p>
                       ) : (
-                        <div className="comunidade-livros-resenha-lista">
-                          {livros
-                            .filter((livro) => {
-                              const termo = buscaLivroResenha.trim().toLowerCase();
-                              return (
-                                !termo ||
-                                livro.titulo.toLowerCase().includes(termo) ||
-                                livro.autor.toLowerCase().includes(termo)
+                        <div className="comunidade-seletor-livro-resenha">
+                          <label htmlFor="selecionar-livro-resenha">
+                            Selecione um livro da Biblioteca
+                          </label>
+                          <select
+                            id="selecionar-livro-resenha"
+                            defaultValue=""
+                            onChange={(evento) => {
+                              const livroSelecionado = livros.find(
+                                (livro) => livro.titulo === evento.target.value
                               );
-                            })
-                            .map((livro) => (
-                              <button
-                                type="button"
-                                className="comunidade-livro-resenha-item"
-                                key={livro.titulo}
-                                onClick={() => {
-                                  if (!exigirConta()) return;
-                                  setLivroDigitado(livro.titulo);
-                                  setAutorDigitado(livro.autor);
-                                  setLinkLivroDigitado("");
-                                  setModoResenha(true);
-                                  setAbaComunidade("publicacoes");
-                                  mostrarMensagem(`Livro selecionado: ${livro.titulo}`);
-                                }}
-                              >
-                                <span className="comunidade-livro-resenha-simbolo">✦</span>
-                                <span className="comunidade-livro-resenha-dados">
-                                  <strong>{livro.titulo}</strong>
-                                  <small>{livro.autor} · {livro.genero}</small>
-                                </span>
-                                <span className="comunidade-livro-resenha-acao">RESENHAR →</span>
-                              </button>
-                            ))}
+
+                              if (!livroSelecionado) return;
+                              if (!exigirConta()) return;
+
+                              setLivroDigitado(livroSelecionado.titulo);
+                              setAutorDigitado(livroSelecionado.autor);
+                              setLinkLivroDigitado("");
+                              setModoResenha(true);
+                              setAbaComunidade("publicacoes");
+                              mostrarMensagem(`Livro selecionado: ${livroSelecionado.titulo}`);
+                            }}
+                          >
+                            <option value="">Escolha um livro...</option>
+                            {livros
+                              .filter((livro) => {
+                                const termo = buscaLivroResenha.trim().toLowerCase();
+                                return (
+                                  !termo ||
+                                  livro.titulo.toLowerCase().includes(termo) ||
+                                  livro.autor.toLowerCase().includes(termo)
+                                );
+                              })
+                              .map((livro) => (
+                                <option key={`${livro.titulo}-${livro.autor}`} value={livro.titulo}>
+                                  {livro.titulo} — {livro.autor}
+                                </option>
+                              ))}
+                          </select>
+                          <small>
+                            Selecione uma opção para abrir o formulário de resenha.
+                          </small>
                         </div>
                       )}
                     </>
