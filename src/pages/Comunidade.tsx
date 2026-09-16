@@ -26,7 +26,59 @@ type Comentario = {
   usuario: string;
   texto: string;
 };
+type Personagem = {
+  id: number;
+  nome: string;
+  faceClaim?: string;
+  foto?: string;
+  descricao?: string;
+};
 
+type Historia = {
+  id: number;
+  titulo: string;
+  sinopse: string;
+  tipo: "fanfic" | "original";
+  livroInspiracao?: string;
+  comentarioInspiracao?: string;
+  generos: string[];
+  tropes: string[];
+  classificacao: string;
+  capa?: string;
+  personagens: Personagem[];
+  autor: string;
+  autorIniciais: string;
+  curtidas: number;
+  salva: boolean;
+  capitulos: { id: number; titulo: string }[];
+};
+
+type AbaComunidade = "publicacoes" | "resenhas" | "historias";
+
+const STORAGE_HISTORIAS = "avelune-comunidade-historias";
+
+const GENEROS_HISTORIA = [
+  "Fantasia", "Romance", "Dark Romance", "Mistério", "Terror", "Ficção", "Aventura",
+];
+
+const TROPES_SUGERIDOS = [
+  "Enemies to Lovers", "Slow Burn", "Found Family", "Segunda Chance", "Amigos de Infância",
+];
+
+const CLASSIFICACOES = ["Livre", "12", "14", "16", "18"];
+
+function carregarHistorias(): Historia[] {
+  try {
+    const salvas = localStorage.getItem(STORAGE_HISTORIAS);
+    if (salvas) {
+      const dados = JSON.parse(salvas);
+      if (Array.isArray(dados)) return dados;
+    }
+  } catch {
+    // usa vazio
+  }
+  return [];
+}
 type Publicacao = {
   id: number;
   usuario: string;
@@ -205,7 +257,7 @@ function redimensionarImagem(
         const escala = Math.min(
           1,
           limite /
-            Math.max(imagem.width, imagem.height)
+          Math.max(imagem.width, imagem.height)
         );
 
         const largura = Math.max(
@@ -278,6 +330,113 @@ function Comunidade({
     useState<Publicacao[]>(
       carregarPostagens
     );
+
+  const [abaComunidade, setAbaComunidade] = useState<AbaComunidade>("publicacoes");
+
+  const [historias, setHistorias] = useState<Historia[]>(carregarHistorias);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_HISTORIAS, JSON.stringify(historias));
+    } catch {
+      // sem ação
+    }
+  }, [historias]);
+
+  // modal de criação
+  const [modalHistoriaAberto, setModalHistoriaAberto] = useState(false);
+  const [tituloH, setTituloH] = useState("");
+  const [sinopseH, setSinopseH] = useState("");
+  const [tipoH, setTipoH] = useState<"fanfic" | "original">("fanfic");
+  const [livroInspiracaoH, setLivroInspiracaoH] = useState("");
+  const [comentarioInspiracaoH, setComentarioInspiracaoH] = useState("");
+  const [generosH, setGenerosH] = useState<string[]>([]);
+  const [tropesH, setTropesH] = useState<string[]>([]);
+  const [classificacaoH, setClassificacaoH] = useState("Livre");
+  const [capaH, setCapaH] = useState("");
+  const [personagensH, setPersonagensH] = useState<Personagem[]>([]);
+  const [novoPersonagemNome, setNovoPersonagemNome] = useState("");
+  const [novoPersonagemFaceClaim, setNovoPersonagemFaceClaim] = useState("");
+  const [novoPersonagemDescricao, setNovoPersonagemDescricao] = useState("");
+ const [, setHistoriaAberta] = useState<Historia | null>(null);
+ 
+  function alternarGeneroH(genero: string) {
+    setGenerosH((atual) =>
+      atual.includes(genero) ? atual.filter((g) => g !== genero) : [...atual, genero]
+    );
+  }
+
+  function alternarTropeH(trope: string) {
+    setTropesH((atual) =>
+      atual.includes(trope) ? atual.filter((t) => t !== trope) : [...atual, trope]
+    );
+  }
+
+  function adicionarPersonagem() {
+    if (!novoPersonagemNome.trim()) return;
+    setPersonagensH((atual) => [
+      ...atual,
+      {
+        id: Date.now(),
+        nome: novoPersonagemNome.trim(),
+        faceClaim: novoPersonagemFaceClaim.trim() || undefined,
+        descricao: novoPersonagemDescricao.trim() || undefined,
+      },
+    ]);
+    setNovoPersonagemNome("");
+    setNovoPersonagemFaceClaim("");
+    setNovoPersonagemDescricao("");
+  }
+
+  function removerPersonagem(id: number) {
+    setPersonagensH((atual) => atual.filter((p) => p.id !== id));
+  }
+
+  function limparFormularioHistoria() {
+    setTituloH("");
+    setSinopseH("");
+    setTipoH("fanfic");
+    setLivroInspiracaoH("");
+    setComentarioInspiracaoH("");
+    setGenerosH([]);
+    setTropesH([]);
+    setClassificacaoH("Livre");
+    setCapaH("");
+    setPersonagensH([]);
+  }
+
+  function publicarHistoria() {
+    if (!exigirConta()) return;
+
+    if (!tituloH.trim()) {
+      mostrarMensagem("Dê um título para sua história.");
+      return;
+    }
+
+    const nova: Historia = {
+      id: Date.now(),
+      titulo: tituloH.trim(),
+      sinopse: sinopseH.trim(),
+      tipo: tipoH,
+      livroInspiracao: livroInspiracaoH.trim() || undefined,
+      comentarioInspiracao: comentarioInspiracaoH.trim() || undefined,
+      generos: generosH,
+      tropes: tropesH,
+      classificacao: classificacaoH,
+      capa: capaH || undefined,
+      personagens: personagensH,
+      autor: "Você",
+      autorIniciais: "VC",
+      curtidas: 0,
+      salva: false,
+      capitulos: [{ id: Date.now(), titulo: "01 — O começo" }],
+    };
+
+    setHistorias((atual) => [nova, ...atual]);
+    limparFormularioHistoria();
+    setModalHistoriaAberto(false);
+    mostrarMensagem("Sua história foi publicada.");
+  }
 
   const [filtro, setFiltro] =
     useState<Filtro>("para-voce");
@@ -389,6 +548,17 @@ function Comunidade({
 
     return postagensVisiveis;
   }, [filtro, postagensVisiveis]);
+
+  // DIVIDE O FEED ENTRE PUBLICAÇÕES E RESENHAS
+  const feedPublicacoes = useMemo(
+    () => feed.filter((post) => !post.livro),
+    [feed]
+  );
+
+  const feedResenhas = useMemo(
+    () => feed.filter((post) => Boolean(post.livro)),
+    [feed]
+  );
 
   function mostrarMensagem(textoMensagem: string) {
     setMensagem(textoMensagem);
@@ -545,9 +715,9 @@ function Comunidade({
           curtido: !post.curtido,
           curtidas: post.curtido
             ? Math.max(
-                0,
-                post.curtidas - 1
-              )
+              0,
+              post.curtidas - 1
+            )
             : post.curtidas + 1,
         };
       })
@@ -563,9 +733,9 @@ function Comunidade({
       atual.map((post) =>
         post.id === id
           ? {
-              ...post,
-              salva: !post.salva,
-            }
+            ...post,
+            salva: !post.salva,
+          }
           : post
       )
     );
@@ -683,835 +853,1044 @@ function Comunidade({
             novos mundos através de quem lê com você.
           </p>
         </div>
+        <div className="comunidade-introducao">
+          <span>UM LUGAR PARA LEITORES</span>
+          <h1>Comunidade</h1>
+          <p>
+            Compartilhe leituras, encontre pessoas
+            que amam as mesmas histórias e descubra
+            novos mundos através de quem lê com você.
+          </p>
+        </div>
+
+        {/* ADICIONE AQUI ↓↓↓ */}
+        <div className="comunidade-abas-principais">
+          <button type="button" className={abaComunidade === "publicacoes" ? "ativo" : ""} onClick={() => setAbaComunidade("publicacoes")}>
+            PUBLICAÇÕES
+          </button>
+          <button type="button" className={abaComunidade === "resenhas" ? "ativo" : ""} onClick={() => setAbaComunidade("resenhas")}>
+            RESENHAS
+          </button>
+          <button type="button" className={abaComunidade === "historias" ? "ativo" : ""} onClick={() => setAbaComunidade("historias")}>
+            HISTÓRIAS
+          </button>
+        </div>
+        {/* ATÉ AQUI ↑↑↑ */}
 
         <div className="comunidade-layout">
-          <section className="comunidade-feed">
-            <div className="comunidade-feed-topo">
-              <div className="comunidade-filtros">
-                <button
-                  type="button"
-                  className={
-                    filtro === "para-voce"
-                      ? "ativo"
-                      : ""
-                  }
-                  onClick={() =>
-                    setFiltro("para-voce")
-                  }
-                >
-                  PARA VOCÊ
-                </button>
+            <section className="comunidade-feed">
+              <div className="comunidade-feed-topo">
+                <div className="comunidade-filtros">
+                  <button
+                    type="button"
+                    className={
+                      filtro === "para-voce"
+                        ? "ativo"
+                        : ""
+                    }
+                    onClick={() =>
+                      setFiltro("para-voce")
+                    }
+                  >
+                    PARA VOCÊ
+                  </button>
 
-                <button
-                  type="button"
-                  className={
-                    filtro === "seguindo"
-                      ? "ativo"
-                      : ""
-                  }
-                  onClick={() =>
-                    setFiltro("seguindo")
-                  }
-                >
-                  SEGUINDO
-                </button>
+                  <button
+                    type="button"
+                    className={
+                      filtro === "seguindo"
+                        ? "ativo"
+                        : ""
+                    }
+                    onClick={() =>
+                      setFiltro("seguindo")
+                    }
+                  >
+                    SEGUINDO
+                  </button>
 
-                <button
-                  type="button"
-                  className={
-                    filtro === "recentes"
-                      ? "ativo"
-                      : ""
-                  }
-                  onClick={() =>
-                    setFiltro("recentes")
-                  }
-                >
-                  RECENTES
-                </button>
+                  <button
+                    type="button"
+                    className={
+                      filtro === "recentes"
+                        ? "ativo"
+                        : ""
+                    }
+                    onClick={() =>
+                      setFiltro("recentes")
+                    }
+                  >
+                    RECENTES
+                  </button>
+                </div>
+
+                <span className="comunidade-feed-ornamento">
+                  ✦
+                </span>
               </div>
 
-              <span className="comunidade-feed-ornamento">
-                ✦
-              </span>
-            </div>
+              <div className="comunidade-publicar">
+                <div className="comunidade-avatar pequeno comunidade-avatar-visitante">
+                  ◌
+                </div>
 
-            <div className="comunidade-publicar">
-              <div className="comunidade-avatar pequeno comunidade-avatar-visitante">
-                ◌
-              </div>
-
-              <div className="comunidade-publicar-corpo">
-                <textarea
-                  value={texto}
-                  readOnly={visitante}
-                  onClick={() => {
-                    if (visitante) {
-                      exigirConta();
-                    }
-                  }}
-                  onFocus={() => {
-                    if (visitante) {
-                      exigirConta();
-                    }
-                  }}
-                  onChange={(evento) => {
-                    if (!visitante) {
-                      setTexto(evento.target.value);
-                    }
-                  }}
-                  placeholder={
-                    modoResenha
-                      ? "Conte como foi sua leitura..."
-                      : "Compartilhe uma leitura, uma foto ou o que está pensando..."
-                  }
-                  maxLength={1000}
-                />
-
-                {modoResenha && (
-                  <div className="comunidade-resenha-campos">
-                    <input
-                      value={livroDigitado}
-                      onChange={(evento) =>
-                        setLivroDigitado(
-                          evento.target.value
-                        )
+                <div className="comunidade-publicar-corpo">
+                  <textarea
+                    value={texto}
+                    readOnly={visitante}
+                    onClick={() => {
+                      if (visitante) {
+                        exigirConta();
                       }
-                      placeholder="Nome do livro *"
-                      maxLength={100}
-                    />
-
-                    <input
-                      value={autorDigitado}
-                      onChange={(evento) =>
-                        setAutorDigitado(
-                          evento.target.value
-                        )
+                    }}
+                    onFocus={() => {
+                      if (visitante) {
+                        exigirConta();
                       }
-                      placeholder="Autor"
-                      maxLength={100}
-                    />
+                    }}
+                    onChange={(evento) => {
+                      if (!visitante) {
+                        setTexto(evento.target.value);
+                      }
+                    }}
+                    placeholder={
+                      modoResenha
+                        ? "Conte como foi sua leitura..."
+                        : "Compartilhe uma leitura, uma foto ou o que está pensando..."
+                    }
+                    maxLength={1000}
+                  />
 
-                    <div className="comunidade-nota">
-                      <span>MINHA NOTA</span>
-
-                      <div>
-                        {Array.from(
-                          { length: 5 },
-                          (_, indice) => (
-                            <button
-                              type="button"
-                              key={indice}
-                              className={
-                                indice <
-                                avaliacaoDigitada
-                                  ? "ativa"
-                                  : ""
-                              }
-                              onClick={() =>
-                                setAvaliacaoDigitada(
-                                  indice + 1
-                                )
-                              }
-                              aria-label={`${indice + 1} estrelas`}
-                            >
-                              ★
-                            </button>
+                  {modoResenha && (
+                    <div className="comunidade-resenha-campos">
+                      <input
+                        value={livroDigitado}
+                        onChange={(evento) =>
+                          setLivroDigitado(
+                            evento.target.value
                           )
-                        )}
-                      </div>
-
-                      <strong>
-                        {avaliacaoDigitada}/5
-                      </strong>
-                    </div>
-                  </div>
-                )}
-
-                {fotoSelecionada && (
-                  <div className="comunidade-preview-foto">
-                    <img
-                      src={fotoSelecionada}
-                      alt="Prévia da foto da publicação"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFotoSelecionada("")
-                      }
-                      aria-label="Remover foto"
-                    >
-                      ×
-                    </button>
-                  </div>
-                )}
-
-                <div className="comunidade-publicar-rodape">
-                  <div>
-                    <button
-                      type="button"
-                      aria-label="Criar resenha"
-                      className={
-                        modoResenha
-                          ? "selecionado"
-                          : ""
-                      }
-                      onClick={ativarResenha}
-                    >
-                      ♧
-                    </button>
-
-                    <button
-                      type="button"
-                      aria-label="Adicionar imagem"
-                      onClick={abrirImagem}
-                    >
-                      ◫
-                    </button>
-
-                    <button
-                      type="button"
-                      aria-label="Adicionar citação"
-                      onClick={() => {
-                        if (!exigirConta()) {
-                          return;
                         }
+                        placeholder="Nome do livro *"
+                        maxLength={100}
+                      />
 
-                        setTexto((atual) =>
-                          atual
-                            ? `${atual}\n\n“ ”`
-                            : "“ ”"
-                        );
-                      }}
-                    >
-                      ❝
-                    </button>
+                      <input
+                        value={autorDigitado}
+                        onChange={(evento) =>
+                          setAutorDigitado(
+                            evento.target.value
+                          )
+                        }
+                        placeholder="Autor"
+                        maxLength={100}
+                      />
 
-                    <input
-                      ref={inputImagemRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={selecionarImagem}
-                      hidden
-                    />
-                  </div>
+                      <div className="comunidade-nota">
+                        <span>MINHA NOTA</span>
 
-                  <div className="comunidade-publicar-botoes">
-                    {modoResenha && (
+                        <div>
+                          {Array.from(
+                            { length: 5 },
+                            (_, indice) => (
+                              <button
+                                type="button"
+                                key={indice}
+                                className={
+                                  indice <
+                                    avaliacaoDigitada
+                                    ? "ativa"
+                                    : ""
+                                }
+                                onClick={() =>
+                                  setAvaliacaoDigitada(
+                                    indice + 1
+                                  )
+                                }
+                                aria-label={`${indice + 1} estrelas`}
+                              >
+                                ★
+                              </button>
+                            )
+                          )}
+                        </div>
+
+                        <strong>
+                          {avaliacaoDigitada}/5
+                        </strong>
+                      </div>
+                    </div>
+                  )}
+
+                  {fotoSelecionada && (
+                    <div className="comunidade-preview-foto">
+                      <img
+                        src={fotoSelecionada}
+                        alt="Prévia da foto da publicação"
+                      />
+
                       <button
                         type="button"
-                        className="comunidade-cancelar-resenha"
-                        onClick={limparCompositor}
+                        onClick={() =>
+                          setFotoSelecionada("")
+                        }
+                        aria-label="Remover foto"
                       >
-                        CANCELAR
+                        ×
                       </button>
-                    )}
+                    </div>
+                  )}
 
-                    <button
-                      type="button"
-                      className="comunidade-publicar-botao"
-                      onClick={publicar}
-                    >
-                      PUBLICAR
-                    </button>
+                  <div className="comunidade-publicar-rodape">
+                    <div>
+                      <button
+                        type="button"
+                        aria-label="Criar resenha"
+                        className={
+                          modoResenha
+                            ? "selecionado"
+                            : ""
+                        }
+                        onClick={ativarResenha}
+                      >
+                        ♧
+                      </button>
+
+                      <button
+                        type="button"
+                        aria-label="Adicionar imagem"
+                        onClick={abrirImagem}
+                      >
+                        ◫
+                      </button>
+
+                      <button
+                        type="button"
+                        aria-label="Adicionar citação"
+                        onClick={() => {
+                          if (!exigirConta()) {
+                            return;
+                          }
+
+                          setTexto((atual) =>
+                            atual
+                              ? `${atual}\n\n“ ”`
+                              : "“ ”"
+                          );
+                        }}
+                      >
+                        ❝
+                      </button>
+
+                      <input
+                        ref={inputImagemRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={selecionarImagem}
+                        hidden
+                      />
+                    </div>
+
+                    <div className="comunidade-publicar-botoes">
+                      {modoResenha && (
+                        <button
+                          type="button"
+                          className="comunidade-cancelar-resenha"
+                          onClick={limparCompositor}
+                        >
+                          CANCELAR
+                        </button>
+                      )}
+
+                      <button
+                        type="button"
+                        className="comunidade-publicar-botao"
+                        onClick={publicar}
+                      >
+                        PUBLICAR
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {mensagem && (
-              <div
-                role="status"
-                className="comunidade-mensagem"
-              >
-                {mensagem}
-              </div>
-            )}
+              {mensagem && (
+                <div
+                  role="status"
+                  className="comunidade-mensagem"
+                >
+                  {mensagem}
+                </div>
+              )}
 
-            {feed.length === 0 ? (
-              <div className="comunidade-post">
-                <p className="comunidade-post-texto">
-                  Você ainda não segue nenhum leitor.
-                  Quando começar a acompanhar pessoas,
-                  as publicações delas aparecerão aqui.
-                </p>
-              </div>
-            ) : (
-              feed.map((post) => {
-                const comentarios =
-                  post.comentariosLista ?? [];
+              {feedPublicacoes.length === 0 ? (
+                <div className="comunidade-post">
+                  <p className="comunidade-post-texto">
+                    Você ainda não segue nenhum leitor.
+                    Quando começar a acompanhar pessoas,
+                    as publicações delas aparecerão aqui.
+                  </p>
+                </div>
+              ) : (
+                feedPublicacoes.map((post) => {
+                  const comentarios =
+                    post.comentariosLista ?? [];
 
-                const primeiroComentario =
-                  comentarios[0];
+                  const primeiroComentario =
+                    comentarios[0];
 
-                return (
-                  <article
-                    className="comunidade-post"
-                    key={post.id}
-                  >
-                    <div className="comunidade-post-cabecalho">
-                      <div className="comunidade-avatar">
-                        {post.iniciais}
-                      </div>
-
-                      <div className="comunidade-post-usuario">
-                        <strong>
-                          {post.usuario}
-                        </strong>
-                        <span>{post.tempo}</span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="comunidade-post-menu"
-                        aria-label="Mais opções"
-                        onClick={() =>
-                          mostrarMensagem(
-                            "As opções desta publicação serão adicionadas depois."
-                          )
-                        }
-                      >
-                        ···
-                      </button>
-                    </div>
-
-                    {post.foto ? (
-                      <div className="comunidade-post-foto">
-                        <img
-                          src={post.foto}
-                          alt={`Publicação de ${post.usuario}`}
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className={`comunidade-post-foto comunidade-post-foto--arte ${
-                          post.cor ?? "simples"
-                        }`}
-                      >
-                        <div className="comunidade-foto-luz" />
-                        <span>
-                          {post.simbolo ?? "✦"}
-                        </span>
-                        {post.livro && (
-                          <strong>
-                            {post.livro}
-                          </strong>
-                        )}
-                        {post.autorLivro && (
-                          <small>
-                            {post.autorLivro}
-                          </small>
-                        )}
-                      </div>
-                    )}
-
-                    <div className="comunidade-post-acoes">
-                      <div>
-                        <button
-                          type="button"
-                          className={
-                            post.curtido
-                              ? "ativo"
-                              : ""
-                          }
-                          onClick={() =>
-                            alternarCurtida(
-                              post.id
-                            )
-                          }
-                          aria-label="Curtir"
-                        >
-                          <span>
-                            {post.curtido
-                              ? "♥"
-                              : "♡"}
-                          </span>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            alternarComentarios(
-                              post.id
-                            )
-                          }
-                          aria-label="Comentários"
-                        >
-                          <span>◌</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          className={
-                            post.salva
-                              ? "ativo-salvo"
-                              : ""
-                          }
-                          onClick={() =>
-                            alternarSalvo(
-                              post.id
-                            )
-                          }
-                          aria-label="Salvar"
-                        >
-                          <span>
-                            {post.salva
-                              ? "◆"
-                              : "◇"}
-                          </span>
-                        </button>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="compartilhar"
-                        onClick={() =>
-                          mostrarMensagem(
-                            "Compartilhamento ficará disponível quando o sistema de usuários estiver conectado."
-                          )
-                        }
-                        aria-label="Compartilhar"
-                      >
-                        <span>↗</span>
-                      </button>
-                    </div>
-
-                    <div className="comunidade-post-curtidas">
-                      {post.curtidas}{" "}
-                      {post.curtidas === 1
-                        ? "curtida"
-                        : "curtidas"}
-                    </div>
-
-                    <div className="comunidade-post-legenda">
-                      <strong>
-                        {post.usuario}
-                      </strong>{" "}
-                      {post.texto}
-                    </div>
-
-                    {post.livro && (
-                      <div className="comunidade-resenha-livro">
-                        <div>
-                          <span>
-                            RESENHA · LIVRO
-                          </span>
-                          <strong>
-                            {post.livro}
-                          </strong>
-                          <small>
-                            {post.autorLivro ||
-                              "Autor não informado"}
-                          </small>
+                  return (
+                    <article
+                      className="comunidade-post"
+                      key={post.id}
+                    >
+                      <div className="comunidade-post-cabecalho">
+                        <div className="comunidade-avatar">
+                          {post.iniciais}
                         </div>
 
-                        {post.avaliacao && (
-                          <div className="comunidade-avaliacao">
-                            <div>
-                              {renderEstrelas(
-                                post.avaliacao
-                              )}
-                            </div>
-                            <strong>
-                              {post.avaliacao}.0
-                            </strong>
-                          </div>
-                        )}
+                        <div className="comunidade-post-usuario">
+                          <strong>
+                            {post.usuario}
+                          </strong>
+                          <span>{post.tempo}</span>
+                        </div>
 
                         <button
                           type="button"
+                          className="comunidade-post-menu"
+                          aria-label="Mais opções"
                           onClick={() =>
-                            onNavigate?.(
-                              "biblioteca"
+                            mostrarMensagem(
+                              "As opções desta publicação serão adicionadas depois."
                             )
                           }
                         >
-                          VER LIVRO →
+                          ···
                         </button>
                       </div>
-                    )}
 
-                    <button
-                      type="button"
-                      className="comunidade-ver-comentarios"
-                      onClick={() =>
-                        alternarComentarios(
-                          post.id
-                        )
-                      }
-                    >
-                      {post.comentarios > 0
-                        ? `Ver todos os ${post.comentarios} comentários`
-                        : "Adicionar comentário"}
-                    </button>
-
-                    {primeiroComentario &&
-                      comentariosAbertos !==
-                        post.id && (
-                        <div className="comunidade-comentario-preview">
-                          <div className="comunidade-avatar mini">
-                            {primeiroComentario.usuario
-                              .slice(0, 2)
-                              .toUpperCase()}
-                          </div>
-
-                          <p>
+                      {post.foto ? (
+                        <div className="comunidade-post-foto">
+                          <img
+                            src={post.foto}
+                            alt={`Publicação de ${post.usuario}`}
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          className={`comunidade-post-foto comunidade-post-foto--arte ${post.cor ?? "simples"
+                            }`}
+                        >
+                          <div className="comunidade-foto-luz" />
+                          <span>
+                            {post.simbolo ?? "✦"}
+                          </span>
+                          {post.livro && (
                             <strong>
-                              {
-                                primeiroComentario.usuario
-                              }
-                            </strong>{" "}
-                            {
-                              primeiroComentario.texto
-                            }
-                          </p>
+                              {post.livro}
+                            </strong>
+                          )}
+                          {post.autorLivro && (
+                            <small>
+                              {post.autorLivro}
+                            </small>
+                          )}
                         </div>
                       )}
 
-                    {comentariosAbertos ===
-                      post.id && (
-                      <div className="comunidade-comentarios-abertos">
-                        {comentarios.length > 0 &&
-                          comentarios.map(
-                            (comentario) => (
-                              <p
-                                key={
-                                  comentario.id
-                                }
-                              >
-                                <strong>
-                                  {
-                                    comentario.usuario
-                                  }
-                                </strong>{" "}
-                                {comentario.texto}
-                              </p>
-                            )
-                          )}
-
-                        <div className="comunidade-comentario-form">
-                          <div className="comunidade-avatar mini">
-                            VC
-                          </div>
-
-                          <input
-                            value={
-                              comentarioDigitado[
-                                post.id
-                              ] ?? ""
+                      <div className="comunidade-post-acoes">
+                        <div>
+                          <button
+                            type="button"
+                            className={
+                              post.curtido
+                                ? "ativo"
+                                : ""
                             }
-                            onChange={(evento) =>
-                              atualizarComentario(
-                                post.id,
-                                evento.target.value
+                            onClick={() =>
+                              alternarCurtida(
+                                post.id
                               )
                             }
-                            onKeyDown={(evento) => {
-                              if (
-                                evento.key ===
-                                "Enter"
-                              ) {
-                                evento.preventDefault();
-                                adicionarComentario(
-                                  post.id
-                                );
-                              }
-                            }}
-                            placeholder="Adicione um comentário..."
-                            maxLength={500}
-                          />
+                            aria-label="Curtir"
+                          >
+                            <span>
+                              {post.curtido
+                                ? "♥"
+                                : "♡"}
+                            </span>
+                          </button>
 
                           <button
                             type="button"
                             onClick={() =>
-                              adicionarComentario(
+                              alternarComentarios(
                                 post.id
                               )
                             }
+                            aria-label="Comentários"
                           >
-                            ENVIAR
+                            <span>◌</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            className={
+                              post.salva
+                                ? "ativo-salvo"
+                                : ""
+                            }
+                            onClick={() =>
+                              alternarSalvo(
+                                post.id
+                              )
+                            }
+                            aria-label="Salvar"
+                          >
+                            <span>
+                              {post.salva
+                                ? "◆"
+                                : "◇"}
+                            </span>
                           </button>
                         </div>
+
+                        <button
+                          type="button"
+                          className="compartilhar"
+                          onClick={() =>
+                            mostrarMensagem(
+                              "Compartilhamento ficará disponível quando o sistema de usuários estiver conectado."
+                            )
+                          }
+                          aria-label="Compartilhar"
+                        >
+                          <span>↗</span>
+                        </button>
                       </div>
-                    )}
-                  </article>
-                );
-              })
-            )}
-          </section>
 
-          <aside className="comunidade-sidebar">
-            <div className="comunidade-card">
-              <div className="comunidade-card-titulo">
-                <span>✦</span>
-                <div>
-                  <span>EM DESTAQUE</span>
-                  <strong>
-                    Leitores da semana
-                  </strong>
-                </div>
-              </div>
+                      <div className="comunidade-post-curtidas">
+                        {post.curtidas}{" "}
+                        {post.curtidas === 1
+                          ? "curtida"
+                          : "curtidas"}
+                      </div>
 
-              <div className="comunidade-destaque">
-                <div className="comunidade-avatar pequeno">
-                  LV
-                </div>
+                      <div className="comunidade-post-legenda">
+                        <strong>
+                          {post.usuario}
+                        </strong>{" "}
+                        {post.texto}
+                      </div>
 
-                <div className="comunidade-destaque-dados">
-                  <strong>
-                    Luna Valmont
-                  </strong>
-                  <span>
-                    128 curtidas recebidas
-                  </span>
-                </div>
-              </div>
+                      {post.livro && (
+                        <div className="comunidade-resenha-livro">
+                          <div>
+                            <span>
+                              RESENHA · LIVRO
+                            </span>
+                            <strong>
+                              {post.livro}
+                            </strong>
+                            <small>
+                              {post.autorLivro ||
+                                "Autor não informado"}
+                            </small>
+                          </div>
 
-              <div className="comunidade-destaque">
-                <div className="comunidade-avatar pequeno">
-                  CM
-                </div>
+                          {post.avaliacao && (
+                            <div className="comunidade-avaliacao">
+                              <div>
+                                {renderEstrelas(
+                                  post.avaliacao
+                                )}
+                              </div>
+                              <strong>
+                                {post.avaliacao}.0
+                              </strong>
+                            </div>
+                          )}
 
-                <div className="comunidade-destaque-dados">
-                  <strong>
-                    Clara Moon
-                  </strong>
-                  <span>
-                    107 interações
-                  </span>
-                </div>
-              </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              onNavigate?.(
+                                "biblioteca"
+                              )
+                            }
+                          >
+                            VER LIVRO →
+                          </button>
+                        </div>
+                      )}
 
-              <div className="comunidade-destaque">
-                <div className="comunidade-avatar pequeno">
-                  AB
-                </div>
+                      <button
+                        type="button"
+                        className="comunidade-ver-comentarios"
+                        onClick={() =>
+                          alternarComentarios(
+                            post.id
+                          )
+                        }
+                      >
+                        {post.comentarios > 0
+                          ? `Ver todos os ${post.comentarios} comentários`
+                          : "Adicionar comentário"}
+                      </button>
 
-                <div className="comunidade-destaque-dados">
-                  <strong>
-                    Arthur Black
-                  </strong>
-                  <span>
-                    94 curtidas recebidas
-                  </span>
-                </div>
-              </div>
-            </div>
+                      {primeiroComentario &&
+                        comentariosAbertos !==
+                        post.id && (
+                          <div className="comunidade-comentario-preview">
+                            <div className="comunidade-avatar mini">
+                              {primeiroComentario.usuario
+                                .slice(0, 2)
+                                .toUpperCase()}
+                            </div>
 
-            <div className="comunidade-card comunidade-tendencias">
-              <div className="comunidade-card-titulo">
-                <span>⌁</span>
-                <div>
-                  <span>
-                    AGORA NA COMUNIDADE
-                  </span>
-                  <strong>
-                    Tendências
-                  </strong>
-                </div>
-              </div>
+                            <p>
+                              <strong>
+                                {
+                                  primeiroComentario.usuario
+                                }
+                              </strong>{" "}
+                              {
+                                primeiroComentario.texto
+                              }
+                            </p>
+                          </div>
+                        )}
 
-              <button
-                type="button"
-                className="comunidade-sidebar-link"
-                onClick={() => {
-                  if (!exigirConta()) return;
-                  setTexto(
-                    "Estou lendo A Corte das Sombras e..."
+                      {comentariosAbertos ===
+                        post.id && (
+                          <div className="comunidade-comentarios-abertos">
+                            {comentarios.length > 0 &&
+                              comentarios.map(
+                                (comentario) => (
+                                  <p
+                                    key={
+                                      comentario.id
+                                    }
+                                  >
+                                    <strong>
+                                      {
+                                        comentario.usuario
+                                      }
+                                    </strong>{" "}
+                                    {comentario.texto}
+                                  </p>
+                                )
+                              )}
+
+                            <div className="comunidade-comentario-form">
+                              <div className="comunidade-avatar mini">
+                                VC
+                              </div>
+
+                              <input
+                                value={
+                                  comentarioDigitado[
+                                  post.id
+                                  ] ?? ""
+                                }
+                                onChange={(evento) =>
+                                  atualizarComentario(
+                                    post.id,
+                                    evento.target.value
+                                  )
+                                }
+                                onKeyDown={(evento) => {
+                                  if (
+                                    evento.key ===
+                                    "Enter"
+                                  ) {
+                                    evento.preventDefault();
+                                    adicionarComentario(
+                                      post.id
+                                    );
+                                  }
+                                }}
+                                placeholder="Adicione um comentário..."
+                                maxLength={500}
+                              />
+
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  adicionarComentario(
+                                    post.id
+                                  )
+                                }
+                              >
+                                ENVIAR
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                    </article>
                   );
-                }}
-              >
-                <span>
-                  #ACortedasSombras
-                </span>
-                <small>
-                  128 publicações
-                </small>
-              </button>
-
-              <button
-                type="button"
-                className="comunidade-sidebar-link"
-                onClick={() => {
-                  if (!exigirConta()) return;
-                  setTexto(
-                    "Qual foi o último livro que..."
-                  );
-                }}
-              >
-                <span>
-                  #LeituraDoMomento
-                </span>
-                <small>
-                  86 publicações
-                </small>
-              </button>
-
-              <button
-                type="button"
-                className="comunidade-sidebar-link"
-                onClick={() => {
-                  if (!exigirConta()) return;
-                  setTexto(
-                    "Minha próxima leitura será..."
-                  );
-                }}
-              >
-                <span>
-                  #ProximaLeitura
-                </span>
-                <small>
-                  54 publicações
-                </small>
-              </button>
-            </div>
-
-            <div className="comunidade-card">
-              <div className="comunidade-card-titulo">
-                <span>☾</span>
+                })
+              )}
+              {abaComunidade === "resenhas" && (
                 <div>
-                  <span>DESCUBRA</span>
-                  <strong>
-                    Leitores para seguir
-                  </strong>
+                  {feedResenhas.length === 0 ? (
+                    <div className="comunidade-post">
+                      <p className="comunidade-post-texto">Nenhuma resenha por aqui ainda.</p>
+                    </div>
+                  ) : (
+                    feedResenhas.map((post) => (
+                      // reaproveite o mesmo <article className="comunidade-post"> que já existe no feed.map atual
+                      <div key={post.id}>{/* ... mesmo JSX de post que já existe ... */}</div>
+                    ))
+                  )}
+                </div>
+              )}
+              {abaComunidade === "historias" && (
+                <div className="comunidade-historias">
+                  <button
+                    type="button"
+                    className="comunidade-escrever-historia"
+                    onClick={() => {
+                      if (!exigirConta()) return;
+                      setModalHistoriaAberto(true);
+                    }}
+                  >
+                    + ESCREVER UMA HISTÓRIA
+                  </button>
+
+                  {historias.length === 0 ? (
+                    <div className="comunidade-post">
+                      <p className="comunidade-post-texto">
+                        Nenhuma história publicada ainda. Que tal ser a primeira?
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="comunidade-historias-grade">
+                      {historias.map((historia) => (
+                        <button
+                          type="button"
+                          key={historia.id}
+                          className="comunidade-historia-card"
+                          onClick={() => setHistoriaAberta(historia)}
+                        >
+                          <div className="comunidade-historia-capa">
+                            {historia.capa ? (
+                              <img src={historia.capa} alt={`Capa de ${historia.titulo}`} />
+                            ) : (
+                              <span>✦</span>
+                            )}
+                          </div>
+                          <strong>{historia.titulo}</strong>
+                          <small>por @{historia.autor}</small>
+                          <span className="comunidade-historia-tags">
+                            {historia.generos.slice(0, 2).join(" • ")}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+
+            <aside className="comunidade-sidebar">
+              <div className="comunidade-card">
+                <div className="comunidade-card-titulo">
+                  <span>✦</span>
+                  <div>
+                    <span>EM DESTAQUE</span>
+                    <strong>
+                      Leitores da semana
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="comunidade-destaque">
+                  <div className="comunidade-avatar pequeno">
+                    LV
+                  </div>
+
+                  <div className="comunidade-destaque-dados">
+                    <strong>
+                      Luna Valmont
+                    </strong>
+                    <span>
+                      128 curtidas recebidas
+                    </span>
+                  </div>
+                </div>
+
+                <div className="comunidade-destaque">
+                  <div className="comunidade-avatar pequeno">
+                    CM
+                  </div>
+
+                  <div className="comunidade-destaque-dados">
+                    <strong>
+                      Clara Moon
+                    </strong>
+                    <span>
+                      107 interações
+                    </span>
+                  </div>
+                </div>
+
+                <div className="comunidade-destaque">
+                  <div className="comunidade-avatar pequeno">
+                    AB
+                  </div>
+
+                  <div className="comunidade-destaque-dados">
+                    <strong>
+                      Arthur Black
+                    </strong>
+                    <span>
+                      94 curtidas recebidas
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div className="comunidade-leitor">
-                <div className="comunidade-avatar mini">
-                  NE
-                </div>
-
-                <div>
-                  <strong>
-                    Noah Evernight
-                  </strong>
-                  <span>
-                    Fantasia · Ficção
-                  </span>
+              <div className="comunidade-card comunidade-tendencias">
+                <div className="comunidade-card-titulo">
+                  <span>⌁</span>
+                  <div>
+                    <span>
+                      AGORA NA COMUNIDADE
+                    </span>
+                    <strong>
+                      Tendências
+                    </strong>
+                  </div>
                 </div>
 
                 <button
                   type="button"
+                  className="comunidade-sidebar-link"
                   onClick={() => {
                     if (!exigirConta()) return;
+                    setTexto(
+                      "Estou lendo A Corte das Sombras e..."
+                    );
+                  }}
+                >
+                  <span>
+                    #ACortedasSombras
+                  </span>
+                  <small>
+                    128 publicações
+                  </small>
+                </button>
 
-                    setPostagens((atual) =>
-                      atual.map((post) =>
-                        post.usuario ===
-                        "Noah Evernight"
-                          ? {
+                <button
+                  type="button"
+                  className="comunidade-sidebar-link"
+                  onClick={() => {
+                    if (!exigirConta()) return;
+                    setTexto(
+                      "Qual foi o último livro que..."
+                    );
+                  }}
+                >
+                  <span>
+                    #LeituraDoMomento
+                  </span>
+                  <small>
+                    86 publicações
+                  </small>
+                </button>
+
+                <button
+                  type="button"
+                  className="comunidade-sidebar-link"
+                  onClick={() => {
+                    if (!exigirConta()) return;
+                    setTexto(
+                      "Minha próxima leitura será..."
+                    );
+                  }}
+                >
+                  <span>
+                    #ProximaLeitura
+                  </span>
+                  <small>
+                    54 publicações
+                  </small>
+                </button>
+              </div>
+
+              <div className="comunidade-card">
+                <div className="comunidade-card-titulo">
+                  <span>☾</span>
+                  <div>
+                    <span>DESCUBRA</span>
+                    <strong>
+                      Leitores para seguir
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="comunidade-leitor">
+                  <div className="comunidade-avatar mini">
+                    NE
+                  </div>
+
+                  <div>
+                    <strong>
+                      Noah Evernight
+                    </strong>
+                    <span>
+                      Fantasia · Ficção
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!exigirConta()) return;
+
+                      setPostagens((atual) =>
+                        atual.map((post) =>
+                          post.usuario ===
+                            "Noah Evernight"
+                            ? {
                               ...post,
                               seguindo:
                                 !post.seguindo,
                             }
-                          : post
-                      )
-                    );
+                            : post
+                        )
+                      );
 
-                    mostrarMensagem(
-                      "Preferência de acompanhamento atualizada."
-                    );
-                  }}
+                      mostrarMensagem(
+                        "Preferência de acompanhamento atualizada."
+                      );
+                    }}
+                  >
+                    SEGUIR
+                  </button>
+                </div>
+
+                <div className="comunidade-leitor">
+                  <div className="comunidade-avatar mini">
+                    AW
+                  </div>
+
+                  <div>
+                    <strong>
+                      Amelia Whitmore
+                    </strong>
+                    <span>
+                      Romance · Mistério
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!exigirConta()) return;
+
+                      mostrarMensagem(
+                        "Você começará a seguir Amelia quando a conta estiver conectada."
+                      );
+                    }}
+                  >
+                    SEGUIR
+                  </button>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          {modalHistoriaAberto && (
+            <div className="comunidade-historia-modal-fundo" onClick={() => setModalHistoriaAberto(false)}>
+              <div className="comunidade-historia-modal" onClick={(e) => e.stopPropagation()}>
+                <button
+                  type="button"
+                  className="comunidade-historia-modal-fechar"
+                  onClick={() => setModalHistoriaAberto(false)}
                 >
-                  SEGUIR
+                  ×
+                </button>
+
+                <h2>Nova história</h2>
+
+                <label>Título</label>
+                <input value={tituloH} onChange={(e) => setTituloH(e.target.value)} />
+
+                <label>Sinopse</label>
+                <textarea value={sinopseH} onChange={(e) => setSinopseH(e.target.value)} />
+
+                <label>Tipo</label>
+                <div className="comunidade-historia-radio">
+                  <button
+                    type="button"
+                    className={tipoH === "fanfic" ? "ativo" : ""}
+                    onClick={() => setTipoH("fanfic")}
+                  >
+                    Fanfic
+                  </button>
+                  <button
+                    type="button"
+                    className={tipoH === "original" ? "ativo" : ""}
+                    onClick={() => setTipoH("original")}
+                  >
+                    História original
+                  </button>
+                </div>
+
+                {tipoH === "fanfic" && (
+                  <>
+                    <label>Livro que inspirou</label>
+                    <input
+                      value={livroInspiracaoH}
+                      onChange={(e) => setLivroInspiracaoH(e.target.value)}
+                      placeholder="Buscar livro no Avelune..."
+                    />
+                    <label>Essa história é inspirada em</label>
+                    <textarea
+                      value={comentarioInspiracaoH}
+                      onChange={(e) => setComentarioInspiracaoH(e.target.value)}
+                    />
+                  </>
+                )}
+
+                <label>Gêneros</label>
+                <div className="comunidade-historia-tags-selecao">
+                  {GENEROS_HISTORIA.map((genero) => (
+                    <button
+                      type="button"
+                      key={genero}
+                      className={generosH.includes(genero) ? "ativo" : ""}
+                      onClick={() => alternarGeneroH(genero)}
+                    >
+                      {genero}
+                    </button>
+                  ))}
+                </div>
+
+                <label>Tropes</label>
+                <div className="comunidade-historia-tags-selecao">
+                  {TROPES_SUGERIDOS.map((trope) => (
+                    <button
+                      type="button"
+                      key={trope}
+                      className={tropesH.includes(trope) ? "ativo" : ""}
+                      onClick={() => alternarTropeH(trope)}
+                    >
+                      {trope}
+                    </button>
+                  ))}
+                </div>
+
+                <label>Classificação</label>
+                <div className="comunidade-historia-tags-selecao">
+                  {CLASSIFICACOES.map((c) => (
+                    <button
+                      type="button"
+                      key={c}
+                      className={classificacaoH === c ? "ativo" : ""}
+                      onClick={() => setClassificacaoH(c)}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+
+                <label>Elenco imaginado</label>
+                <div className="comunidade-historia-personagens-lista">
+                  {personagensH.map((p) => (
+                    <div key={p.id} className="comunidade-historia-personagem-chip">
+                      <strong>{p.nome}</strong>
+                      {p.faceClaim && <small>Face claim: {p.faceClaim}</small>}
+                      <button type="button" onClick={() => removerPersonagem(p.id)}>×</button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="comunidade-historia-novo-personagem">
+                  <input
+                    value={novoPersonagemNome}
+                    onChange={(e) => setNovoPersonagemNome(e.target.value)}
+                    placeholder="Nome do personagem"
+                  />
+                  <input
+                    value={novoPersonagemFaceClaim}
+                    onChange={(e) => setNovoPersonagemFaceClaim(e.target.value)}
+                    placeholder="Inspirado visualmente em..."
+                  />
+                  <button type="button" onClick={adicionarPersonagem}>+ ADICIONAR PERSONAGEM</button>
+                </div>
+
+                <button type="button" className="comunidade-historia-publicar" onClick={publicarHistoria}>
+                  PUBLICAR
                 </button>
               </div>
+            </div>
+          )}
 
-              <div className="comunidade-leitor">
-                <div className="comunidade-avatar mini">
-                  AW
-                </div>
+          {mostrarAvisoConta && (
+            <div
+              className="comunidade-conta-overlay"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="comunidade-conta-titulo"
+            >
+              <div className="comunidade-conta-modal">
+                <button
+                  type="button"
+                  className="comunidade-conta-fechar"
+                  onClick={() => setMostrarAvisoConta(false)}
+                  aria-label="Fechar aviso"
+                >
+                  ×
+                </button>
 
-                <div>
-                  <strong>
-                    Amelia Whitmore
-                  </strong>
-                  <span>
-                    Romance · Mistério
-                  </span>
-                </div>
+                <span className="comunidade-conta-simbolo">✦</span>
+
+                <span className="comunidade-conta-legenda">
+                  UM LUGAR PARA LEITORES
+                </span>
+
+                <h2 id="comunidade-conta-titulo">
+                  Crie sua conta para participar.
+                </h2>
+
+                <p>
+                  Para publicar fotos, escrever resenhas,
+                  curtir e conversar com outros leitores,
+                  você precisa ter uma conta no Avelune.
+                </p>
 
                 <button
                   type="button"
+                  className="comunidade-conta-botao"
                   onClick={() => {
-                    if (!exigirConta()) return;
-
-                    mostrarMensagem(
-                      "Você começará a seguir Amelia quando a conta estiver conectada."
-                    );
+                    setMostrarAvisoConta(false);
+                    onNavigate?.("auth-cadastro");
                   }}
                 >
-                  SEGUIR
+                  CRIAR MINHA CONTA <span>→</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="comunidade-conta-voltar"
+                  onClick={() => setMostrarAvisoConta(false)}
+                >
+                  CONTINUAR LENDO
                 </button>
               </div>
             </div>
-          </aside>
-        </div>
+          )}
 
-        {mostrarAvisoConta && (
-          <div
-            className="comunidade-conta-overlay"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="comunidade-conta-titulo"
-          >
-            <div className="comunidade-conta-modal">
-              <button
-                type="button"
-                className="comunidade-conta-fechar"
-                onClick={() => setMostrarAvisoConta(false)}
-                aria-label="Fechar aviso"
-              >
-                ×
-              </button>
-
-              <span className="comunidade-conta-simbolo">✦</span>
-
-              <span className="comunidade-conta-legenda">
-                UM LUGAR PARA LEITORES
-              </span>
-
-              <h2 id="comunidade-conta-titulo">
-                Crie sua conta para participar.
-              </h2>
-
-              <p>
-                Para publicar fotos, escrever resenhas,
-                curtir e conversar com outros leitores,
-                você precisa ter uma conta no Avelune.
-              </p>
-
-              <button
-                type="button"
-                className="comunidade-conta-botao"
-                onClick={() => {
-                  setMostrarAvisoConta(false);
-                  onNavigate?.("auth-cadastro");
-                }}
-              >
-                CRIAR MINHA CONTA <span>→</span>
-              </button>
-
-              <button
-                type="button"
-                className="comunidade-conta-voltar"
-                onClick={() => setMostrarAvisoConta(false)}
-              >
-                CONTINUAR LENDO
-              </button>
-            </div>
-          </div>
-        )}
-
-        <footer className="comunidade-rodape">
-          <span>AVELUNE</span>
-          <span>
-            UM LUGAR PARA QUEM AMA HISTÓRIAS
-          </span>
-          <span>✦</span>
-        </footer>
+          <footer className="comunidade-rodape">
+            <span>AVELUNE</span>
+            <span>
+              UM LUGAR PARA QUEM AMA HISTÓRIAS
+            </span>
+            <span>✦</span>
+          </footer>
       </section>
     </main>
   );
