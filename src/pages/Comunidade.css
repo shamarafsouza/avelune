@@ -159,20 +159,7 @@
   backdrop-filter: blur(14px);
 }
 
-.comunidade-logo {
-  color: #e9dcc8;
 
-  font-family:
-    "Cinzel",
-    Georgia,
-    serif;
-
-  font-size: 19px;
-
-  letter-spacing: 0.18em;
-
-  white-space: nowrap;
-}
 
 .comunidade-nav {
   height: 90px;
@@ -471,30 +458,329 @@
    PUBLICAR
    ========================================= */
 
+
+/* =========================================
+   BLOCO CONSOLIDADO — LIMPEZA DE DUPLICAÇÕES
+   ========================================= */
+
 .comunidade-publicar {
   display: flex;
-
   gap: 15px;
-
-  padding:
-    20px;
-
+  padding: 22px 22px 18px;
   margin-bottom: 24px;
-
-  border:
-    1px solid
+  border: 1px solid
     rgba(213, 157, 83, 0.13);
+  background: linear-gradient(
+      145deg,
+      rgba(55, 30, 18, 0.94),
+      rgba(30, 16, 10, 0.96)
+    );
+  transition: border-color 0.25s ease;
+  align-items: flex-start;
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(238, 210, 174, 0.035);
+}
+
+
+
+.comunidade-nav {
+  height: 90px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 42px;
+}
+
+.comunidade-nav button {
+  position: relative;
+
+  height: 90px;
+
+  border: none;
+
+  background: transparent;
+
+  color:
+    rgba(218, 193, 158, 0.42);
+
+  font-size: 10px;
+
+  font-weight: 500;
+
+  letter-spacing: 0.16em;
+
+  text-transform: uppercase;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease;
+}
+
+.comunidade-nav button:hover {
+  color: #d8bd91;
+}
+
+.comunidade-nav button.ativo {
+  color: #ead7b7;
+}
+
+.comunidade-nav button.ativo::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 20px;
+
+  height: 1px;
 
   background:
     linear-gradient(
-      145deg,
-      rgba(48, 27, 17, 0.88),
-      rgba(34, 19, 12, 0.9)
+      90deg,
+      transparent,
+      #c99652,
+      transparent
     );
+}
+
+.comunidade-acoes {
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+}
+
+.comunidade-icone,
+.comunidade-perfil {
+  border: none;
+
+  background: transparent;
+
+  color:
+    rgba(226, 201, 167, 0.55);
+
+  cursor: pointer;
 
   transition:
-    border-color 0.25s ease;
+    color 0.25s ease,
+    transform 0.25s ease;
 }
+
+.comunidade-icone {
+  font-size: 23px;
+}
+
+.comunidade-perfil {
+  width: 35px;
+  height: 35px;
+
+  border:
+    1px solid
+    rgba(213, 157, 83, 0.2);
+
+  border-radius: 50%;
+
+  font-size: 15px;
+}
+
+.comunidade-icone:hover,
+.comunidade-perfil:hover {
+  color: #e5c58f;
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================================
+   CONTEÚDO
+   ========================================= */
+
+.comunidade-conteudo {
+  position: relative;
+
+  z-index: 5;
+
+  width: min(1240px, 86vw);
+
+  margin: 0 auto;
+
+  padding:
+    105px 0 90px;
+}
+
+
+/* =========================================
+   INTRODUÇÃO
+   ========================================= */
+
+.comunidade-introducao {
+  max-width: 760px;
+
+  margin-bottom: 70px;
+}
+
+.comunidade-introducao > span {
+  display: block;
+
+  margin-bottom: 24px;
+
+  color:
+    rgba(205, 157, 91, 0.68);
+
+  font-size: 9px;
+
+  letter-spacing: 0.25em;
+
+  text-transform: uppercase;
+}
+
+.comunidade-introducao h1 {
+  margin: 0;
+
+  color: #eadcc8;
+
+  font-family:
+    "Cinzel",
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(43px, 6vw, 76px);
+
+  font-weight: 400;
+
+  line-height: 1.05;
+
+  letter-spacing: -0.025em;
+}
+
+.comunidade-introducao p {
+  max-width: 610px;
+
+  margin:
+    27px 0 0;
+
+  color:
+    rgba(222, 202, 174, 0.48);
+
+  font-size: 13px;
+
+  line-height: 1.9;
+
+  letter-spacing: 0.025em;
+}
+
+
+/* =========================================
+   LAYOUT
+   ========================================= */
+
+.comunidade-layout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    330px;
+
+  gap: 65px;
+
+  align-items: start;
+}
+
+.comunidade-feed {
+  min-width: 0;
+}
+
+
+/* =========================================
+   TOPO DO FEED
+   ========================================= */
+
+.comunidade-feed-topo {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding-bottom: 18px;
+
+  border-bottom:
+    1px solid
+    rgba(213, 157, 83, 0.12);
+
+  margin-bottom: 20px;
+}
+
+.comunidade-filtros {
+  display: flex;
+
+  gap: 25px;
+}
+
+.comunidade-filtros button {
+  position: relative;
+
+  padding:
+    0 0 12px;
+
+  border: none;
+
+  background: transparent;
+
+  color:
+    rgba(221, 194, 159, 0.35);
+
+  font-size: 9px;
+
+  letter-spacing: 0.12em;
+
+  cursor: pointer;
+
+  transition:
+    color 0.25s ease;
+}
+
+.comunidade-filtros button:hover {
+  color:
+    rgba(221, 194, 159, 0.7);
+}
+
+.comunidade-filtros button.ativo {
+  color: #e5cfaa;
+}
+
+.comunidade-filtros button.ativo::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 1px;
+
+  background: #c99755;
+}
+
+.comunidade-feed-ornamento {
+  color:
+    rgba(211, 157, 83, 0.45);
+
+  font-size: 15px;
+}
+
+
+/* =========================================
+   PUBLICAR
+   ========================================= */
+
+
 
 .comunidade-publicar:focus-within {
   border-color:
@@ -582,30 +868,7 @@
     rgba(230, 198, 150, 0.85);
 }
 
-.comunidade-publicar-botao {
-  padding:
-    10px 18px;
 
-  border:
-    1px solid
-    rgba(213, 157, 83, 0.28);
-
-  background:
-    rgba(126, 61, 25, 0.3);
-
-  color:
-    rgba(235, 215, 181, 0.72);
-
-  font-size: 8px;
-
-  letter-spacing: 0.15em;
-
-  cursor: pointer;
-
-  transition:
-    background 0.25s ease,
-    border-color 0.25s ease;
-}
 
 .comunidade-publicar-botao:hover {
   background:
@@ -676,22 +939,106 @@
    POST
    ========================================= */
 
-.comunidade-post {
-  padding:
-    27px 0;
 
-  border-bottom:
-    1px solid
+/* =========================================
+   BLOCO CONSOLIDADO — LIMPEZA DE DUPLICAÇÕES
+   ========================================= */
+
+.comunidade-post {
+  padding: 30px 0 38px;
+  border-bottom: 1px solid
     rgba(213, 157, 83, 0.2);
+  width: min(100%, 610px);
 }
 
-.comunidade-post-cabecalho {
+
+
+.comunidade-publicar-botao:hover {
+  background:
+    rgba(126, 61, 25, 0.5);
+
+  border-color:
+    rgba(213, 157, 83, 0.5);
+}
+
+
+/* =========================================
+   AVATAR
+   ========================================= */
+
+.comunidade-avatar {
+  flex-shrink: 0;
+
+  width: 43px;
+  height: 43px;
+
   display: flex;
 
   align-items: center;
+  justify-content: center;
 
-  gap: 12px;
+  border:
+    1px solid
+    rgba(213, 157, 83, 0.25);
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(152, 90, 47, 0.4),
+      rgba(47, 24, 14, 0.85)
+    );
+
+  color:
+    rgba(233, 211, 175, 0.72);
+
+  font-family:
+    "Cinzel",
+    Georgia,
+    serif;
+
+  font-size: 10px;
+
+  letter-spacing: 0.04em;
 }
+
+.comunidade-avatar.pequeno {
+  width: 38px;
+  height: 38px;
+
+  font-size: 9px;
+}
+
+.comunidade-avatar.mini {
+  width: 28px;
+  height: 28px;
+
+  font-size: 7px;
+}
+
+
+/* =========================================
+   POST
+   ========================================= */
+
+
+
+
+/* =========================================
+   BLOCO CONSOLIDADO — LIMPEZA DE DUPLICAÇÕES
+   ========================================= */
+
+.comunidade-post-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+
+
+
 
 .comunidade-post-usuario {
   display: flex;
@@ -976,16 +1323,305 @@
    AÇÕES DO POST
    ========================================= */
 
+
+/* =========================================
+   BLOCO CONSOLIDADO — LIMPEZA DE DUPLICAÇÕES
+   ========================================= */
+
 .comunidade-post-acoes {
   display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 13px 0 0 55px;
+  justify-content: space-between;
+}
+
+
+
+.comunidade-post-usuario {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.comunidade-post-usuario strong {
+  color:
+    rgba(244, 226, 201, 0.96);
+
+  font-size: 11px;
+
+  font-weight: 500;
+}
+
+.comunidade-post-usuario span {
+  color:
+    rgba(220, 191, 151, 0.58);
+
+  font-size: 8px;
+}
+
+.comunidade-post-menu {
+  margin-left: auto;
+
+  border: none;
+
+  background: transparent;
+
+  color:
+    rgba(216, 185, 142, 0.35);
+
+  font-size: 16px;
+
+  letter-spacing: 2px;
+
+  cursor: pointer;
+}
+
+.comunidade-post-texto {
+  margin:
+    19px 0 0 55px;
+
+  color:
+    rgba(237, 220, 197, 0.86);
+
+  font-size: 12px;
+
+  line-height: 1.85;
+}
+
+
+/* =========================================
+   LIVRO NO POST
+   ========================================= */
+
+.comunidade-livro {
+  display: flex;
+
+  min-height: 135px;
+
+  margin:
+    22px 0 0 55px;
+
+  border:
+    1px solid
+    rgba(213, 157, 83, 0.13);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(53, 29, 18, 0.9),
+      rgba(38, 21, 13, 0.92)
+    );
+
+  overflow: hidden;
+}
+
+.comunidade-livro-capa {
+  position: relative;
+
+  width: 105px;
+
+  flex-shrink: 0;
+
+  padding: 16px 12px;
+
+  display: flex;
+
+  flex-direction: column;
 
   align-items: center;
 
-  gap: 25px;
+  justify-content: center;
 
-  margin:
-    20px 0 0 55px;
+  text-align: center;
+
+  overflow: hidden;
 }
+
+.comunidade-livro-capa.vinho {
+  background:
+    linear-gradient(
+      145deg,
+      #4b1d15,
+      #1f0d09
+    );
+}
+
+.comunidade-livro-capa.azul {
+  background:
+    linear-gradient(
+      145deg,
+      #1d2930,
+      #0b1114
+    );
+}
+
+.comunidade-livro-capa.roxo {
+  background:
+    linear-gradient(
+      145deg,
+      #2b1929,
+      #130b12
+    );
+}
+
+.comunidade-livro-capa.verde {
+  background:
+    linear-gradient(
+      145deg,
+      #1c2819,
+      #0d130b
+    );
+}
+
+.comunidade-livro-capa::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 8px;
+
+  border:
+    1px solid
+    rgba(238, 211, 170, 0.22);
+}
+
+.comunidade-livro-capa span {
+  position: relative;
+  z-index: 2;
+
+  margin-bottom: 10px;
+
+  color:
+    rgba(239, 215, 179, 0.45);
+
+  font-size: 5px;
+
+  letter-spacing: 0.18em;
+}
+
+.comunidade-livro-capa strong {
+  position: relative;
+  z-index: 2;
+
+  color:
+    rgba(238, 220, 195, 0.8);
+
+  font-family:
+    "Cinzel",
+    Georgia,
+    serif;
+
+  font-size: 10px;
+
+  font-weight: 400;
+
+  line-height: 1.35;
+}
+
+.comunidade-livro-capa small {
+  position: relative;
+  z-index: 2;
+
+  margin-top: 8px;
+
+  color:
+    rgba(232, 208, 173, 0.35);
+
+  font-size: 5px;
+}
+
+.comunidade-livro-capa i {
+  position: absolute;
+
+  bottom: 12px;
+
+  color:
+    rgba(239, 211, 168, 0.45);
+
+  font-style: normal;
+
+  font-size: 11px;
+}
+
+.comunidade-livro-info {
+  flex: 1;
+
+  min-width: 0;
+
+  padding:
+    20px 22px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-start;
+
+  justify-content: center;
+}
+
+.comunidade-livro-info > span {
+  margin-bottom: 8px;
+
+  color:
+    rgba(202, 155, 88, 0.5);
+
+  font-size: 7px;
+
+  letter-spacing: 0.18em;
+}
+
+.comunidade-livro-info strong {
+  color:
+    rgba(241, 222, 197, 0.94);
+
+  font-family:
+    "Cinzel",
+    Georgia,
+    serif;
+
+  font-size: 15px;
+
+  font-weight: 400;
+}
+
+.comunidade-livro-info small {
+  margin-top: 5px;
+
+  color:
+    rgba(220, 192, 155, 0.56);
+
+  font-size: 8px;
+}
+
+.comunidade-livro-info button {
+  margin-top: 14px;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color:
+    rgba(213, 166, 98, 0.58);
+
+  font-size: 7px;
+
+  letter-spacing: 0.13em;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   AÇÕES DO POST
+   ========================================= */
+
+
 
 .comunidade-post-acoes button {
   display: flex;
@@ -1037,22 +1673,74 @@
    COMENTÁRIO PREVIEW
    ========================================= */
 
+
+/* =========================================
+   BLOCO CONSOLIDADO — LIMPEZA DE DUPLICAÇÕES
+   ========================================= */
+
 .comunidade-comentario-preview {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 18px 0 0 55px;
+  padding-top: 13px;
+  border-top: 0;
+  margin-left: 55px;
+}
+
+
+
+.comunidade-post-acoes button {
   display: flex;
 
   align-items: center;
 
-  gap: 9px;
+  gap: 7px;
 
-  margin:
-    18px 0 0 55px;
+  padding: 0;
 
-  padding-top: 15px;
+  border: none;
 
-  border-top:
-    1px solid
-    rgba(213, 157, 83, 0.06);
+  background: transparent;
+
+  color:
+    rgba(224, 198, 163, 0.58);
+
+  font-size: 8px;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease;
 }
+
+.comunidade-post-acoes button:hover {
+  color:
+    rgba(230, 202, 158, 0.75);
+}
+
+.comunidade-post-acoes button > span {
+  font-size: 14px;
+}
+
+.comunidade-post-acoes button.ativo {
+  color: #c98566;
+}
+
+.comunidade-post-acoes button.ativo-salvo {
+  color: #d3a25d;
+}
+
+.comunidade-post-acoes .compartilhar {
+  margin-left: auto;
+}
+
+
+/* =========================================
+   COMENTÁRIO PREVIEW
+   ========================================= */
+
+
 
 .comunidade-comentario-preview p {
   flex: 1;
@@ -1169,224 +1857,6 @@
 
 .comunidade-card-titulo.simples {
   margin-bottom: 20px;
-}
-
-
-/* =========================================
-   DESTAQUE
-   ========================================= */
-
-.comunidade-destaque {
-  position: relative;
-
-  min-height: 180px;
-
-  padding:
-    25px 20px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  justify-content: flex-end;
-
-  overflow: hidden;
-
-  background:
-    radial-gradient(
-      circle at 70% 20%,
-      rgba(166, 74, 48, 0.28),
-      transparent 38%
-    ),
-    linear-gradient(
-      145deg,
-      #421b13,
-      #1c0c09
-    );
-}
-
-.comunidade-destaque::before {
-  content: "✦";
-
-  position: absolute;
-
-  top: 25px;
-  right: 28px;
-
-  color:
-    rgba(237, 204, 155, 0.45);
-
-  font-size: 25px;
-}
-
-.comunidade-destaque > span {
-  margin-bottom: 10px;
-
-  color:
-    rgba(232, 196, 143, 0.5);
-
-  font-size: 6px;
-
-  letter-spacing: 0.18em;
-}
-
-.comunidade-destaque > strong {
-  max-width: 210px;
-
-  color:
-    rgba(239, 220, 192, 0.88);
-
-  font-family:
-    "Cinzel",
-    Georgia,
-    serif;
-
-  font-size: 16px;
-
-  font-weight: 400;
-
-  line-height: 1.45;
-}
-
-.comunidade-destaque-dados {
-  display: flex;
-
-  gap: 15px;
-
-  margin-top: 15px;
-}
-
-.comunidade-destaque-dados span {
-  color:
-    rgba(222, 190, 145, 0.42);
-
-  font-size: 7px;
-}
-
-.comunidade-destaque-dados span:first-child {
-  color:
-    rgba(220, 167, 92, 0.65);
-}
-
-.comunidade-sidebar-link {
-  width: 100%;
-
-  margin-top: 18px;
-
-  padding:
-    11px 0;
-
-  border:
-    1px solid
-    rgba(213, 157, 83, 0.14);
-
-  background: transparent;
-
-  color:
-    rgba(220, 190, 145, 0.45);
-
-  font-size: 7px;
-
-  letter-spacing: 0.14em;
-
-  cursor: pointer;
-
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease,
-    background 0.2s ease;
-}
-
-.comunidade-sidebar-link:hover {
-  border-color:
-    rgba(213, 157, 83, 0.3);
-
-  color:
-    rgba(230, 202, 158, 0.75);
-
-  background:
-    rgba(126, 61, 25, 0.12);
-}
-
-
-/* =========================================
-   TENDÊNCIAS
-   ========================================= */
-
-.comunidade-tendencias {
-  display: flex;
-
-  flex-direction: column;
-}
-
-.comunidade-tendencias > button {
-  display: flex;
-
-  align-items: center;
-
-  gap: 13px;
-
-  padding:
-    13px 0;
-
-  border: none;
-
-  border-bottom:
-    1px solid
-    rgba(213, 157, 83, 0.07);
-
-  background: transparent;
-
-  text-align: left;
-
-  cursor: pointer;
-}
-
-.comunidade-tendencias > button:last-child {
-  border-bottom: none;
-}
-
-.comunidade-tendencias > button > span {
-  width: 20px;
-
-  color:
-    rgba(203, 156, 91, 0.32);
-
-  font-family:
-    "Cinzel",
-    Georgia,
-    serif;
-
-  font-size: 8px;
-}
-
-.comunidade-tendencias > button div {
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 4px;
-}
-
-.comunidade-tendencias strong {
-  color:
-    rgba(226, 202, 167, 0.65);
-
-  font-size: 10px;
-
-  font-weight: 500;
-}
-
-.comunidade-tendencias small {
-  color:
-    rgba(218, 189, 148, 0.48);
-
-  font-size: 7px;
-}
-
-.comunidade-tendencias > button:hover strong {
-  color:
-    rgba(235, 214, 183, 0.9);
 }
 
 
@@ -1737,9 +2207,7 @@
   line-height: 1.5;
 }
 
-.comunidade-publicar {
-  align-items: flex-start;
-}
+
 
 .comunidade-publicar-botoes {
   display: flex;
@@ -1859,14 +2327,9 @@
   cursor: pointer;
 }
 
-.comunidade-post {
-  width: min(100%, 610px);
-  padding: 30px 0 38px;
-}
 
-.comunidade-post-cabecalho {
-  margin-bottom: 15px;
-}
+
+
 
 .comunidade-post-foto {
   position: relative;
@@ -1969,13 +2432,7 @@
   text-transform: uppercase;
 }
 
-.comunidade-post-acoes {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 13px 0 0 55px;
-  gap: 20px;
-}
+
 
 .comunidade-post-acoes > div {
   display: flex;
@@ -2101,11 +2558,7 @@
   cursor: pointer;
 }
 
-.comunidade-comentario-preview {
-  margin-left: 55px;
-  padding-top: 13px;
-  border-top: 0;
-}
+
 
 .comunidade-comentario-preview p {
   margin: 0;
@@ -2230,27 +2683,9 @@
    AJUSTES DE AUTENTICAÇÃO E INTERFACE
    ========================================= */
 
-.comunidade-logo {
-  border: 0;
-  padding: 0;
-  background: transparent;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-}
 
-.comunidade-publicar {
-  position: relative;
-  padding: 22px 22px 18px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(55, 30, 18, 0.94),
-      rgba(30, 16, 10, 0.96)
-    );
-  box-shadow: inset 0 1px 0 rgba(238, 210, 174, 0.035);
-}
+
+
 
 .comunidade-publicar textarea {
   min-height: 72px;
@@ -2265,26 +2700,7 @@
   gap: 10px;
 }
 
-.comunidade-publicar-botao {
-  min-width: 108px;
-  height: 38px;
-  padding: 0 17px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(205, 154, 89, 0.45);
-  background:
-    linear-gradient(
-      135deg,
-      rgba(111, 55, 27, 0.96),
-      rgba(67, 32, 17, 0.98)
-    );
-  color: #e7cba4;
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.22);
-}
+
 
 .comunidade-publicar-botao:hover {
   background:
@@ -2545,1099 +2961,16 @@
 }
 
 
-/* =========================================================
-   AVELUNE — COMUNIDADE
-   A imagem panorâmica pertence SOMENTE à Biblioteca.
-   A Comunidade usa fundo próprio, escuro e sólido.
-   ========================================================= */
-
+/* AVELUNE — mesma linguagem visual da Biblioteca */
 .comunidade {
-  isolation: isolate;
-  background: #090504 !important;
-  background-image: none !important;
-}
-
-/* =========================================================
-   ABAS PRINCIPAIS
-   ========================================================= */
-
-.comunidade-abas-principais {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  margin: 0 0 34px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.16);
-}
-
-.comunidade-abas-principais button {
-  position: relative;
-  border: 0;
-  padding: 0 0 12px;
-  background: transparent;
-  color: rgba(221, 194, 159, 0.42);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  cursor: pointer;
-}
-
-.comunidade-abas-principais button.ativo {
-  color: #e8d1a9;
-}
-
-.comunidade-abas-principais button.ativo::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -15px;
-  height: 1px;
-  background: #c99652;
-}
-
-/* =========================================================
-   HISTÓRIAS — catálogo inspirado na lógica de sites de fanfic
-   ========================================================= */
-
-.comunidade-historias {
-  width: 100%;
-}
-
-.comunidade-historias-cabecalho {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 30px;
-  margin-bottom: 28px;
-}
-
-.comunidade-historias-kicker {
-  display: block;
-  margin-bottom: 10px;
-  color: rgba(205, 157, 91, 0.7);
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
-
-.comunidade-historias-cabecalho h2 {
-  margin: 0;
-  color: #eadcc8;
-  font-family: "Cinzel", Georgia, serif;
-  font-size: clamp(30px, 4vw, 48px);
-  font-weight: 400;
-}
-
-.comunidade-historias-cabecalho p {
-  max-width: 600px;
-  margin: 10px 0 0;
-  color: rgba(222, 202, 174, 0.52);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.comunidade-escrever-historia {
-  flex-shrink: 0;
-  border: 1px solid rgba(213, 157, 83, 0.35);
-  padding: 12px 17px;
-  background: rgba(126, 61, 25, 0.22);
-  color: #e7cfaa;
-  font-size: 9px;
-  letter-spacing: 0.13em;
-  cursor: pointer;
-}
-
-.comunidade-escrever-historia:hover {
-  background: rgba(126, 61, 25, 0.4);
-  border-color: rgba(213, 157, 83, 0.58);
-}
-
-.comunidade-historias-filtros {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 22px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.12);
-}
-
-.comunidade-historias-filtros button {
-  border: 0;
-  background: transparent;
-  color: rgba(221, 194, 159, 0.38);
-  font-size: 8px;
-  letter-spacing: 0.13em;
-  cursor: pointer;
-}
-
-.comunidade-historias-filtros button.ativo {
-  color: #e5c58f;
-}
-
-.comunidade-historias-lista {
-  display: flex;
-  flex-direction: column;
-}
-
-.comunidade-historia-item {
-  display: grid;
-  grid-template-columns: 128px minmax(0, 1fr);
-  gap: 25px;
-  padding: 24px 0;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.14);
-}
-
-.comunidade-historia-capa {
-  width: 128px;
-  height: 182px;
-  overflow: hidden;
-  border: 1px solid rgba(213, 157, 83, 0.22);
-  padding: 0;
-  background: #160a06;
-  cursor: pointer;
-}
-
-.comunidade-historia-capa img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.comunidade-historia-capa span {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  place-items: center;
-  color: #c99652;
-  font-family: "Cinzel", Georgia, serif;
-  font-size: 30px;
-}
-
-.comunidade-historia-info {
-  min-width: 0;
-}
-
-.comunidade-historia-titulo {
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: #eadcc8;
-  font-family: "Cinzel", Georgia, serif;
-  font-size: 24px;
-  font-weight: 500;
-  text-align: left;
-  cursor: pointer;
-}
-
-.comunidade-historia-titulo:hover {
-  color: #f0d2a1;
-}
-
-.comunidade-historia-autor {
-  margin: 7px 0 15px;
-  color: rgba(222, 202, 174, 0.5);
-  font-size: 11px;
-}
-
-.comunidade-historia-autor strong {
-  color: #cda66d;
-  font-weight: 500;
-}
-
-.comunidade-historia-sinopse {
-  max-width: 760px;
-  margin: 0 0 15px;
-  color: rgba(232, 218, 195, 0.68);
-  font-size: 12px;
-  line-height: 1.75;
-}
-
-.comunidade-historia-metadados {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-bottom: 13px;
-}
-
-.comunidade-historia-metadados span {
-  padding: 5px 8px;
-  border: 1px solid rgba(213, 157, 83, 0.2);
-  color: rgba(229, 205, 166, 0.7);
-  font-size: 8px;
-  letter-spacing: 0.08em;
-}
-
-.comunidade-historia-categoria {
-  margin-bottom: 12px;
-  color: rgba(213, 157, 83, 0.58);
-  font-size: 8px;
-  letter-spacing: 0.1em;
-}
-
-.comunidade-historia-categoria strong {
-  color: #cda66d;
-  font-weight: 500;
-}
-
-.comunidade-historia-dados {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 12px;
-  color: rgba(222, 202, 174, 0.5);
-  font-size: 9px;
-  line-height: 1.6;
-}
-
-.comunidade-historia-dados strong {
-  color: rgba(213, 157, 83, 0.65);
-  font-size: 8px;
-  letter-spacing: 0.1em;
-}
-
-.comunidade-historia-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.comunidade-historia-tags span {
-  padding: 5px 8px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(213, 157, 83, 0.12);
-  color: rgba(222, 202, 174, 0.52);
-  font-size: 8px;
-}
-
-.comunidade-historia-ler {
-  margin-top: 15px;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: #c99652;
-  font-size: 8px;
-  letter-spacing: 0.13em;
-  cursor: pointer;
-}
-
-/* =========================================================
-   DETALHE DA HISTÓRIA
-   ========================================================= */
-
-.comunidade-historia-detalhe-fundo {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  display: grid;
-  place-items: center;
-  padding: 30px;
-  background: rgba(5, 2, 2, 0.82);
-}
-
-.comunidade-historia-detalhe {
-  position: relative;
-  display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  gap: 30px;
-  width: min(820px, 100%);
-  max-height: min(720px, 90vh);
-  overflow: auto;
-  padding: 34px;
-  border: 1px solid rgba(213, 157, 83, 0.22);
-  background: #100805;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
-}
-
-.comunidade-historia-detalhe-fechar {
-  position: absolute;
-  top: 13px;
-  right: 15px;
-  border: 0;
-  background: transparent;
-  color: rgba(232, 218, 195, 0.6);
-  font-size: 25px;
-  cursor: pointer;
-}
-
-.comunidade-historia-detalhe-capa {
-  width: 190px;
-  height: 275px;
-  overflow: hidden;
-  border: 1px solid rgba(213, 157, 83, 0.2);
-  background: #160a06;
-}
-
-.comunidade-historia-detalhe-capa img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.comunidade-historia-detalhe-capa span {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  place-items: center;
-  color: #c99652;
-  font-family: "Cinzel", Georgia, serif;
-  font-size: 42px;
-}
-
-.comunidade-historia-detalhe-conteudo h2 {
-  margin: 3px 0 8px;
-  color: #eadcc8;
-  font-family: "Cinzel", Georgia, serif;
-  font-size: 32px;
-  font-weight: 400;
-}
-
-.comunidade-historia-detalhe-sinopse {
-  margin: 20px 0;
-  color: rgba(232, 218, 195, 0.68);
-  font-size: 12px;
-  line-height: 1.8;
-}
-
-.comunidade-historia-capitulos {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  margin-top: 20px;
-  padding-top: 17px;
-  border-top: 1px solid rgba(213, 157, 83, 0.13);
-}
-
-.comunidade-historia-capitulos > strong {
-  margin-bottom: 4px;
-  color: rgba(213, 157, 83, 0.68);
-  font-size: 8px;
-  letter-spacing: 0.12em;
-}
-
-.comunidade-historia-capitulos button {
-  border: 0;
-  padding: 7px 0;
-  background: transparent;
-  color: rgba(232, 218, 195, 0.65);
-  font-size: 10px;
-  text-align: left;
-  cursor: pointer;
-}
-
-.comunidade-historia-capitulos button:hover {
-  color: #e5c58f;
-}
-
-@media (max-width: 700px) {
-  .comunidade-historias-cabecalho {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .comunidade-historia-item {
-    grid-template-columns: 92px minmax(0, 1fr);
-    gap: 16px;
-  }
-
-  .comunidade-historia-capa {
-    width: 92px;
-    height: 132px;
-  }
-
-  .comunidade-historia-titulo {
-    font-size: 19px;
-  }
-
-  .comunidade-historia-detalhe {
-    grid-template-columns: 1fr;
-    padding: 25px;
-  }
-
-  .comunidade-historia-detalhe-capa {
-    width: 130px;
-    height: 190px;
-  }
-}
-/* =========================================================
-   AVELUNE — MODAL NOVA HISTÓRIA
-   ========================================================= */
-
-.comunidade-historia-modal-fundo {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  overflow-y: auto;
-  background: rgba(3, 1, 1, 0.86);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.comunidade-historia-modal {
-  position: relative;
-  width: min(720px, 100%);
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 38px;
-  box-sizing: border-box;
-  border: 1px solid rgba(201, 149, 78, 0.28);
+  min-height:100vh;
   background:
-    linear-gradient(
-      145deg,
-      rgba(25, 11, 7, 0.99),
-      rgba(10, 5, 4, 0.99)
-    );
-  box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.7),
-    inset 0 0 60px rgba(115, 58, 25, 0.06);
-  color: #eadcc8;
-}
-
-.comunidade-historia-modal::before {
-  content: "✦";
-  display: block;
-  margin-bottom: 12px;
-  color: #c9954d;
-  font-family: Georgia, serif;
-  font-size: 18px;
-  text-align: center;
-}
-
-.comunidade-historia-modal h2 {
-  margin: 0 0 30px;
-  color: #eadcc8;
-  font-family: "Cinzel", Georgia, serif;
-  font-size: 30px;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-}
-
-.comunidade-historia-modal-fechar {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  width: 30px;
-  height: 30px;
-  border: 1px solid rgba(201, 149, 78, 0.18);
-  background: transparent;
-  color: rgba(234, 220, 200, 0.65);
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.comunidade-historia-modal-fechar:hover {
-  color: #e6c48c;
-  border-color: rgba(201, 149, 78, 0.42);
-}
-
-.comunidade-historia-modal > label {
-  display: block;
-  margin: 20px 0 8px;
-  color: rgba(211, 169, 108, 0.78);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.comunidade-historia-modal input,
-.comunidade-historia-modal textarea {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid rgba(201, 149, 78, 0.18);
-  outline: none;
-  background: rgba(4, 2, 2, 0.72);
-  color: #eadcc8;
-  font-family: "Inter", Arial, sans-serif;
-  font-size: 12px;
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
-}
-
-.comunidade-historia-modal input {
-  height: 44px;
-  padding: 0 13px;
-}
-
-.comunidade-historia-modal textarea {
-  min-height: 105px;
-  padding: 12px 13px;
-  resize: vertical;
-  line-height: 1.6;
-}
-
-.comunidade-historia-modal input::placeholder,
-.comunidade-historia-modal textarea::placeholder {
-  color: rgba(220, 198, 166, 0.28);
-}
-
-.comunidade-historia-modal input:focus,
-.comunidade-historia-modal textarea:focus {
-  border-color: rgba(201, 149, 78, 0.52);
-  background: rgba(12, 6, 4, 0.9);
-}
-
-/* Fanfic / história original */
-
-.comunidade-historia-radio {
-  display: flex;
-  gap: 8px;
-}
-
-.comunidade-historia-radio button {
-  border: 1px solid rgba(201, 149, 78, 0.18);
-  padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.025);
-  color: rgba(231, 211, 179, 0.55);
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-}
-
-.comunidade-historia-radio button:hover {
-  border-color: rgba(201, 149, 78, 0.35);
-}
-
-.comunidade-historia-radio button.ativo {
-  border-color: rgba(201, 149, 78, 0.55);
-  background: rgba(126, 61, 25, 0.28);
-  color: #e8c98f;
-}
-
-/* Gêneros e tropes */
-
-.comunidade-historia-tags-selecao {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-}
-
-.comunidade-historia-tags-selecao button {
-  border: 1px solid rgba(201, 149, 78, 0.17);
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.025);
-  color: rgba(225, 204, 171, 0.52);
-  font-size: 8px;
-  cursor: pointer;
-}
-
-.comunidade-historia-tags-selecao button:hover {
-  border-color: rgba(201, 149, 78, 0.38);
-  color: #dec18c;
-}
-
-.comunidade-historia-tags-selecao button.ativo {
-  border-color: rgba(201, 149, 78, 0.55);
-  background: rgba(126, 61, 25, 0.28);
-  color: #e7c88f;
-}
-
-/* Elenco */
-
-.comunidade-historia-personagens-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.comunidade-historia-personagem-chip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 42px;
-  padding: 7px 10px;
-  box-sizing: border-box;
-  border: 1px solid rgba(201, 149, 78, 0.13);
-  background: rgba(255, 255, 255, 0.018);
-}
-
-.comunidade-historia-personagem-chip strong {
-  color: #dfc9a6;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.comunidade-historia-personagem-chip small {
-  flex: 1;
-  color: rgba(220, 198, 166, 0.38);
-  font-size: 9px;
-}
-
-.comunidade-historia-personagem-chip button {
-  border: 0;
-  background: transparent;
-  color: rgba(220, 198, 166, 0.42);
-  font-size: 17px;
-  cursor: pointer;
-}
-
-.comunidade-historia-personagem-chip button:hover {
-  color: #c9954d;
-}
-
-.comunidade-historia-novo-personagem {
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.comunidade-historia-novo-personagem input {
-  min-width: 0;
-}
-
-.comunidade-historia-novo-personagem button {
-  border: 1px solid rgba(201, 149, 78, 0.25);
-  padding: 0 13px;
-  background: rgba(126, 61, 25, 0.18);
-  color: #dcbf8a;
-  font-size: 8px;
-  letter-spacing: 0.08em;
-  cursor: pointer;
-}
-
-.comunidade-historia-novo-personagem button:hover {
-  background: rgba(126, 61, 25, 0.32);
-  border-color: rgba(201, 149, 78, 0.45);
-}
-
-/* Publicar */
-
-.comunidade-historia-publicar {
-  width: 100%;
-  margin-top: 28px;
-  border: 1px solid rgba(201, 149, 78, 0.42);
-  padding: 14px;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(133, 64, 28, 0.42),
-      rgba(75, 30, 16, 0.34)
-    );
-  color: #ecd2a2;
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  cursor: pointer;
-}
-
-.comunidade-historia-publicar:hover {
-  border-color: rgba(201, 149, 78, 0.68);
-  background:
-    linear-gradient(
-      135deg,
-      rgba(133, 64, 28, 0.58),
-      rgba(75, 30, 16, 0.48)
-    );
-}
-
-/* Mobile */
-
-@media (max-width: 700px) {
-  .comunidade-historia-modal-fundo {
-    align-items: flex-start;
-    padding: 15px;
-  }
-
-  .comunidade-historia-modal {
-    padding: 28px 20px;
-    max-height: 94vh;
-  }
-
-  .comunidade-historia-modal h2 {
-    font-size: 25px;
-  }
-
-  .comunidade-historia-novo-personagem {
-    grid-template-columns: 1fr;
-  }
-
-  .comunidade-historia-novo-personagem button {
-    min-height: 42px;
-  }
-
-  .comunidade-historia-radio {
-    flex-direction: column;
-  }
-
-  .comunidade-historia-radio button {
-    width: 100%;
-  }
-}
-
-.comunidade-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.comunidade-card {
-  padding: 24px;
-  border: 1px solid rgba(180, 130, 70, 0.22);
-  background: rgba(18, 10, 8, 0.88);
-  box-sizing: border-box;
-}
-
-.comunidade-card-titulo {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 22px;
-}
-
-.comunidade-card-titulo > span {
-  flex-shrink: 0;
-  font-size: 15px;
-  line-height: 1;
-  margin-top: 4px;
-}
-
-.comunidade-card-titulo > div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-}
-
-.comunidade-card-titulo > div > span {
-  display: block;
-  font-size: 11px;
-  letter-spacing: 0.16em;
-  line-height: 1.4;
-}
-
-.comunidade-card-titulo > div > strong {
-  display: block;
-  font-size: 18px;
-  line-height: 1.3;
-  font-weight: 600;
-}
-
-.comunidade-destaques-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.comunidade-destaque {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid rgba(180, 130, 70, 0.12);
-  background: rgba(255, 255, 255, 0.015);
-}
-
-.comunidade-destaque-avatar {
-  width: 40px;
-  height: 40px;
-  flex: 0 0 40px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(180, 130, 70, 0.35);
-  font-size: 11px;
-}
-
-.comunidade-destaque-dados {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.comunidade-destaque-dados strong {
-  font-size: 14px;
-  line-height: 1.3;
-  overflow-wrap: anywhere;
-}
-
-.comunidade-destaque-dados span {
-  font-size: 11px;
-  line-height: 1.4;
-  opacity: 0.55;
-}
-
-.comunidade-tendencias-lista {
-  display: flex;
-  flex-direction: column;
-}
-
-.comunidade-tendencia-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(180, 130, 70, 0.12);
-}
-
-.comunidade-tendencia-item:first-child {
-  padding-top: 0;
-}
-
-.comunidade-tendencia-item:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-
-.comunidade-tendencia-item strong {
-  font-size: 12px;
-  line-height: 1.3;
-}
-
-.comunidade-resenhas-area {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
-.comunidade-livros-resenha,
-.comunidade-resenhas-publicadas {
-  border: 1px solid rgba(174, 108, 47, 0.2);
-  background: rgba(18, 9, 7, 0.72);
-  padding: 24px;
-}
-
-.comunidade-secao-cabecalho {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: flex-start;
-  margin-bottom: 20px;
-}
-
-.comunidade-secao-cabecalho > div:first-child {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-
-.comunidade-secao-cabecalho > div:first-child > span {
-  color: #c9a36a;
-}
-
-.comunidade-secao-cabecalho small {
-  display: block;
-  color: #9c806d;
-  font-size: 10px;
-  letter-spacing: 0.16em;
-  margin-bottom: 6px;
-}
-
-.comunidade-secao-cabecalho h2 {
-  margin: 0;
-  color: #ead8c2;
-  font-size: 22px;
-}
-
-.comunidade-secao-cabecalho p {
-  max-width: 260px;
-  margin: 0;
-  color: #9c8a7d;
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.comunidade-busca-livro-resenha {
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 16px;
-  padding: 13px 15px;
-  border: 1px solid rgba(174, 108, 47, 0.25);
-  background: #0c0706;
-  color: #ead8c2;
-  outline: none;
-}
-
-.comunidade-busca-livro-resenha:focus {
-  border-color: rgba(201, 163, 106, 0.8);
-}
-
-.comunidade-livros-resenha-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.comunidade-livro-resenha-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 15px;
-  border: 1px solid rgba(174, 108, 47, 0.14);
-  background: rgba(9, 5, 4, 0.7);
-  color: #ead8c2;
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.comunidade-livro-resenha-item:hover {
-  border-color: rgba(201, 163, 106, 0.65);
-  background: rgba(39, 18, 14, 0.8);
-}
-
-.comunidade-livro-resenha-simbolo {
-  color: #c9a36a;
-  font-size: 18px;
-}
-
-.comunidade-livro-resenha-dados {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.comunidade-livro-resenha-dados strong {
-  overflow: hidden;
-  color: #ead8c2;
-  font-size: 14px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.comunidade-livro-resenha-dados small {
-  color: #9c806d;
-  font-size: 12px;
-}
-
-.comunidade-livro-resenha-acao {
-  color: #c9a36a;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-}
-
-@media (max-width: 650px) {
-  .comunidade-livros-resenha,
-  .comunidade-resenhas-publicadas {
-    padding: 18px;
-  }
-
-  .comunidade-secao-cabecalho {
-    flex-direction: column;
-  }
-
-  .comunidade-secao-cabecalho p {
-    max-width: none;
-  }
-
-  .comunidade-livro-resenha-item {
-    align-items: flex-start;
-  }
-
-  .comunidade-livro-resenha-acao {
-    display: none;
-  }
-}
-
-
-.comunidade-tendencia-item span {
-  font-size: 12px;
-  line-height: 1.5;
-  opacity: 0.62;
-}
-
-
-/* Submenu da área de resenhas */
-.comunidade-submenu-resenha {
-  display: flex;
-  gap: 8px;
-  margin: 22px 0 18px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(174, 108, 47, 0.18);
-}
-
-.comunidade-submenu-resenha button {
-  border: 1px solid rgba(174, 108, 47, 0.24);
-  background: transparent;
-  color: #a99a88;
-  padding: 11px 14px;
-  cursor: pointer;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  transition: 0.2s ease;
-}
-
-.comunidade-submenu-resenha button:hover,
-.comunidade-submenu-resenha button.ativo {
-  color: #ead7b5;
-  border-color: #b58a4d;
-  background: rgba(181, 138, 77, 0.09);
-}
-
-.comunidade-resenha-link-form {
-  display: grid;
-  gap: 14px;
-  padding: 18px;
-  border: 1px solid rgba(174, 108, 47, 0.2);
-  background: rgba(15, 8, 6, 0.45);
-}
-
-.comunidade-resenha-link-form label {
-  display: grid;
-  gap: 7px;
-  color: #b9a58f;
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.comunidade-resenha-link-form input {
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid rgba(174, 108, 47, 0.25);
-  background: #0b0706;
-  color: #eadfce;
-  padding: 13px;
-  outline: none;
-}
-
-.comunidade-resenha-link-form input:focus {
-  border-color: #b58a4d;
-}
-
-.comunidade-usar-livro-link {
-  justify-self: start;
-  border: 1px solid #b58a4d;
-  background: #b58a4d;
-  color: #160c08;
-  padding: 12px 16px;
-  cursor: pointer;
-  font-size: 10px;
-  letter-spacing: 0.1em;
-}
-
-.comunidade-link-livro {
-  display: inline-block;
-  margin-top: 8px;
-  color: #c8a56b;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-decoration: none;
-}
-
-.comunidade-link-livro:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 600px) {
-  .comunidade-submenu-resenha {
-    flex-direction: column;
-  }
-
-  .comunidade-submenu-resenha button {
-    width: 100%;
-  }
-}
-
+    linear-gradient(90deg,rgba(7,3,3,.22),rgba(7,3,3,.08) 50%,rgba(7,3,3,.20)),
+    url('/avelune-castelo.png') center top / cover fixed no-repeat,
+    #090504;
+  color:#eee2d2;
+}
+.comunidade > .comunidade-topo { display:none !important; }
+.comunidade-conteudo { width:min(1180px,88%); padding:75px 0 90px; }
+.comunidade-introducao h1 { font-family:"Cinzel",Georgia,serif; color:#eee0cb; }
+.comunidade-publicar,.comunidade-post,.comunidade-card { background:rgba(14,7,4,.78); border-color:rgba(211,159,87,.16); }
