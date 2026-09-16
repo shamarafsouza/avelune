@@ -366,8 +366,12 @@
 ========================= */
 
 .biblioteca-hero {
-  width: 100%;
+  width: 100vw;
+  max-width: none;
   min-height: 420px;
+
+  margin-left: calc(50% - 50vw);
+  margin-right: 0;
 
   background:
     linear-gradient(90deg,
@@ -378,7 +382,6 @@
 
   border: 1px solid rgba(174, 108, 47, 0.16);
 }
-
 .biblioteca-hero-conteudo {
   width: min(1180px, 88%);
   min-height: 420px;
