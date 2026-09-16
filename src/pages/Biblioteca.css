@@ -12,12 +12,10 @@
   overflow-y: auto;
 
   background:
-    linear-gradient(
-      90deg,
+    linear-gradient(90deg,
       rgba(7, 3, 3, 0.20) 0%,
       rgba(7, 3, 3, 0.08) 48%,
-      rgba(7, 3, 3, 0.22) 100%
-    ),
+      rgba(7, 3, 3, 0.22) 100%),
     url("/avelune-cabecalho.png") center top / cover fixed no-repeat,
     #090504;
 
@@ -38,11 +36,9 @@
   pointer-events: none;
 
   background:
-    radial-gradient(
-      ellipse at center,
+    radial-gradient(ellipse at center,
       transparent 30%,
-     rgba(0, 0, 0, 0.20) 100%
-    );
+      rgba(0, 0, 0, 0.20) 100%);
 
   z-index: 1;
 }
@@ -56,11 +52,9 @@
   pointer-events: none;
 
   background:
-    radial-gradient(
-      circle at 50% 35%,
+    radial-gradient(circle at 50% 35%,
       rgba(214, 120, 45, 0.07),
-      transparent 28%
-    );
+      transparent 28%);
 
   z-index: 1;
 }
@@ -78,16 +72,12 @@
   opacity: 0.28;
 
   background-image:
-    radial-gradient(
-      circle,
+    radial-gradient(circle,
       rgba(232, 169, 82, 0.65) 1px,
-      transparent 1px
-    ),
-    radial-gradient(
-      circle,
+      transparent 1px),
+    radial-gradient(circle,
       rgba(157, 101, 61, 0.5) 1px,
-      transparent 1px
-    );
+      transparent 1px);
 
   background-size:
     150px 150px,
@@ -98,11 +88,9 @@
     90px 110px;
 
   mask-image:
-    linear-gradient(
-      to bottom,
+    linear-gradient(to bottom,
       black,
-      transparent 90%
-    );
+      transparent 90%);
 
   z-index: 0;
 }
@@ -128,11 +116,9 @@
     1px solid rgba(174, 108, 47, 0.18);
 
   background:
-    linear-gradient(
-      to bottom,
+    linear-gradient(to bottom,
       rgba(8, 4, 3, 0.96),
-      rgba(12, 6, 4, 0.84)
-    );
+      rgba(12, 6, 4, 0.84));
 
   backdrop-filter: blur(14px);
 }
@@ -271,11 +257,9 @@
   width: min(210px, calc(100vw - 30px));
   padding: 8px;
   border: 1px solid rgba(213, 157, 83, 0.2);
-  background: linear-gradient(
-    145deg,
-    rgba(29, 16, 10, 0.98),
-    rgba(12, 7, 5, 0.99)
-  );
+  background: linear-gradient(145deg,
+      rgba(29, 16, 10, 0.98),
+      rgba(12, 7, 5, 0.99));
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(16px);
 }
@@ -457,11 +441,9 @@
     1px solid rgba(166, 100, 42, 0.25);
 
   background:
-    linear-gradient(
-      90deg,
+    linear-gradient(90deg,
       rgba(37, 19, 10, 0.8),
-      rgba(17, 9, 5, 0.72)
-    );
+      rgba(17, 9, 5, 0.72));
 
   box-shadow:
     inset 0 1px 0 rgba(255, 220, 170, 0.025),
@@ -483,7 +465,7 @@
     inset 0 1px 0 rgba(255, 220, 170, 0.03);
 }
 
-.biblioteca-busca > span {
+.biblioteca-busca>span {
   color: #b77a3b;
 
   font-size: 24px;
@@ -561,7 +543,7 @@
   gap: 20px;
 }
 
-.secao-titulo > span {
+.secao-titulo>span {
   color:
     rgba(211, 186, 153, 0.42);
 
@@ -576,11 +558,9 @@
   height: 1px;
 
   background:
-    linear-gradient(
-      to right,
+    linear-gradient(to right,
       rgba(171, 103, 43, 0.22),
-      transparent
-    );
+      transparent);
 }
 
 .categorias-lista {
@@ -768,62 +748,46 @@
 
 .livro-capa.vinho {
   background:
-    radial-gradient(
-      circle at 70% 20%,
+    radial-gradient(circle at 70% 20%,
       rgba(177, 73, 47, 0.25),
-      transparent 32%
-    ),
-    linear-gradient(
-      145deg,
+      transparent 32%),
+    linear-gradient(145deg,
       #401b13,
       #21100b 62%,
-      #0c0705
-    );
+      #0c0705);
 }
 
 .livro-capa.azul {
   background:
-    radial-gradient(
-      circle at 30% 20%,
+    radial-gradient(circle at 30% 20%,
       rgba(91, 113, 126, 0.18),
-      transparent 32%
-    ),
-    linear-gradient(
-      145deg,
+      transparent 32%),
+    linear-gradient(145deg,
       #182229,
       #0c1114 62%,
-      #070909
-    );
+      #070909);
 }
 
 .livro-capa.roxo {
   background:
-    radial-gradient(
-      circle at 65% 25%,
+    radial-gradient(circle at 65% 25%,
       rgba(116, 68, 136, 0.2),
-      transparent 32%
-    ),
-    linear-gradient(
-      145deg,
+      transparent 32%),
+    linear-gradient(145deg,
       #281725,
       #130b12 62%,
-      #080607
-    );
+      #080607);
 }
 
 .livro-capa.verde {
   background:
-    radial-gradient(
-      circle at 35% 20%,
+    radial-gradient(circle at 35% 20%,
       rgba(87, 113, 73, 0.2),
-      transparent 32%
-    ),
-    linear-gradient(
-      145deg,
+      transparent 32%),
+    linear-gradient(145deg,
       #182217,
       #0d130b 62%,
-      #070906
-    );
+      #070906);
 }
 
 /* =========================
@@ -886,11 +850,9 @@
   inset: 0;
 
   background:
-    radial-gradient(
-      ellipse at center,
+    radial-gradient(ellipse at center,
       rgba(245, 190, 106, 0.08),
-      transparent 62%
-    );
+      transparent 62%);
 
   pointer-events: none;
 }
@@ -1067,7 +1029,7 @@
     rgba(25, 12, 6, 0.35);
 }
 
-.nenhum-livro > span {
+.nenhum-livro>span {
   margin-bottom: 18px;
 
   color: #b77a3b;
@@ -1405,7 +1367,7 @@
   background: linear-gradient(145deg, #182217, #080b07);
 }
 
-.estante-livro > span:last-child {
+.estante-livro>span:last-child {
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -1440,7 +1402,7 @@
   background: radial-gradient(circle at center, rgba(101, 49, 17, 0.12), transparent 55%);
 }
 
-.estante-vazia > span {
+.estante-vazia>span {
   margin-bottom: 14px;
   color: rgba(196, 137, 69, 0.5);
   font-family: serif;
@@ -1599,7 +1561,7 @@
   margin-top: 22px;
 }
 
-.modal-avaliacao > span {
+.modal-avaliacao>span {
   color: #c99552;
   font-size: 16px;
 }
@@ -1682,8 +1644,13 @@
 ========================= */
 
 @keyframes modal-aparecer {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes modal-subir {
@@ -1691,6 +1658,7 @@
     opacity: 0;
     transform: translateY(18px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1846,11 +1814,9 @@
     rgba(210, 145, 65, 0.52);
 
   background:
-    linear-gradient(
-      135deg,
+    linear-gradient(135deg,
       rgba(99, 48, 16, 0.55),
-      rgba(53, 25, 11, 0.5)
-    );
+      rgba(53, 25, 11, 0.5));
 
   color: #e8cb9b;
 
@@ -1908,7 +1874,7 @@
    AJUSTE DO ESPAÇAMENTO
 ========================= */
 
-.biblioteca-filtros + .destaques {
+.biblioteca-filtros+.destaques {
   margin-top: 72px;
 }
 
@@ -1936,7 +1902,7 @@
     letter-spacing: 0.1em;
   }
 
-  .biblioteca-filtros + .destaques {
+  .biblioteca-filtros+.destaques {
     margin-top: 58px;
   }
 }
@@ -1990,11 +1956,9 @@
   margin-top: 12px;
   padding: 0 12px;
   border: 1px solid rgba(210, 151, 75, 0.42);
-  background: linear-gradient(
-    135deg,
-    rgba(113, 57, 19, 0.58),
-    rgba(55, 27, 12, 0.7)
-  );
+  background: linear-gradient(135deg,
+      rgba(113, 57, 19, 0.58),
+      rgba(55, 27, 12, 0.7));
   color: #e4c38f;
   font-size: 8px;
   letter-spacing: 0.13em;
@@ -2009,11 +1973,9 @@
 
 .livro-amazon:hover {
   border-color: rgba(226, 170, 91, 0.72);
-  background: linear-gradient(
-    135deg,
-    rgba(139, 73, 24, 0.7),
-    rgba(69, 34, 14, 0.82)
-  );
+  background: linear-gradient(135deg,
+      rgba(139, 73, 24, 0.7),
+      rgba(69, 34, 14, 0.82));
   color: #f1d5a5;
   transform: translateY(-1px);
 }
@@ -2024,22 +1986,18 @@
   justify-content: center;
   box-sizing: border-box;
   border-color: rgba(219, 157, 77, 0.58);
-  background: linear-gradient(
-    135deg,
-    rgba(124, 63, 20, 0.82),
-    rgba(67, 32, 12, 0.88)
-  );
+  background: linear-gradient(135deg,
+      rgba(124, 63, 20, 0.82),
+      rgba(67, 32, 12, 0.88));
   color: #f0cf98;
   text-decoration: none;
 }
 
 .modal-botao.amazon:hover {
   border-color: rgba(231, 178, 100, 0.82);
-  background: linear-gradient(
-    135deg,
-    rgba(148, 77, 24, 0.9),
-    rgba(79, 38, 13, 0.94)
-  );
+  background: linear-gradient(135deg,
+      rgba(148, 77, 24, 0.9),
+      rgba(79, 38, 13, 0.94));
   color: #f8dfb4;
 }
 
@@ -2134,6 +2092,7 @@
     min-height: 58px;
   }
 }
+
 /* =========================================================
    AVELUNE — BIBLIOTECA
    Visual: fantasia gótica + dark romance + paranormal
@@ -2143,12 +2102,10 @@
 .biblioteca {
   isolation: isolate;
   background:
-    linear-gradient(
-      90deg,
+    linear-gradient(90deg,
       rgba(7, 3, 3, .20) 0%,
       rgba(7, 3, 3, .08) 48%,
-      rgba(7, 3, 3, .22) 100%
-    ),
+      rgba(7, 3, 3, .22) 100%),
     url('/avelune-castelo.png') center top / cover fixed no-repeat,
     #090504;
 }
@@ -2162,12 +2119,10 @@
   pointer-events: none;
   background:
     radial-gradient(circle at 52% 22%, rgba(218, 157, 78, .08), transparent 34%),
-    linear-gradient(
-      to bottom,
+    linear-gradient(to bottom,
       rgba(0, 0, 0, .03) 0%,
       rgba(0, 0, 0, .10) 55%,
-      rgba(0, 0, 0, .22) 100%
-    );
+      rgba(0, 0, 0, .22) 100%);
 }
 
 .biblioteca::after {
@@ -2393,12 +2348,10 @@
   .biblioteca::before {
     background:
       radial-gradient(circle at 50% 18%, rgba(218, 157, 78, .08), transparent 30%),
-      linear-gradient(
-        to bottom,
-        rgba(0,0,0,.04) 0%,
-        rgba(0,0,0,.12) 58%,
-        rgba(0,0,0,.24) 100%
-      );
+      linear-gradient(to bottom,
+        rgba(0, 0, 0, .04) 0%,
+        rgba(0, 0, 0, .12) 58%,
+        rgba(0, 0, 0, .24) 100%);
   }
 }
 
@@ -2419,6 +2372,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .livro-card,
   .categoria,
   .biblioteca-nav button,
@@ -2427,4 +2381,7 @@
   }
 }
 
-.biblioteca > .biblioteca-topo{display:none!important}.capa-imagem-real{opacity:1!important;filter:none!important}
+.capa-imagem-real {
+  opacity: 1 !important;
+  filter: none !important
+}
