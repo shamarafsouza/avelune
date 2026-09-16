@@ -465,9 +465,19 @@ function Biblioteca({
                     return (
                       <article className="livro-card" key={livro.id} onClick={() => setLivroSelecionado(livro)}>
                         <div className={`livro-capa ${livro.cor}`}>
-                          {livro.real && livro.capaUrl && (
-                            <img className="capa-imagem-real" src={livro.capaUrl} alt={`Capa de ${livro.titulo}`} loading="lazy" referrerPolicy="no-referrer" />
-                          )}
+                        {livro.capaUrl && (
+  <img
+    className="capa-imagem-real"
+    src={livro.capaUrl}
+    alt={`Capa de ${livro.titulo}`}
+    loading="lazy"
+    referrerPolicy="no-referrer"
+  />
+)}
+
+{livro.amazonUrl && (
+  <span className="livro-selo-amazon">AMAZON</span>
+)}
                           {livro.real && <span className="livro-selo-amazon">AMAZON</span>}
                           <div className="capa-moldura">
                             <span className="moldura-canto superior-esquerdo">❖</span>
