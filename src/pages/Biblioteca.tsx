@@ -91,7 +91,7 @@ function Biblioteca({
             real: Boolean(livro.capa_url),
             avaliacao:
               livro.avaliacao !== null &&
-              livro.avaliacao !== undefined
+                livro.avaliacao !== undefined
                 ? String(livro.avaliacao)
                 : "",
             cor: livro.cor ?? "vinho",
@@ -281,45 +281,55 @@ function Biblioteca({
       />
 
       <section className="biblioteca-conteudo">
-        <div className="biblioteca-introducao">
-          <span className="biblioteca-eyebrow">
-            A GRANDE BIBLIOTECA
-          </span>
 
-          <h1>
-            Encontre sua
-            <br />
-            próxima história.
-          </h1>
+        <section
+          className="biblioteca-hero"
+          aria-label="Apresentação da biblioteca"
+        >
+          <div className="biblioteca-hero-conteudo">
 
-          <p>
-            Entre em um universo de histórias,
-            personagens e mundos esperando
-            para serem descobertos.
-          </p>
-        </div>
+            <div className="biblioteca-introducao">
+              <span className="biblioteca-eyebrow">
+                A GRANDE BIBLIOTECA
+              </span>
 
-        <div className="biblioteca-busca">
-          <span>⌕</span>
+              <h1>
+                Encontre sua
+                <br />
+                próxima história.
+              </h1>
 
-          <input
-            type="text"
-            value={busca}
-            onChange={(event) =>
-              setBusca(event.target.value)
-            }
-            placeholder="Buscar livros, autores ou histórias..."
-          />
+              <p>
+                Entre em um universo de histórias,
+                personagens e mundos esperando
+                para serem descobertos.
+              </p>
+            </div>
 
-          <button
-            type="button"
-            onClick={() =>
-              setBusca(busca.trim())
-            }
-          >
-            BUSCAR
-          </button>
-        </div>
+            <div className="biblioteca-busca">
+              <span>⌕</span>
+
+              <input
+                type="text"
+                value={busca}
+                onChange={(event) =>
+                  setBusca(event.target.value)
+                }
+                placeholder="Buscar livros, autores ou histórias..."
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setBusca(busca.trim())
+                }
+              >
+                BUSCAR
+              </button>
+            </div>
+
+          </div>
+        </section>
 
         <section className="categorias">
           <div className="secao-titulo">
@@ -335,7 +345,7 @@ function Biblioteca({
                   type="button"
                   className={
                     categoriaAtiva ===
-                    categoria
+                      categoria
                       ? "categoria ativo"
                       : "categoria"
                   }
@@ -391,7 +401,7 @@ function Biblioteca({
             type="button"
             className={
               filtroBiblioteca ===
-              "favoritos"
+                "favoritos"
                 ? "filtro-biblioteca ativo"
                 : "filtro-biblioteca"
             }
@@ -575,86 +585,86 @@ function Biblioteca({
 
         {filtroBiblioteca ===
           "todos" && (
-          <section className="biblioteca-estante">
-            <div className="secao-cabecalho">
-              <div>
-                <span className="secao-eyebrow">
-                  SUA COLEÇÃO
-                </span>
+            <section className="biblioteca-estante">
+              <div className="secao-cabecalho">
+                <div>
+                  <span className="secao-eyebrow">
+                    SUA COLEÇÃO
+                  </span>
 
-                <h2>
-                  Minha estante
-                </h2>
-              </div>
+                  <h2>
+                    Minha estante
+                  </h2>
+                </div>
 
-              <button
-                type="button"
-                className="ver-todos"
-                onClick={() =>
-                  selecionarFiltro(
-                    "estante"
-                  )
-                }
-              >
-                VER ESTANTE →
-              </button>
-            </div>
-
-            {queroLer.length > 0 ? (
-              <div className="estante-lista">
-                {livros
-                  .filter((livro) =>
-                    queroLer.includes(
-                      livro.id
+                <button
+                  type="button"
+                  className="ver-todos"
+                  onClick={() =>
+                    selecionarFiltro(
+                      "estante"
                     )
-                  )
-                  .map((livro) => (
-                    <button
-                      key={livro.id}
-                      type="button"
-                      className="estante-livro"
-                      onClick={() =>
-                        setLivroSelecionado(
-                          livro
-                        )
-                      }
-                    >
-                      <span
-                        className={`estante-capa ${livro.cor}`}
+                  }
+                >
+                  VER ESTANTE →
+                </button>
+              </div>
+
+              {queroLer.length > 0 ? (
+                <div className="estante-lista">
+                  {livros
+                    .filter((livro) =>
+                      queroLer.includes(
+                        livro.id
+                      )
+                    )
+                    .map((livro) => (
+                      <button
+                        key={livro.id}
+                        type="button"
+                        className="estante-livro"
+                        onClick={() =>
+                          setLivroSelecionado(
+                            livro
+                          )
+                        }
                       >
-                        {livro.simbolo}
-                      </span>
+                        <span
+                          className={`estante-capa ${livro.cor}`}
+                        >
+                          {livro.simbolo}
+                        </span>
 
-                      <span>
-                        <strong>
-                          {
-                            livro.titulo
-                          }
-                        </strong>
+                        <span>
+                          <strong>
+                            {
+                              livro.titulo
+                            }
+                          </strong>
 
-                        <small>
-                          {livro.autor}
-                        </small>
-                      </span>
-                    </button>
-                  ))}
-              </div>
-            ) : (
-              <div className="estante-vazia">
-                <span>☾</span>
+                          <small>
+                            {livro.autor}
+                          </small>
+                        </span>
+                      </button>
+                    ))}
+                </div>
+              ) : (
+                <div className="estante-vazia">
+                  <span>☾</span>
 
-                <p>
-                  Sua estante ainda está
-                  vazia.
-                  <br />
-                  Escolha uma história
-                  para começar sua
-                  coleção.
-                </p>
-              </div>
-            )}
-          </section>
-        )}
+                  <p>
+                    Sua estante ainda está
+                    vazia.
+                    <br />
+                    Escolha uma história
+                    para começar sua
+                    coleção.
+                  </p>
+                </div>
+              )}
+            </section>
+          )}
       </section>
 
       <footer className="biblioteca-rodape">
