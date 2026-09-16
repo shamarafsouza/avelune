@@ -2544,14 +2544,78 @@
   }
 }
 
-/* =========================================
-   CORREÇÃO FINAL — SIDEBAR DINÂMICA
-   ========================================= */
 
+/* AVELUNE — mesma linguagem visual da Biblioteca */
+.comunidade {
+  min-height:100vh;
+  background:
+    linear-gradient(90deg,rgba(7,3,3,.22),rgba(7,3,3,.08) 50%,rgba(7,3,3,.20)),
+    url('/avelune-castelo.png') center top / cover fixed no-repeat,
+    #090504;
+  color:#eee2d2;
+}
+.comunidade > .comunidade-topo { display:none !important; }
+.comunidade-conteudo { width:min(1180px,88%); padding:75px 0 90px; }
+.comunidade-introducao h1 { font-family:"Cinzel",Georgia,serif; color:#eee0cb; }
+.comunidade-publicar,.comunidade-post,.comunidade-card { background:rgba(14,7,4,.78); border-color:rgba(211,159,87,.16); }
+
+
+/* =========================================================
+   AJUSTES SEGUROS — SIDEBAR DINÂMICA E ABAS
+   Estes ajustes não alteram o restante do layout original.
+   ========================================================= */
+
+/* Abas principais: impedir aparência padrão do navegador */
+.comunidade-abas,
+.comunidade-filtros,
+.comunidade-nav {
+  display: flex;
+  align-items: center;
+}
+
+.comunidade-abas button,
+.comunidade-filtros button,
+.comunidade-nav button {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-family: inherit;
+}
+
+/* Mantém as abas com o visual Avelune, sem fundo branco */
+.comunidade-abas button {
+  position: relative;
+  padding: 0 0 12px;
+  border: 0;
+  background: transparent !important;
+  color: rgba(221, 194, 159, 0.35);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.comunidade-abas button:hover,
+.comunidade-abas button.ativo {
+  color: #e5cfaa;
+}
+
+.comunidade-abas button.ativo::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: #c99755;
+}
+
+/* Sidebar */
 .comunidade-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
   position: sticky;
   top: 120px;
   min-width: 0;
@@ -2559,9 +2623,8 @@
 
 .comunidade-card {
   box-sizing: border-box;
-  width: 100%;
-  padding: 24px 22px;
-  border: 1px solid rgba(213, 157, 83, 0.16);
+  padding: 24px;
+  border: 1px solid rgba(213, 157, 83, 0.13);
   background: rgba(22, 12, 8, 0.55);
 }
 
@@ -2573,18 +2636,15 @@
 }
 
 .comunidade-card-titulo > div {
-  display: flex;
-  flex: 1;
   min-width: 0;
+  display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 6px;
 }
 
 .comunidade-card-titulo > div > span {
   display: block;
-  margin: 0;
-  color: rgba(203, 156, 91, 0.62);
+  color: rgba(203, 156, 91, 0.65);
   font-size: 9px;
   line-height: 1.3;
   letter-spacing: 0.16em;
@@ -2593,237 +2653,177 @@
 
 .comunidade-card-titulo > div > strong {
   display: block;
-  margin: 0;
   color: rgba(232, 214, 188, 0.9);
   font-family: "Cinzel", Georgia, serif;
   font-size: 17px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.25;
 }
 
 .comunidade-sidebar-vazio {
   margin: 0;
-  color: rgba(232, 214, 188, 0.82);
+  color: rgba(238, 226, 210, 0.82);
   font-size: 13px;
   line-height: 1.45;
 }
 
 .comunidade-destaques-lista,
-.comunidade-leitores-lista,
-.comunidade-tendencias-lista {
+.comunidade-tendencias-lista,
+.comunidade-leitores-lista {
   display: flex;
   flex-direction: column;
-  gap: 15px;
 }
 
-/* O destaque atual é uma linha de leitor, não um card de livro. */
 .comunidade-destaque {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
   min-height: 0;
-  padding: 0;
-  position: static;
-  overflow: visible;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(213, 157, 83, 0.07);
   background: transparent;
 }
 
-.comunidade-destaque-avatar {
-  display: flex;
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(213, 157, 83, 0.25);
+.comunidade-destaque:last-child {
+  border-bottom: 0;
+}
+
+.comunidade-destaque-avatar,
+.comunidade-avatar.mini {
+  display: grid;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(213, 157, 83, 0.22);
   border-radius: 50%;
-  background: rgba(126, 61, 25, 0.18);
-  color: #d8b47b;
-  font-size: 11px;
-  font-weight: 600;
+  background: rgba(119, 61, 24, 0.2);
+  color: #d5a45f;
+  font-size: 10px;
 }
 
 .comunidade-destaque-dados {
   display: flex;
-  min-width: 0;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   margin: 0;
 }
 
 .comunidade-destaque-dados strong {
-  max-width: 100%;
-  color: rgba(235, 216, 185, 0.9);
-  font-size: 12px;
+  color: rgba(229, 209, 178, 0.82);
+  font-size: 10px;
   font-weight: 600;
-  line-height: 1.3;
 }
 
 .comunidade-destaque-dados span {
-  color: rgba(218, 189, 148, 0.62);
-  font-size: 10px;
-  line-height: 1.3;
-}
-
-.comunidade-tendencias {
-  display: block;
+  color: rgba(218, 189, 148, 0.55);
+  font-size: 8px;
 }
 
 .comunidade-tendencia-item {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding-bottom: 13px;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.08);
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(213, 157, 83, 0.07);
 }
 
 .comunidade-tendencia-item:last-child {
-  padding-bottom: 0;
   border-bottom: 0;
 }
 
 .comunidade-tendencia-item strong {
-  color: rgba(232, 202, 158, 0.85);
-  font-size: 12px;
-  font-weight: 600;
+  color: rgba(226, 202, 167, 0.82);
+  font-size: 11px;
+  font-weight: 500;
 }
 
 .comunidade-tendencia-item span {
-  color: rgba(218, 189, 148, 0.58);
-  font-size: 10px;
+  color: rgba(218, 189, 148, 0.48);
+  font-size: 8px;
+}
+
+.comunidade-leitor {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(213, 157, 83, 0.07);
 }
 
 .comunidade-leitor > div:nth-child(2) {
-  display: flex;
-  min-width: 0;
   flex: 1;
+  min-width: 0;
+  display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.comunidade-leitor > div:nth-child(2) strong {
-  color: rgba(235, 216, 185, 0.9);
-  font-size: 11px;
+.comunidade-leitor strong {
+  color: rgba(229, 209, 178, 0.82);
+  font-size: 10px;
+  font-weight: 500;
 }
 
-.comunidade-leitor > div:nth-child(2) span {
-  color: rgba(218, 189, 148, 0.55);
+.comunidade-leitor span {
+  color: rgba(218, 189, 148, 0.48);
+  font-size: 8px;
+}
+
+.comunidade-leitor > button {
+  width: auto;
+  min-width: 62px;
+  height: 28px;
+  padding: 0 9px;
+  border: 1px solid rgba(213, 157, 83, 0.25);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(218, 179, 119, 0.72);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.comunidade-leitor > button:hover {
+  background: rgba(126, 61, 25, 0.3);
+  color: rgba(235, 207, 165, 0.95);
+}
+
+/* Resenhas compactas */
+.comunidade-resenhas-selecao {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comunidade-resenhas-submenu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.comunidade-resenhas-submenu button,
+.comunidade-resenha-opcao {
+  appearance: none;
+  border: 1px solid rgba(213, 157, 83, 0.22);
+  border-radius: 0;
+  padding: 10px 14px;
+  background: transparent;
+  color: rgba(218, 189, 148, 0.65);
   font-size: 9px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
 }
 
-@media (max-width: 1050px) {
+.comunidade-resenhas-submenu button.ativo,
+.comunidade-resenha-opcao.ativo {
+  border-color: rgba(213, 157, 83, 0.7);
+  background: rgba(119, 61, 24, 0.18);
+  color: #e5cfaa;
+}
+
+@media (max-width: 850px) {
   .comunidade-sidebar {
     position: static;
-  }
-}
-
-/* CORREÇÃO FINAL — navegação e filtros da Comunidade */
-
-.comunidade-nav,
-.comunidade-filtros {
-  display: flex !important;
-  align-items: center !important;
-  gap: 28px !important;
-  background: transparent !important;
-}
-
-.comunidade-nav button,
-.comunidade-filtros button {
-  position: relative !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: auto !important;
-  height: auto !important;
-  min-height: 34px !important;
-  padding: 0 0 12px !important;
-  margin: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  outline: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: rgba(221, 194, 159, 0.42) !important;
-  font-family: inherit !important;
-  font-size: 10px !important;
-  font-weight: 500 !important;
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  white-space: nowrap !important;
-  cursor: pointer !important;
-}
-
-.comunidade-nav button:hover,
-.comunidade-filtros button:hover,
-.comunidade-nav button.ativo,
-.comunidade-filtros button.ativo {
-  background: transparent !important;
-  color: #e5cfaa !important;
-}
-
-.comunidade-nav button.ativo::after,
-.comunidade-filtros button.ativo::after {
-  content: "" !important;
-  position: absolute !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100% !important;
-  height: 1px !important;
-  background: #c99755 !important;
-}
-
-.comunidade-feed-topo {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 20px !important;
-  background: transparent !important;
-}
-
-.comunidade-layout {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) 320px !important;
-  gap: 28px !important;
-  align-items: start !important;
-  width: 100% !important;
-  max-width: 1400px !important;
-  margin: 0 auto !important;
-}
-
-.comunidade-sidebar {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 22px !important;
-  min-width: 0 !important;
-  position: sticky !important;
-  top: 120px !important;
-}
-
-.comunidade-card-titulo {
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 12px !important;
-}
-
-.comunidade-card-titulo > div {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 6px !important;
-  min-width: 0 !important;
-}
-
-.comunidade-card-titulo > div > span,
-.comunidade-card-titulo > div > strong {
-  display: block !important;
-}
-
-@media (max-width: 1050px) {
-  .comunidade-layout {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  .comunidade-sidebar {
-    position: static !important;
   }
 }
