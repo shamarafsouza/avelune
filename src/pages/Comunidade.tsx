@@ -22,6 +22,8 @@ type Filtro =
   | "seguindo"
   | "recentes";
 
+type AbaComunidade = "publicacoes" | "resenhas" | "historias";
+
 type Comentario = {
   id: number;
   usuario: string;
@@ -480,6 +482,9 @@ function Comunidade({
 
   const [filtro, setFiltro] =
     useState<Filtro>("para-voce");
+
+  const [abaComunidade, setAbaComunidade] =
+    useState<AbaComunidade>("publicacoes");
 
   const [texto, setTexto] =
     useState("");
@@ -1550,6 +1555,31 @@ function Comunidade({
 
         <div className="comunidade-layout">
           <section className="comunidade-feed">
+            <div className="comunidade-abas">
+              <button
+                type="button"
+                className={abaComunidade === "publicacoes" ? "ativo" : ""}
+                onClick={() => setAbaComunidade("publicacoes")}
+              >
+                PUBLICAÇÕES
+              </button>
+              <button
+                type="button"
+                className={abaComunidade === "resenhas" ? "ativo" : ""}
+                onClick={() => setAbaComunidade("resenhas")}
+              >
+                RESENHAS
+              </button>
+              <button
+                type="button"
+                className={abaComunidade === "historias" ? "ativo" : ""}
+                onClick={() => setAbaComunidade("historias")}
+              >
+                HISTÓRIAS
+              </button>
+            </div>
+
+            {abaComunidade !== "historias" && (
             <div className="comunidade-feed-topo">
               <div className="comunidade-filtros">
                 <button
@@ -2103,6 +2133,8 @@ function Comunidade({
                 );
               })
             )}
+            )}
+
             {abaComunidade === "historias" && (
               <div className="comunidade-historias">
                 <button
