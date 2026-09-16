@@ -88,6 +88,7 @@ type Publicacao = {
   texto: string;
   livro?: string;
   autorLivro?: string;
+  linkLivro?: string;
   avaliacao?: number;
   cor?: string;
   simbolo?: string;
@@ -225,6 +226,8 @@ function Comunidade({
 
   const { livros, carregando: livrosCarregando, erro: livrosErro } = useLivros();
   const [buscaLivroResenha, setBuscaLivroResenha] = useState("");
+  const [subAbaResenha, setSubAbaResenha] = useState<"biblioteca" | "link">("biblioteca");
+  const [linkLivroDigitado, setLinkLivroDigitado] = useState("");
 
   useEffect(() => {
     try {
@@ -522,6 +525,7 @@ function Comunidade({
     setTexto("");
     setLivroDigitado("");
     setAutorDigitado("");
+    setLinkLivroDigitado("");
     setAvaliacaoDigitada(5);
     setFotoSelecionada("");
     setModoResenha(false);
@@ -535,6 +539,7 @@ function Comunidade({
     const textoLimpo = texto.trim();
     const livroLimpo = livroDigitado.trim();
     const autorLimpo = autorDigitado.trim();
+    const linkLivroLimpo = linkLivroDigitado.trim();
 
     if (
       !textoLimpo &&
@@ -565,6 +570,8 @@ function Comunidade({
       livro: livroLimpo || undefined,
       autorLivro:
         autorLimpo || undefined,
+      linkLivro:
+        linkLivroLimpo || undefined,
       avaliacao:
         livroLimpo
           ? avaliacaoDigitada
@@ -876,6 +883,16 @@ function Comunidade({
                             {post.autorLivro ||
                               "Autor não informado"}
                           </small>
+                          {post.linkLivro && (
+                            <a
+                              href={post.linkLivro}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="comunidade-link-livro"
+                            >
+                              VER LIVRO ↗
+                            </a>
+                          )}
                         </div>
 
                         {post.avaliacao && (
@@ -1177,6 +1194,16 @@ function Comunidade({
                       maxLength={100}
                     />
 
+                    <input
+                      type="url"
+                      value={linkLivroDigitado}
+                      onChange={(evento) =>
+                        setLinkLivroDigitado(evento.target.value)
+                      }
+                      placeholder="Link do livro (opcional)"
+                      maxLength={500}
+                    />
+
                     <div className="comunidade-nota">
                       <span>MINHA NOTA</span>
 
@@ -1335,58 +1362,124 @@ function Comunidade({
                     <div>
                       <span>✦</span>
                       <div>
-                        <small>ESCOLHA SUA PRÓXIMA LEITURA</small>
+                        <small>ESCOLHA COMO COMEÇAR</small>
                         <h2>Escreva uma resenha</h2>
                       </div>
                     </div>
-                    <p>Selecione um livro da Biblioteca para começar sua resenha.</p>
+                    <p>Escolha um livro da Biblioteca ou informe o link de qualquer livro.</p>
                   </div>
 
-                  <input
-                    className="comunidade-busca-livro-resenha"
-                    value={buscaLivroResenha}
-                    onChange={(evento) => setBuscaLivroResenha(evento.target.value)}
-                    placeholder="Buscar livro ou autor..."
-                    aria-label="Buscar livro para fazer uma resenha"
-                  />
+                  <div className="comunidade-submenu-resenha" role="tablist" aria-label="Origem do livro">
+                    <button
+                      type="button"
+                      className={subAbaResenha === "biblioteca" ? "ativo" : ""}
+                      onClick={() => setSubAbaResenha("biblioteca")}
+                    >
+                      DA BIBLIOTECA
+                    </button>
+                    <button
+                      type="button"
+                      className={subAbaResenha === "link" ? "ativo" : ""}
+                      onClick={() => setSubAbaResenha("link")}
+                    >
+                      USAR LINK
+                    </button>
+                  </div>
 
-                  {livrosCarregando ? (
-                    <p className="comunidade-sidebar-vazio">Carregando livros...</p>
-                  ) : livrosErro ? (
-                    <p className="comunidade-sidebar-vazio">{livrosErro}</p>
+                  {subAbaResenha === "biblioteca" ? (
+                    <>
+                      <input
+                        className="comunidade-busca-livro-resenha"
+                        value={buscaLivroResenha}
+                        onChange={(evento) => setBuscaLivroResenha(evento.target.value)}
+                        placeholder="Buscar livro ou autor..."
+                        aria-label="Buscar livro para fazer uma resenha"
+                      />
+
+                      {livrosCarregando ? (
+                        <p className="comunidade-sidebar-vazio">Carregando livros...</p>
+                      ) : livrosErro ? (
+                        <p className="comunidade-sidebar-vazio">{livrosErro}</p>
+                      ) : (
+                        <div className="comunidade-livros-resenha-lista">
+                          {livros
+                            .filter((livro) => {
+                              const termo = buscaLivroResenha.trim().toLowerCase();
+                              return (
+                                !termo ||
+                                livro.titulo.toLowerCase().includes(termo) ||
+                                livro.autor.toLowerCase().includes(termo)
+                              );
+                            })
+                            .map((livro) => (
+                              <button
+                                type="button"
+                                className="comunidade-livro-resenha-item"
+                                key={livro.titulo}
+                                onClick={() => {
+                                  if (!exigirConta()) return;
+                                  setLivroDigitado(livro.titulo);
+                                  setAutorDigitado(livro.autor);
+                                  setLinkLivroDigitado("");
+                                  setModoResenha(true);
+                                  setAbaComunidade("publicacoes");
+                                  mostrarMensagem(`Livro selecionado: ${livro.titulo}`);
+                                }}
+                              >
+                                <span className="comunidade-livro-resenha-simbolo">✦</span>
+                                <span className="comunidade-livro-resenha-dados">
+                                  <strong>{livro.titulo}</strong>
+                                  <small>{livro.autor} · {livro.genero}</small>
+                                </span>
+                                <span className="comunidade-livro-resenha-acao">RESENHAR →</span>
+                              </button>
+                            ))}
+                        </div>
+                      )}
+                    </>
                   ) : (
-                    <div className="comunidade-livros-resenha-lista">
-                      {livros
-                        .filter((livro) => {
-                          const termo = buscaLivroResenha.trim().toLowerCase();
-                          return (
-                            !termo ||
-                            livro.titulo.toLowerCase().includes(termo) ||
-                            livro.autor.toLowerCase().includes(termo)
-                          );
-                        })
-                        .map((livro) => (
-                          <button
-                            type="button"
-                            className="comunidade-livro-resenha-item"
-                            key={livro.titulo}
-                            onClick={() => {
-                              if (!exigirConta()) return;
-                              setLivroDigitado(livro.titulo);
-                              setAutorDigitado(livro.autor);
-                              setModoResenha(true);
-                              setAbaComunidade("publicacoes");
-                              mostrarMensagem(`Livro selecionado: ${livro.titulo}`);
-                            }}
-                          >
-                            <span className="comunidade-livro-resenha-simbolo">✦</span>
-                            <span className="comunidade-livro-resenha-dados">
-                              <strong>{livro.titulo}</strong>
-                              <small>{livro.autor} · {livro.genero}</small>
-                            </span>
-                            <span className="comunidade-livro-resenha-acao">RESENHAR →</span>
-                          </button>
-                        ))}
+                    <div className="comunidade-resenha-link-form">
+                      <label>Nome do livro *
+                        <input
+                          value={livroDigitado}
+                          onChange={(evento) => setLivroDigitado(evento.target.value)}
+                          placeholder="Digite o nome do livro"
+                          maxLength={150}
+                        />
+                      </label>
+                      <label>Autor
+                        <input
+                          value={autorDigitado}
+                          onChange={(evento) => setAutorDigitado(evento.target.value)}
+                          placeholder="Nome do autor"
+                          maxLength={120}
+                        />
+                      </label>
+                      <label>Link do livro *
+                        <input
+                          type="url"
+                          value={linkLivroDigitado}
+                          onChange={(evento) => setLinkLivroDigitado(evento.target.value)}
+                          placeholder="https://..."
+                          required
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        className="comunidade-usar-livro-link"
+                        onClick={() => {
+                          if (!exigirConta()) return;
+                          if (!livroDigitado.trim() || !linkLivroDigitado.trim()) {
+                            mostrarMensagem("Informe o nome e o link do livro.");
+                            return;
+                          }
+                          setModoResenha(true);
+                          setAbaComunidade("publicacoes");
+                          mostrarMensagem("Livro por link selecionado. Complete sua resenha.");
+                        }}
+                      >
+                        CONTINUAR COM ESTE LIVRO →
+                      </button>
                     </div>
                   )}
                 </section>
