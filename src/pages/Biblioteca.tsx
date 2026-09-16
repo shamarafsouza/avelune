@@ -182,7 +182,7 @@ function Biblioteca({
       .toLowerCase()
       .trim();
 
-    const autor = String(livro.autor ?? livro.autora ?? "")
+    const autor = String(livro.autor ?? "")
       .toLowerCase()
       .trim();
 
