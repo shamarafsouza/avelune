@@ -1580,6 +1580,7 @@ function Comunidade({
             </div>
 
             {abaComunidade !== "historias" && (
+              <>
             <div className="comunidade-feed-topo">
               <div className="comunidade-filtros">
                 <button
@@ -2133,6 +2134,7 @@ function Comunidade({
                 );
               })
             )}
+            </>
             )}
 
             {abaComunidade === "historias" && (
