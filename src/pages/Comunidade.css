@@ -2545,87 +2545,744 @@
 }
 
 
-/* AVELUNE — mesma linguagem visual da Biblioteca */
-.comunidade {
-  min-height:100vh;
-  background:
-    linear-gradient(90deg,rgba(7,3,3,.22),rgba(7,3,3,.08) 50%,rgba(7,3,3,.20)),
-    url('/avelune-castelo.png') center top / cover fixed no-repeat,
-    #090504;
-  color:#eee2d2;
-}
-.comunidade > .comunidade-topo { display:none !important; }
-.comunidade-conteudo { width:min(1180px,88%); padding:75px 0 90px; }
-.comunidade-introducao h1 { font-family:"Cinzel",Georgia,serif; color:#eee0cb; }
-.comunidade-publicar,.comunidade-post,.comunidade-card { background:rgba(14,7,4,.78); border-color:rgba(211,159,87,.16); }
-
-
 /* =========================================================
-   AJUSTES SEGUROS — SIDEBAR DINÂMICA E ABAS
-   Estes ajustes não alteram o restante do layout original.
+   AVELUNE — COMUNIDADE
+   A imagem panorâmica pertence SOMENTE à Biblioteca.
+   A Comunidade usa fundo próprio, escuro e sólido.
    ========================================================= */
 
-/* Abas principais: impedir aparência padrão do navegador */
-.comunidade-abas,
-.comunidade-filtros,
-.comunidade-nav {
+.comunidade {
+  isolation: isolate;
+  background: #090504 !important;
+  background-image: none !important;
+}
+
+/* =========================================================
+   ABAS PRINCIPAIS
+   ========================================================= */
+
+.comunidade-abas-principais {
   display: flex;
   align-items: center;
+  gap: 28px;
+  margin: 0 0 34px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(213, 157, 83, 0.16);
 }
 
-.comunidade-abas button,
-.comunidade-filtros button,
-.comunidade-nav button {
-  appearance: none;
-  -webkit-appearance: none;
-  border-radius: 0;
-  box-shadow: none;
-  font-family: inherit;
-}
-
-/* Mantém as abas com o visual Avelune, sem fundo branco */
-.comunidade-abas button {
+.comunidade-abas-principais button {
   position: relative;
-  padding: 0 0 12px;
   border: 0;
-  background: transparent !important;
-  color: rgba(221, 194, 159, 0.35);
-  font-size: 9px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  padding: 0 0 12px;
+  background: transparent;
+  color: rgba(221, 194, 159, 0.42);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   cursor: pointer;
 }
 
-.comunidade-abas button:hover,
-.comunidade-abas button.ativo {
-  color: #e5cfaa;
+.comunidade-abas-principais button.ativo {
+  color: #e8d1a9;
 }
 
-.comunidade-abas button.ativo::after {
+.comunidade-abas-principais button.ativo::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: -15px;
   height: 1px;
-  background: #c99755;
+  background: #c99652;
 }
 
-/* Sidebar */
-.comunidade-sidebar {
+/* =========================================================
+   HISTÓRIAS — catálogo inspirado na lógica de sites de fanfic
+   ========================================================= */
+
+.comunidade-historias {
+  width: 100%;
+}
+
+.comunidade-historias-cabecalho {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 28px;
+}
+
+.comunidade-historias-kicker {
+  display: block;
+  margin-bottom: 10px;
+  color: rgba(205, 157, 91, 0.7);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.comunidade-historias-cabecalho h2 {
+  margin: 0;
+  color: #eadcc8;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 400;
+}
+
+.comunidade-historias-cabecalho p {
+  max-width: 600px;
+  margin: 10px 0 0;
+  color: rgba(222, 202, 174, 0.52);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.comunidade-escrever-historia {
+  flex-shrink: 0;
+  border: 1px solid rgba(213, 157, 83, 0.35);
+  padding: 12px 17px;
+  background: rgba(126, 61, 25, 0.22);
+  color: #e7cfaa;
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  cursor: pointer;
+}
+
+.comunidade-escrever-historia:hover {
+  background: rgba(126, 61, 25, 0.4);
+  border-color: rgba(213, 157, 83, 0.58);
+}
+
+.comunidade-historias-filtros {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 22px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(213, 157, 83, 0.12);
+}
+
+.comunidade-historias-filtros button {
+  border: 0;
+  background: transparent;
+  color: rgba(221, 194, 159, 0.38);
+  font-size: 8px;
+  letter-spacing: 0.13em;
+  cursor: pointer;
+}
+
+.comunidade-historias-filtros button.ativo {
+  color: #e5c58f;
+}
+
+.comunidade-historias-lista {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  position: sticky;
-  top: 120px;
+}
+
+.comunidade-historia-item {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 25px;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(213, 157, 83, 0.14);
+}
+
+.comunidade-historia-capa {
+  width: 128px;
+  height: 182px;
+  overflow: hidden;
+  border: 1px solid rgba(213, 157, 83, 0.22);
+  padding: 0;
+  background: #160a06;
+  cursor: pointer;
+}
+
+.comunidade-historia-capa img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comunidade-historia-capa span {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: #c99652;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 30px;
+}
+
+.comunidade-historia-info {
   min-width: 0;
 }
 
-.comunidade-card {
+.comunidade-historia-titulo {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #eadcc8;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 24px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.comunidade-historia-titulo:hover {
+  color: #f0d2a1;
+}
+
+.comunidade-historia-autor {
+  margin: 7px 0 15px;
+  color: rgba(222, 202, 174, 0.5);
+  font-size: 11px;
+}
+
+.comunidade-historia-autor strong {
+  color: #cda66d;
+  font-weight: 500;
+}
+
+.comunidade-historia-sinopse {
+  max-width: 760px;
+  margin: 0 0 15px;
+  color: rgba(232, 218, 195, 0.68);
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+.comunidade-historia-metadados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 13px;
+}
+
+.comunidade-historia-metadados span {
+  padding: 5px 8px;
+  border: 1px solid rgba(213, 157, 83, 0.2);
+  color: rgba(229, 205, 166, 0.7);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+}
+
+.comunidade-historia-categoria {
+  margin-bottom: 12px;
+  color: rgba(213, 157, 83, 0.58);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+.comunidade-historia-categoria strong {
+  color: #cda66d;
+  font-weight: 500;
+}
+
+.comunidade-historia-dados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: rgba(222, 202, 174, 0.5);
+  font-size: 9px;
+  line-height: 1.6;
+}
+
+.comunidade-historia-dados strong {
+  color: rgba(213, 157, 83, 0.65);
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+.comunidade-historia-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.comunidade-historia-tags span {
+  padding: 5px 8px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(213, 157, 83, 0.12);
+  color: rgba(222, 202, 174, 0.52);
+  font-size: 8px;
+}
+
+.comunidade-historia-ler {
+  margin-top: 15px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #c99652;
+  font-size: 8px;
+  letter-spacing: 0.13em;
+  cursor: pointer;
+}
+
+/* =========================================================
+   DETALHE DA HISTÓRIA
+   ========================================================= */
+
+.comunidade-historia-detalhe-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 30px;
+  background: rgba(5, 2, 2, 0.82);
+}
+
+.comunidade-historia-detalhe {
+  position: relative;
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 30px;
+  width: min(820px, 100%);
+  max-height: min(720px, 90vh);
+  overflow: auto;
+  padding: 34px;
+  border: 1px solid rgba(213, 157, 83, 0.22);
+  background: #100805;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+}
+
+.comunidade-historia-detalhe-fechar {
+  position: absolute;
+  top: 13px;
+  right: 15px;
+  border: 0;
+  background: transparent;
+  color: rgba(232, 218, 195, 0.6);
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.comunidade-historia-detalhe-capa {
+  width: 190px;
+  height: 275px;
+  overflow: hidden;
+  border: 1px solid rgba(213, 157, 83, 0.2);
+  background: #160a06;
+}
+
+.comunidade-historia-detalhe-capa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comunidade-historia-detalhe-capa span {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: #c99652;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 42px;
+}
+
+.comunidade-historia-detalhe-conteudo h2 {
+  margin: 3px 0 8px;
+  color: #eadcc8;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.comunidade-historia-detalhe-sinopse {
+  margin: 20px 0;
+  color: rgba(232, 218, 195, 0.68);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.comunidade-historia-capitulos {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 20px;
+  padding-top: 17px;
+  border-top: 1px solid rgba(213, 157, 83, 0.13);
+}
+
+.comunidade-historia-capitulos > strong {
+  margin-bottom: 4px;
+  color: rgba(213, 157, 83, 0.68);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.comunidade-historia-capitulos button {
+  border: 0;
+  padding: 7px 0;
+  background: transparent;
+  color: rgba(232, 218, 195, 0.65);
+  font-size: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.comunidade-historia-capitulos button:hover {
+  color: #e5c58f;
+}
+
+@media (max-width: 700px) {
+  .comunidade-historias-cabecalho {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .comunidade-historia-item {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .comunidade-historia-capa {
+    width: 92px;
+    height: 132px;
+  }
+
+  .comunidade-historia-titulo {
+    font-size: 19px;
+  }
+
+  .comunidade-historia-detalhe {
+    grid-template-columns: 1fr;
+    padding: 25px;
+  }
+
+  .comunidade-historia-detalhe-capa {
+    width: 130px;
+    height: 190px;
+  }
+}
+/* =========================================================
+   AVELUNE — MODAL NOVA HISTÓRIA
+   ========================================================= */
+
+.comunidade-historia-modal-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  overflow-y: auto;
+  background: rgba(3, 1, 1, 0.86);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.comunidade-historia-modal {
+  position: relative;
+  width: min(720px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 38px;
   box-sizing: border-box;
+  border: 1px solid rgba(201, 149, 78, 0.28);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(25, 11, 7, 0.99),
+      rgba(10, 5, 4, 0.99)
+    );
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.7),
+    inset 0 0 60px rgba(115, 58, 25, 0.06);
+  color: #eadcc8;
+}
+
+.comunidade-historia-modal::before {
+  content: "✦";
+  display: block;
+  margin-bottom: 12px;
+  color: #c9954d;
+  font-family: Georgia, serif;
+  font-size: 18px;
+  text-align: center;
+}
+
+.comunidade-historia-modal h2 {
+  margin: 0 0 30px;
+  color: #eadcc8;
+  font-family: "Cinzel", Georgia, serif;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.comunidade-historia-modal-fechar {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(201, 149, 78, 0.18);
+  background: transparent;
+  color: rgba(234, 220, 200, 0.65);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.comunidade-historia-modal-fechar:hover {
+  color: #e6c48c;
+  border-color: rgba(201, 149, 78, 0.42);
+}
+
+.comunidade-historia-modal > label {
+  display: block;
+  margin: 20px 0 8px;
+  color: rgba(211, 169, 108, 0.78);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.comunidade-historia-modal input,
+.comunidade-historia-modal textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(201, 149, 78, 0.18);
+  outline: none;
+  background: rgba(4, 2, 2, 0.72);
+  color: #eadcc8;
+  font-family: "Inter", Arial, sans-serif;
+  font-size: 12px;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.comunidade-historia-modal input {
+  height: 44px;
+  padding: 0 13px;
+}
+
+.comunidade-historia-modal textarea {
+  min-height: 105px;
+  padding: 12px 13px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.comunidade-historia-modal input::placeholder,
+.comunidade-historia-modal textarea::placeholder {
+  color: rgba(220, 198, 166, 0.28);
+}
+
+.comunidade-historia-modal input:focus,
+.comunidade-historia-modal textarea:focus {
+  border-color: rgba(201, 149, 78, 0.52);
+  background: rgba(12, 6, 4, 0.9);
+}
+
+/* Fanfic / história original */
+
+.comunidade-historia-radio {
+  display: flex;
+  gap: 8px;
+}
+
+.comunidade-historia-radio button {
+  border: 1px solid rgba(201, 149, 78, 0.18);
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.025);
+  color: rgba(231, 211, 179, 0.55);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.comunidade-historia-radio button:hover {
+  border-color: rgba(201, 149, 78, 0.35);
+}
+
+.comunidade-historia-radio button.ativo {
+  border-color: rgba(201, 149, 78, 0.55);
+  background: rgba(126, 61, 25, 0.28);
+  color: #e8c98f;
+}
+
+/* Gêneros e tropes */
+
+.comunidade-historia-tags-selecao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.comunidade-historia-tags-selecao button {
+  border: 1px solid rgba(201, 149, 78, 0.17);
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.025);
+  color: rgba(225, 204, 171, 0.52);
+  font-size: 8px;
+  cursor: pointer;
+}
+
+.comunidade-historia-tags-selecao button:hover {
+  border-color: rgba(201, 149, 78, 0.38);
+  color: #dec18c;
+}
+
+.comunidade-historia-tags-selecao button.ativo {
+  border-color: rgba(201, 149, 78, 0.55);
+  background: rgba(126, 61, 25, 0.28);
+  color: #e7c88f;
+}
+
+/* Elenco */
+
+.comunidade-historia-personagens-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.comunidade-historia-personagem-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 7px 10px;
+  box-sizing: border-box;
+  border: 1px solid rgba(201, 149, 78, 0.13);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.comunidade-historia-personagem-chip strong {
+  color: #dfc9a6;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.comunidade-historia-personagem-chip small {
+  flex: 1;
+  color: rgba(220, 198, 166, 0.38);
+  font-size: 9px;
+}
+
+.comunidade-historia-personagem-chip button {
+  border: 0;
+  background: transparent;
+  color: rgba(220, 198, 166, 0.42);
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.comunidade-historia-personagem-chip button:hover {
+  color: #c9954d;
+}
+
+.comunidade-historia-novo-personagem {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.comunidade-historia-novo-personagem input {
+  min-width: 0;
+}
+
+.comunidade-historia-novo-personagem button {
+  border: 1px solid rgba(201, 149, 78, 0.25);
+  padding: 0 13px;
+  background: rgba(126, 61, 25, 0.18);
+  color: #dcbf8a;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.comunidade-historia-novo-personagem button:hover {
+  background: rgba(126, 61, 25, 0.32);
+  border-color: rgba(201, 149, 78, 0.45);
+}
+
+/* Publicar */
+
+.comunidade-historia-publicar {
+  width: 100%;
+  margin-top: 28px;
+  border: 1px solid rgba(201, 149, 78, 0.42);
+  padding: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(133, 64, 28, 0.42),
+      rgba(75, 30, 16, 0.34)
+    );
+  color: #ecd2a2;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+}
+
+.comunidade-historia-publicar:hover {
+  border-color: rgba(201, 149, 78, 0.68);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(133, 64, 28, 0.58),
+      rgba(75, 30, 16, 0.48)
+    );
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .comunidade-historia-modal-fundo {
+    align-items: flex-start;
+    padding: 15px;
+  }
+
+  .comunidade-historia-modal {
+    padding: 28px 20px;
+    max-height: 94vh;
+  }
+
+  .comunidade-historia-modal h2 {
+    font-size: 25px;
+  }
+
+  .comunidade-historia-novo-personagem {
+    grid-template-columns: 1fr;
+  }
+
+  .comunidade-historia-novo-personagem button {
+    min-height: 42px;
+  }
+
+  .comunidade-historia-radio {
+    flex-direction: column;
+  }
+
+  .comunidade-historia-radio button {
+    width: 100%;
+  }
+}
+
+.comunidade-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.comunidade-card {
   padding: 24px;
-  border: 1px solid rgba(213, 157, 83, 0.13);
-  background: rgba(22, 12, 8, 0.55);
+  border: 1px solid rgba(180, 130, 70, 0.22);
+  background: rgba(18, 10, 8, 0.88);
+  box-sizing: border-box;
 }
 
 .comunidade-card-titulo {
@@ -2635,195 +3292,351 @@
   margin-bottom: 22px;
 }
 
+.comunidade-card-titulo > span {
+  flex-shrink: 0;
+  font-size: 15px;
+  line-height: 1;
+  margin-top: 4px;
+}
+
 .comunidade-card-titulo > div {
-  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
+  min-width: 0;
 }
 
 .comunidade-card-titulo > div > span {
   display: block;
-  color: rgba(203, 156, 91, 0.65);
-  font-size: 9px;
-  line-height: 1.3;
+  font-size: 11px;
   letter-spacing: 0.16em;
-  text-transform: uppercase;
+  line-height: 1.4;
 }
 
 .comunidade-card-titulo > div > strong {
   display: block;
-  color: rgba(232, 214, 188, 0.9);
-  font-family: "Cinzel", Georgia, serif;
-  font-size: 17px;
-  font-weight: 500;
-  line-height: 1.25;
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 600;
 }
 
-.comunidade-sidebar-vazio {
-  margin: 0;
-  color: rgba(238, 226, 210, 0.82);
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.comunidade-destaques-lista,
-.comunidade-tendencias-lista,
-.comunidade-leitores-lista {
+.comunidade-destaques-lista {
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .comunidade-destaque {
   display: flex;
   align-items: center;
-  gap: 11px;
-  min-height: 0;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.07);
-  background: transparent;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(180, 130, 70, 0.12);
+  background: rgba(255, 255, 255, 0.015);
 }
 
-.comunidade-destaque:last-child {
-  border-bottom: 0;
-}
-
-.comunidade-destaque-avatar,
-.comunidade-avatar.mini {
-  display: grid;
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border: 1px solid rgba(213, 157, 83, 0.22);
+.comunidade-destaque-avatar {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
   border-radius: 50%;
-  background: rgba(119, 61, 24, 0.2);
-  color: #d5a45f;
-  font-size: 10px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(180, 130, 70, 0.35);
+  font-size: 11px;
 }
 
 .comunidade-destaque-dados {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin: 0;
+  min-width: 0;
 }
 
 .comunidade-destaque-dados strong {
-  color: rgba(229, 209, 178, 0.82);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .comunidade-destaque-dados span {
-  color: rgba(218, 189, 148, 0.55);
-  font-size: 8px;
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.55;
+}
+
+.comunidade-tendencias-lista {
+  display: flex;
+  flex-direction: column;
 }
 
 .comunidade-tendencia-item {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.07);
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(180, 130, 70, 0.12);
+}
+
+.comunidade-tendencia-item:first-child {
+  padding-top: 0;
 }
 
 .comunidade-tendencia-item:last-child {
   border-bottom: 0;
+  padding-bottom: 0;
 }
 
 .comunidade-tendencia-item strong {
-  color: rgba(226, 202, 167, 0.82);
-  font-size: 11px;
-  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.3;
 }
 
-.comunidade-tendencia-item span {
-  color: rgba(218, 189, 148, 0.48);
-  font-size: 8px;
+.comunidade-resenhas-area {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 }
 
-.comunidade-leitor {
+.comunidade-livros-resenha,
+.comunidade-resenhas-publicadas {
+  border: 1px solid rgba(174, 108, 47, 0.2);
+  background: rgba(18, 9, 7, 0.72);
+  padding: 24px;
+}
+
+.comunidade-secao-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.comunidade-secao-cabecalho > div:first-child {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.comunidade-secao-cabecalho > div:first-child > span {
+  color: #c9a36a;
+}
+
+.comunidade-secao-cabecalho small {
+  display: block;
+  color: #9c806d;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  margin-bottom: 6px;
+}
+
+.comunidade-secao-cabecalho h2 {
+  margin: 0;
+  color: #ead8c2;
+  font-size: 22px;
+}
+
+.comunidade-secao-cabecalho p {
+  max-width: 260px;
+  margin: 0;
+  color: #9c8a7d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.comunidade-busca-livro-resenha {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 16px;
+  padding: 13px 15px;
+  border: 1px solid rgba(174, 108, 47, 0.25);
+  background: #0c0706;
+  color: #ead8c2;
+  outline: none;
+}
+
+.comunidade-busca-livro-resenha:focus {
+  border-color: rgba(201, 163, 106, 0.8);
+}
+
+.comunidade-livros-resenha-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.comunidade-livro-resenha-item {
   display: flex;
   align-items: center;
-  gap: 11px;
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(213, 157, 83, 0.07);
+  gap: 14px;
+  width: 100%;
+  padding: 15px;
+  border: 1px solid rgba(174, 108, 47, 0.14);
+  background: rgba(9, 5, 4, 0.7);
+  color: #ead8c2;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.comunidade-leitor > div:nth-child(2) {
+.comunidade-livro-resenha-item:hover {
+  border-color: rgba(201, 163, 106, 0.65);
+  background: rgba(39, 18, 14, 0.8);
+}
+
+.comunidade-livro-resenha-simbolo {
+  color: #c9a36a;
+  font-size: 18px;
+}
+
+.comunidade-livro-resenha-dados {
+  display: flex;
   flex: 1;
   min-width: 0;
-  display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
-.comunidade-leitor strong {
-  color: rgba(229, 209, 178, 0.82);
+.comunidade-livro-resenha-dados strong {
+  overflow: hidden;
+  color: #ead8c2;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.comunidade-livro-resenha-dados small {
+  color: #9c806d;
+  font-size: 12px;
+}
+
+.comunidade-livro-resenha-acao {
+  color: #c9a36a;
   font-size: 10px;
-  font-weight: 500;
-}
-
-.comunidade-leitor span {
-  color: rgba(218, 189, 148, 0.48);
-  font-size: 8px;
-}
-
-.comunidade-leitor > button {
-  width: auto;
-  min-width: 62px;
-  height: 28px;
-  padding: 0 9px;
-  border: 1px solid rgba(213, 157, 83, 0.25);
-  border-radius: 2px;
-  background: transparent;
-  color: rgba(218, 179, 119, 0.72);
-  font-size: 8px;
   letter-spacing: 0.08em;
-  cursor: pointer;
+  white-space: nowrap;
 }
 
-.comunidade-leitor > button:hover {
-  background: rgba(126, 61, 25, 0.3);
-  color: rgba(235, 207, 165, 0.95);
+@media (max-width: 650px) {
+  .comunidade-livros-resenha,
+  .comunidade-resenhas-publicadas {
+    padding: 18px;
+  }
+
+  .comunidade-secao-cabecalho {
+    flex-direction: column;
+  }
+
+  .comunidade-secao-cabecalho p {
+    max-width: none;
+  }
+
+  .comunidade-livro-resenha-item {
+    align-items: flex-start;
+  }
+
+  .comunidade-livro-resenha-acao {
+    display: none;
+  }
 }
 
-/* Resenhas compactas */
-.comunidade-resenhas-selecao {
+
+.comunidade-tendencia-item span {
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0.62;
+}
+
+
+/* Submenu da área de resenhas */
+.comunidade-submenu-resenha {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.comunidade-resenhas-submenu {
-  display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+  margin: 22px 0 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(174, 108, 47, 0.18);
 }
 
-.comunidade-resenhas-submenu button,
-.comunidade-resenha-opcao {
-  appearance: none;
-  border: 1px solid rgba(213, 157, 83, 0.22);
-  border-radius: 0;
-  padding: 10px 14px;
+.comunidade-submenu-resenha button {
+  border: 1px solid rgba(174, 108, 47, 0.24);
   background: transparent;
-  color: rgba(218, 189, 148, 0.65);
-  font-size: 9px;
-  letter-spacing: 0.1em;
+  color: #a99a88;
+  padding: 11px 14px;
   cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  transition: 0.2s ease;
 }
 
-.comunidade-resenhas-submenu button.ativo,
-.comunidade-resenha-opcao.ativo {
-  border-color: rgba(213, 157, 83, 0.7);
-  background: rgba(119, 61, 24, 0.18);
-  color: #e5cfaa;
+.comunidade-submenu-resenha button:hover,
+.comunidade-submenu-resenha button.ativo {
+  color: #ead7b5;
+  border-color: #b58a4d;
+  background: rgba(181, 138, 77, 0.09);
 }
 
-@media (max-width: 850px) {
-  .comunidade-sidebar {
-    position: static;
+.comunidade-resenha-link-form {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(174, 108, 47, 0.2);
+  background: rgba(15, 8, 6, 0.45);
+}
+
+.comunidade-resenha-link-form label {
+  display: grid;
+  gap: 7px;
+  color: #b9a58f;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.comunidade-resenha-link-form input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(174, 108, 47, 0.25);
+  background: #0b0706;
+  color: #eadfce;
+  padding: 13px;
+  outline: none;
+}
+
+.comunidade-resenha-link-form input:focus {
+  border-color: #b58a4d;
+}
+
+.comunidade-usar-livro-link {
+  justify-self: start;
+  border: 1px solid #b58a4d;
+  background: #b58a4d;
+  color: #160c08;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+.comunidade-link-livro {
+  display: inline-block;
+  margin-top: 8px;
+  color: #c8a56b;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+}
+
+.comunidade-link-livro:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .comunidade-submenu-resenha {
+    flex-direction: column;
+  }
+
+  .comunidade-submenu-resenha button {
+    width: 100%;
   }
 }
