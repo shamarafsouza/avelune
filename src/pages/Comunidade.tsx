@@ -9,6 +9,53 @@ import "./Comunidade.css";
 import AveluneHeader from "../components/AveluneHeader";
 import { useLivros } from "../hooks/useLivros";
 
+const TROPES_DARK_ROMANCE = [
+  "Abuso",
+  "Age Gap",
+  "Age Gap Reverso",
+  "Bully Romance",
+  "Casamento Arranjado",
+  "CEO",
+  "Dark Romance",
+  "Dark Taboo",
+  "Hackers",
+  "Máfia",
+  "Sequestro",
+  "Serial Killer",
+  "Sociedades Secretas",
+  "Stalker",
+  "Toca nela e você morre",
+];
+
+const TROPES_CONTEMPORANEO = [
+  "Bebê Secreto",
+  "Corrida de Carro",
+  "Cowboy",
+  "Dark Academia",
+  "Enemies to Lovers",
+  "Escola/Faculdade",
+  "Esportes",
+  "Fake Dating",
+  "Friends to Lovers",
+  "Grumpy X Sunshine",
+  "Guarda Costas",
+  "Livros Gay (M/M)",
+  "Livros Sáficos (F/F)",
+  "Plus Size",
+  "Rockstars",
+];
+
+const TROPES_FANTASIA = [
+  "Alien Romance",
+  "Demônios",
+  "Faes e Feéricos",
+  "Lobos e Shifters",
+  "Mitologia",
+  "Monster Romance",
+  "Shifters",
+  "Vampiros",
+];
+
 type Pagina =
   | "inicio"
   | "biblioteca"
@@ -36,6 +83,13 @@ type Personagem = {
   descricao?: string;
 };
 
+type Capitulo = {
+  id: number;
+  titulo: string;
+  conteudo: string;
+  publicado: boolean;
+};
+
 type Historia = {
   id: number;
   titulo: string;
@@ -45,6 +99,7 @@ type Historia = {
   comentarioInspiracao?: string;
   generos: string[];
   tropes: string[];
+  gatilhos: string[];
   classificacao: string;
   capa?: string;
   personagens: Personagem[];
@@ -52,7 +107,7 @@ type Historia = {
   autorIniciais: string;
   curtidas: number;
   salva: boolean;
-  capitulos: { id: number; titulo: string }[];
+  capitulos: Capitulo[];
 };
 
 type AbaComunidade = "publicacoes" | "resenhas" | "historias";
@@ -344,7 +399,7 @@ useEffect(() => {
       autorIniciais: "VC",
       curtidas: 0,
       salva: false,
-      capitulos: [{ id: Date.now(), titulo: "01 — O começo" }],
+      capitulos: [],
     };
 
     setHistorias((atual) => [nova, ...atual]);
