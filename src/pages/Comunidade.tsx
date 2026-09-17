@@ -290,6 +290,7 @@ function redimensionarImagem(
 function Comunidade({
   onNavigate,
 }: ComunidadeProps) {
+
   const [usuarioAtual, setUsuarioAtual] = useState<any>(null);
   const [carregandoAuth, setCarregandoAuth] = useState(true);
 
@@ -319,7 +320,6 @@ function Comunidade({
       subscription.unsubscribe();
     };
   }, []);
-
   const [postagens, setPostagens] =
     useState<Publicacao[]>(
       carregarPostagens
@@ -1694,20 +1694,20 @@ useEffect(() => {
                 </div>
               </div>
             )}
-     {abaComunidade === "historias" && (
-  <div className="comunidade-historias">
-    {!carregandoAuth && usuarioAtual && (
-      <button
-        type="button"
-        className="comunidade-escrever-historia"
-        onClick={() => {
-          if (!exigirConta()) return;
-          setModalHistoriaAberto(true);
-        }}
-      >
-        + ESCREVER UMA HISTÓRIA
-      </button>
-    )}
+            {abaComunidade === "historias" && (
+              <div className="comunidade-historias">
+                {!carregandoAuth && usuarioAtual && (
+                  <button
+                    type="button"
+                    className="comunidade-escrever-historia"
+                    onClick={() => {
+                      if (!exigirConta()) return;
+                      setModalHistoriaAberto(true);
+                    }}
+                  >
+                    + ESCREVER UMA HISTÓRIA
+                  </button>
+                )}
 
                 {historias.length === 0 ? (
                   <div className="comunidade-post">
