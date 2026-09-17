@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "../lib/supabase";
 import "./Grupos.css";
+import AveluneHeader from "../components/AveluneHeader";
 
 type Pagina =
   | "inicio"
