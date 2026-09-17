@@ -341,6 +341,47 @@ function Grupos({ onNavigate }: GruposProps) {
   }
 
   // ==========================================
+// REMOVER MEMBRO (APENAS CRIADOR)
+// ==========================================
+
+async function removerMembro(membroId: string) {
+  if (!usuarioId || !grupoSelecionado) return;
+
+  if (grupoSelecionado.criador_id !== usuarioId) {
+    setErro("Apenas o criador pode remover membros.");
+    return;
+  }
+
+  if (membroId === grupoSelecionado.criador_id) {
+    setErro("O criador não pode ser removido.");
+    return;
+  }
+
+  const confirmar = window.confirm(
+    "Tem certeza que deseja remover este membro?"
+  );
+
+  if (!confirmar) return;
+
+  setErro("");
+
+  const { error } = await supabase
+    .from("grupo_membros")
+    .delete()
+    .eq("grupo_id", grupoSelecionado.id)
+    .eq("usuario_id", membroId);
+
+  if (error) {
+    console.error("Erro ao remover membro:", error);
+    setErro("Não foi possível remover o membro.");
+    return;
+  }
+
+  await carregarMembros(grupoSelecionado.id);
+  await carregarGrupos();
+}
+
+  // ==========================================
   // ENVIAR MENSAGEM
   // ==========================================
 
