@@ -44,7 +44,7 @@ export default function AveluneHeader({
           Biblioteca
         </button>
 
-        <button
+             <button
           type="button"
           className={
             paginaAtual === "comunidade"
@@ -54,6 +54,18 @@ export default function AveluneHeader({
           onClick={() => onNavigate("comunidade")}
         >
           Comunidade
+        </button>
+
+        <button
+          type="button"
+          className={
+            paginaAtual === "grupos"
+              ? "ativo"
+              : ""
+          }
+          onClick={() => onNavigate("grupos")}
+        >
+          Grupos
         </button>
 
         <button
