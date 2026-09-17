@@ -1093,7 +1093,8 @@ return (
         </div>
       )}
     </main>
-  );
+  </>
+);
 }
 
 export default Grupos;
