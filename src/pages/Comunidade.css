@@ -3750,3 +3750,15 @@
   color: #9c806d;
   font-size: 11px;
 }
+
+.comunidade-publicar-botoes {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+
+.comunidade-publicar-botoes button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
