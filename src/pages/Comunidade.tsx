@@ -1700,10 +1700,7 @@ useEffect(() => {
                   <button
                     type="button"
                     className="comunidade-escrever-historia"
-                    onClick={() => {
-                      if (!exigirConta()) return;
-                      setModalHistoriaAberto(true);
-                    }}
+                    onClick={() => setModalHistoriaAberto(true)}
                   >
                     + ESCREVER UMA HISTÓRIA
                   </button>
