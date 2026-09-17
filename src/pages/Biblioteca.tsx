@@ -157,6 +157,19 @@ function Biblioteca({
       }
     });
 
+  const [progressoLeitura, setProgressoLeitura] =
+    useState<Record<string, ProgressoLeitura>>(() => {
+      try {
+        const salvos = localStorage.getItem(
+          "avelune-progresso-leitura"
+        );
+
+        return salvos ? JSON.parse(salvos) : {};
+      } catch {
+        return {};
+      }
+    });
+
   useEffect(() => {
     localStorage.setItem(
       "avelune-favoritos",
