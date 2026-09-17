@@ -944,7 +944,7 @@ useEffect(() => {
                           </div>
                         )}
 
-                        <button
+                                               <button
                           type="button"
                           onClick={() =>
                             onNavigate?.(
@@ -954,6 +954,14 @@ useEffect(() => {
                         >
                           VER LIVRO →
                         </button>
+                      </div>
+                    )}
+
+                    {post.tags && post.tags.length > 0 && (
+                      <div className="comunidade-post-tags">
+                        {post.tags.map((tag) => (
+                          <span key={tag}>{tag}</span>
+                        ))}
                       </div>
                     )}
 
