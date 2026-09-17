@@ -1256,7 +1256,7 @@ useEffect(() => {
                             <button
                               type="button"
                               key={indice}
-                              className={
+                         className={
                                 indice 
                                   avaliacaoDigitada
                                   ? "ativa"
