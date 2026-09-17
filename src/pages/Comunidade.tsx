@@ -1400,129 +1400,84 @@ useEffect(() => {
                     </button>
                   </div>
 
-                                   {subAbaResenha === "biblioteca" ? (
-                    <div className="comunidade-seletor-livro" ref={seletorLivroRef}>
-                      <button
-                        type="button"
-                        className={`comunidade-seletor-livro-botao ${seletorLivroAberto ? "aberto" : ""}`}
-                        onClick={() => setSeletorLivroAberto((atual) => !atual)}
-                      >
-                        <span className="comunidade-seletor-placeholder">
-                          Selecionar livro da biblioteca...
-                        </span>
-                        <span className="comunidade-seletor-livro-seta">
-                          {seletorLivroAberto ? "▲" : "▼"}
-                        </span>
-                      </button>
+                    {subAbaResenha === "biblioteca" ? (
+  <div className="comunidade-seletor-livro" ref={seletorLivroRef}>
+    <button
+      type="button"
+      className={`comunidade-seletor-livro-botao ${seletorLivroAberto ? "aberto" : ""}`}
+      onClick={() => setSeletorLivroAberto((atual) => !atual)}
+    >
+      <span className="comunidade-seletor-placeholder">
+        Selecionar livro da biblioteca...
+      </span>
+      <span className="comunidade-seletor-livro-seta">
+        {seletorLivroAberto ? "▲" : "▼"}
+      </span>
+    </button>
 
-                      {seletorLivroAberto && (
-                        <div className="comunidade-seletor-livro-painel">
-                          <input
-                            className="comunidade-seletor-livro-busca"
-                            value={buscaLivroResenha}
-                            onChange={(evento) => setBuscaLivroResenha(evento.target.value)}
-                            placeholder="Buscar livro ou autor..."
-                            aria-label="Buscar livro para fazer uma resenha"
-                            autoFocus
-                          />
+    {seletorLivroAberto && (
+      <div className="comunidade-seletor-livro-painel">
+        <input
+          className="comunidade-seletor-livro-busca"
+          value={buscaLivroResenha}
+          onChange={(evento) => setBuscaLivroResenha(evento.target.value)}
+          placeholder="Buscar livro ou autor..."
+          aria-label="Buscar livro para fazer uma resenha"
+          autoFocus
+        />
 
-                          {livrosCarregando ? (
-                            <p className="comunidade-seletor-livro-vazio">Carregando livros...</p>
-                          ) : livrosErro ? (
-                            <p className="comunidade-seletor-livro-vazio">{livrosErro}</p>
-                          ) : (
-                            <div className="comunidade-seletor-livro-lista">
-                              {livros
-                                .filter((livro) => {
-                                  const termo = buscaLivroResenha.trim().toLowerCase();
-                                  return (
-                                    !termo ||
-                                    livro.titulo.toLowerCase().includes(termo) ||
-                                    livro.autor.toLowerCase().includes(termo)
-                                  );
-                                })
-                                .map((livro) => (
-                                  <button
-                                    type="button"
-                                    className="comunidade-seletor-livro-item"
-                                    key={livro.titulo}
-                                    onClick={() => {
-                                      if (!exigirConta()) return;
-                                      setLivroDigitado(livro.titulo);
-                                      setAutorDigitado(livro.autor);
-                                      setLinkLivroDigitado("");
-                                      setModoResenha(true);
-                                      setSeletorLivroAberto(false);
-                                      setAbaComunidade("publicacoes");
-                                      mostrarMensagem(`Livro selecionado: ${livro.titulo}`);
-                                    }}
-                                  >
-                                    <strong>{livro.titulo}</strong>
-                                    <small>{livro.autor} · {livro.genero}</small>
-                                  </button>
-                                ))}
+        {livrosCarregando ? (
+          <p className="comunidade-seletor-livro-vazio">Carregando livros...</p>
+        ) : livrosErro ? (
+          <p className="comunidade-seletor-livro-vazio">{livrosErro}</p>
+        ) : (
+          <div className="comunidade-seletor-livro-lista">
+            {livros
+              .filter((livro) => {
+                const termo = buscaLivroResenha.trim().toLowerCase();
+                return (
+                  !termo ||
+                  livro.titulo.toLowerCase().includes(termo) ||
+                  livro.autor.toLowerCase().includes(termo)
+                );
+              })
+              .map((livro) => (
+                <button
+                  type="button"
+                  className="comunidade-seletor-livro-item"
+                  key={livro.titulo}
+                  onClick={() => {
+                    if (!exigirConta()) return;
+                    setLivroDigitado(livro.titulo);
+                    setAutorDigitado(livro.autor);
+                    setLinkLivroDigitado("");
+                    setModoResenha(true);
+                    setSeletorLivroAberto(false);
+                    setAbaComunidade("publicacoes");
+                    mostrarMensagem(`Livro selecionado: ${livro.titulo}`);
+                  }}
+                >
+                  <strong>{livro.titulo}</strong>
+                  <small>{livro.autor} · {livro.genero}</small>
+                </button>
+              ))}
 
-                              {livros.filter((livro) => {
-                                const termo = buscaLivroResenha.trim().toLowerCase();
-                                return (
-                                  !termo ||
-                                  livro.titulo.toLowerCase().includes(termo) ||
-                                  livro.autor.toLowerCase().includes(termo)
-                                );
-                              }).length === 0 && (
-                                <p className="comunidade-seletor-livro-vazio">Nenhum livro encontrado.</p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div className="comunidade-resenha-link-form">
-                      <label>Nome do livro *
-                        <input
-                          value={livroDigitado}
-                          onChange={(evento) => setLivroDigitado(evento.target.value)}
-                          placeholder="Digite o nome do livro"
-                          maxLength={150}
-                        />
-                      </label>
-                      <label>Autor
-                        <input
-                          value={autorDigitado}
-                          onChange={(evento) => setAutorDigitado(evento.target.value)}
-                          placeholder="Nome do autor"
-                          maxLength={120}
-                        />
-                      </label>
-                      <label>Link do livro *
-                        <input
-                          type="url"
-                          value={linkLivroDigitado}
-                          onChange={(evento) => setLinkLivroDigitado(evento.target.value)}
-                          placeholder="https://..."
-                          required
-                        />
-                      </label>
-                      <button
-                        type="button"
-                        className="comunidade-usar-livro-link"
-                        onClick={() => {
-                          if (!exigirConta()) return;
-                          if (!livroDigitado.trim() || !linkLivroDigitado.trim()) {
-                            mostrarMensagem("Informe o nome e o link do livro.");
-                            return;
-                          }
-                          setModoResenha(true);
-                          setAbaComunidade("publicacoes");
-                          mostrarMensagem("Livro por link selecionado. Complete sua resenha.");
-                        }}
-                      >
-                        CONTINUAR COM ESTE LIVRO →
-                      </button>
-                    </div>
-                  )}
-                </section>
+            {livros.filter((livro) => {
+              const termo = buscaLivroResenha.trim().toLowerCase();
+              return (
+                !termo ||
+                livro.titulo.toLowerCase().includes(termo) ||
+                livro.autor.toLowerCase().includes(termo)
+              );
+            }).length === 0 && (
+              <p className="comunidade-seletor-livro-vazio">Nenhum livro encontrado.</p>
+            )}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+) : (
                     <div className="comunidade-resenha-link-form">
                       <label>Nome do livro *
                         <input
