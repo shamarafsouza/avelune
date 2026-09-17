@@ -14,7 +14,9 @@ type Pagina =
   | "biblioteca"
   | "comunidade"
   | "grupos"
-  | "perfil";
+  | "perfil"
+  | "auth-login"
+  | "auth-cadastro";
 
 type PublicacaoPerfil = {
   id: number;
@@ -61,6 +63,8 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [totalSeguindo, setTotalSeguindo] = useState(0);
   const [mensagem, setMensagem] = useState("");
   const [editando, setEditando] = useState(false);
+  const [carregandoSessao, setCarregandoSessao] = useState(true);
+  const [usuarioLogado, setUsuarioLogado] = useState(false);
 
   const [nomePerfil, setNomePerfil] = useState("");
   const [usuarioPerfil, setUsuarioPerfil] = useState("");
@@ -86,8 +90,15 @@ function Perfil({ onNavigate }: PerfilProps) {
           await supabase.auth.getUser();
 
         if (erroUsuario || !usuarioAuth.user || !ativo) {
+          if (ativo) {
+            setUsuarioLogado(false);
+            setCarregandoSessao(false);
+          }
           return;
         }
+
+        setUsuarioLogado(true);
+        setCarregandoSessao(false);
 
         const usuarioId = usuarioAuth.user.id;
 
@@ -455,6 +466,54 @@ function Perfil({ onNavigate }: PerfilProps) {
     setIniciaisEditadas(iniciaisPerfil);
     setFotoPerfilEditada(fotoPerfil);
     setEditando(true);
+  }
+
+  if (carregandoSessao) {
+    return (
+      <main className="perfil perfil-acesso">
+        <AveluneHeader
+          paginaAtual="perfil"
+          onNavigate={(pagina) => onNavigate?.(pagina)}
+        />
+      </main>
+    );
+  }
+
+  if (!usuarioLogado) {
+    return (
+      <main className="perfil perfil-acesso">
+        <AveluneHeader
+          paginaAtual="perfil"
+          onNavigate={(pagina) => onNavigate?.(pagina)}
+        />
+
+        <section className="perfil-acesso-conteudo">
+          <span className="perfil-acesso-simbolo">✦</span>
+          <p className="perfil-kicker">SUA JORNADA EM AVELUNE</p>
+          <h1>Entre para acessar seu perfil</h1>
+          <p>
+            Faça login ou crie sua conta para salvar livros,
+            acompanhar suas leituras e compartilhar suas histórias.
+          </p>
+
+          <div className="perfil-acesso-acoes">
+            <button
+              type="button"
+              onClick={() => onNavigate?.("auth-login")}
+            >
+              Entrar
+            </button>
+
+            <button
+              type="button"
+              onClick={() => onNavigate?.("auth-cadastro")}
+            >
+              Criar minha conta
+            </button>
+          </div>
+        </section>
+      </main>
+    );
   }
 
   return (
