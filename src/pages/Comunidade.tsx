@@ -348,7 +348,7 @@ useEffect(() => {
       gatilhos: [],
       classificacao: classificacaoH,
       capa: capaH,
-      personagens,
+      personagens: personagensH,
       autor: "Você",
       autorIniciais: "VC",
       curtidas: 0,
