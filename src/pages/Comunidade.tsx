@@ -66,6 +66,11 @@ const TROPES_SUGERIDOS = [
   "Enemies to Lovers", "Slow Burn", "Found Family", "Segunda Chance", "Amigos de Infância",
 ];
 
+const VIBES_RESENHA = [
+  "Slow Burn", "Enemies to Lovers", "Dark Romance", "Morally Gray MC",
+  "Angst", "Fluff", "Spice", "Plot Twist", "Final Feliz", "Final Trágico",
+];
+
 const CLASSIFICACOES = ["Livre", "12", "14", "16", "18"];
 
 function carregarHistorias(): Historia[] {
