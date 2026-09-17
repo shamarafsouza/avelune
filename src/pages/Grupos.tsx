@@ -1,6 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "../lib/supabase";
-import "./Grupos.css";
 
 type Pagina =
   | "inicio"
@@ -603,6 +602,42 @@ async function removerMembro(membroId: string) {
             </div>
           </div>
         </section>
+
+        {ehCriador() && (
+          <section className="grupo-gerenciar-membros">
+            <h2>Gerenciar membros</h2>
+            <p>Somente a criadora pode remover membros do grupo.</p>
+
+            {membros.length === 0 ? (
+              <p>Nenhum membro encontrado.</p>
+            ) : (
+              <div>
+                {membros.map((membroId) => {
+                  const ehDono = membroId === grupoSelecionado.criador_id;
+
+                  return (
+                    <div key={membroId}>
+                      <span>
+                        {ehDono
+                          ? "Você (criadora)"
+                          : `Leitor ${membroId.slice(0, 6)}`}
+                      </span>
+
+                      {!ehDono && (
+                        <button
+                          type="button"
+                          onClick={() => removerMembro(membroId)}
+                        >
+                          Remover
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+        )}
 
         <section className="grupo-discussao">
           <div className="grupo-discussao-header">
