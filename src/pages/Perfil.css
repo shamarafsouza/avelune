@@ -1144,3 +1144,14 @@
   color: #ead7b8;
   background: rgba(126, 61, 25, 0.14);
 }
+.perfil-estatisticas-convite {
+  max-width: 480px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(211, 159, 87, 0.16);
+  background: rgba(43, 23, 14, 0.35);
+  color: rgba(224, 199, 163, 0.62);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  line-height: 1.7;
+}
