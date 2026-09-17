@@ -9,53 +9,6 @@ import "./Comunidade.css";
 import AveluneHeader from "../components/AveluneHeader";
 import { useLivros } from "../hooks/useLivros";
 
-const TROPES_DARK_ROMANCE = [
-  "Abuso",
-  "Age Gap",
-  "Age Gap Reverso",
-  "Bully Romance",
-  "Casamento Arranjado",
-  "CEO",
-  "Dark Romance",
-  "Dark Taboo",
-  "Hackers",
-  "Máfia",
-  "Sequestro",
-  "Serial Killer",
-  "Sociedades Secretas",
-  "Stalker",
-  "Toca nela e você morre",
-];
-
-const TROPES_CONTEMPORANEO = [
-  "Bebê Secreto",
-  "Corrida de Carro",
-  "Cowboy",
-  "Dark Academia",
-  "Enemies to Lovers",
-  "Escola/Faculdade",
-  "Esportes",
-  "Fake Dating",
-  "Friends to Lovers",
-  "Grumpy X Sunshine",
-  "Guarda Costas",
-  "Livros Gay (M/M)",
-  "Livros Sáficos (F/F)",
-  "Plus Size",
-  "Rockstars",
-];
-
-const TROPES_FANTASIA = [
-  "Alien Romance",
-  "Demônios",
-  "Faes e Feéricos",
-  "Lobos e Shifters",
-  "Mitologia",
-  "Monster Romance",
-  "Shifters",
-  "Vampiros",
-];
-
 type Pagina =
   | "inicio"
   | "biblioteca"
@@ -384,22 +337,23 @@ useEffect(() => {
     }
 
     const nova: Historia = {
-      id: Date.now(),
-      titulo: tituloH.trim(),
-      sinopse: sinopseH.trim(),
-      tipo: tipoH,
-      livroInspiracao: livroInspiracaoH.trim() || undefined,
-      comentarioInspiracao: comentarioInspiracaoH.trim() || undefined,
-      generos: generosH,
-      tropes: tropesH,
-      classificacao: classificacaoH,
-      capa: capaH || undefined,
-      personagens: personagensH,
-      autor: "Você",
-      autorIniciais: "VC",
-      curtidas: 0,
-      salva: false,
-      capitulos: [],
+        id: Date.now(),
+        titulo,
+        sinopse,
+        tipo,
+        livroInspiracao,
+        comentarioInspiracao,
+        generos,
+        tropes,
+        gatilhos: [],
+        classificacao,
+        capa,
+        personagens,
+        autor,
+        autorIniciais,
+        curtidas: 0,
+        salva: false,
+        capitulos: [],
     };
 
     setHistorias((atual) => [nova, ...atual]);
