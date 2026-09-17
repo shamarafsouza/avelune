@@ -524,8 +524,14 @@ async function removerMembro(membroId: string) {
   // ==========================================
 
   if (grupoSelecionado) {
-    return (
-      <main className="grupos-pagina grupos-detalhes">
+return (
+  <>
+    <AveluneHeader
+      paginaAtual="grupos"
+      onNavigate={(pagina) => onNavigate?.(pagina)}
+    />
+
+    <main className="grupos-pagina grupos-detalhes">
         <header className="grupos-detalhes-header">
           <button
             type="button"
