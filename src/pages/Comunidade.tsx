@@ -358,6 +358,7 @@ useEffect(() => {
 
   // modal de criação
   const [modalHistoriaAberto, setModalHistoriaAberto] = useState(false);
+  const [historiaEditandoId, setHistoriaEditandoId] = useState<number | null>(null);
   const [tituloH, setTituloH] = useState("");
   const [sinopseH, setSinopseH] = useState("");
   const [tipoH, setTipoH] = useState<"fanfic" | "original">("fanfic");
@@ -466,6 +467,23 @@ useEffect(() => {
     mostrarMensagem("Capítulo adicionado à história.");
   }
 
+  function editarHistoria(historia: Historia) {
+    setHistoriaEditandoId(historia.id);
+    setTituloH(historia.titulo);
+    setSinopseH(historia.sinopse);
+    setTipoH(historia.tipo);
+    setLivroInspiracaoH(historia.livroInspiracao ?? "");
+    setComentarioInspiracaoH(historia.comentarioInspiracao ?? "");
+    setGenerosH(historia.generos);
+    setTropesH(historia.tropes);
+    setGatilhosH(historia.gatilhos);
+    setClassificacaoH(historia.classificacao);
+    setCapaH(historia.capa ?? "");
+    setPersonagensH(historia.personagens);
+    setHistoriaAberta(null);
+    setModalHistoriaAberto(true);
+  }
+
   function publicarHistoria() {
     if (!exigirConta()) return;
 
@@ -474,9 +492,37 @@ useEffect(() => {
       return;
     }
 
+    if (historiaEditandoId !== null) {
+      setHistorias((atuais) =>
+        atuais.map((historia) =>
+          historia.id === historiaEditandoId
+            ? {
+                ...historia,
+                titulo: tituloH.trim(),
+                sinopse: sinopseH,
+                tipo: tipoH,
+                livroInspiracao: livroInspiracaoH,
+                comentarioInspiracao: comentarioInspiracaoH,
+                generos: generosH,
+                tropes: tropesH,
+                gatilhos: gatilhosH,
+                classificacao: classificacaoH,
+                capa: capaH,
+                personagens: personagensH,
+              }
+            : historia
+        )
+      );
+      limparFormularioHistoria();
+      setHistoriaEditandoId(null);
+      setModalHistoriaAberto(false);
+      mostrarMensagem("Sua história foi atualizada.");
+      return;
+    }
+
     const nova: Historia = {
       id: Date.now(),
-      titulo: tituloH,
+      titulo: tituloH.trim(),
       sinopse: sinopseH,
       tipo: tipoH,
       livroInspiracao: livroInspiracaoH,
@@ -496,6 +542,7 @@ useEffect(() => {
 
     setHistorias((atual) => [nova, ...atual]);
     limparFormularioHistoria();
+    setHistoriaEditandoId(null);
     setModalHistoriaAberto(false);
     mostrarMensagem("Sua história foi publicada.");
   }
@@ -1831,7 +1878,7 @@ useEffect(() => {
                 ×
               </button>
 
-              <h2>Nova história</h2>
+              <h2>{historiaEditandoId !== null ? "Editar história" : "Nova história"}</h2>
 
               <label>Título</label>
               <input value={tituloH} onChange={(e) => setTituloH(e.target.value)} />
@@ -2018,7 +2065,7 @@ useEffect(() => {
               </div>
 
               <button type="button" className="comunidade-historia-publicar" onClick={publicarHistoria}>
-                PUBLICAR
+                {historiaEditandoId !== null ? "SALVAR ALTERAÇÕES" : "PUBLICAR"}
               </button>
             </div>
           </div>
@@ -2061,6 +2108,15 @@ useEffect(() => {
 
               <h2>{historiaAberta.titulo}</h2>
               <p>{historiaAberta.sinopse}</p>
+
+              {usuarioAtual && historiaAberta.autor === "Você" && (
+                <button
+                  type="button"
+                  onClick={() => editarHistoria(historiaAberta)}
+                >
+                  ✎ EDITAR HISTÓRIA
+                </button>
+              )}
 
               <h3>Capítulos publicados</h3>
               {historiaAberta.capitulos.length === 0 ? (
