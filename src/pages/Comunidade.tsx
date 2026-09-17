@@ -237,6 +237,20 @@ function Comunidade({
     }
   }, [historias]);
 
+  const [seletorLivroAberto, setSeletorLivroAberto] = useState(false);
+  const seletorLivroRef = useRef<HTMLDivElement>(null);
+
+useEffect(() => {
+  if (!seletorLivroAberto) return;
+  function aoClicarFora(evento: MouseEvent) {
+    if (seletorLivroRef.current && !seletorLivroRef.current.contains(evento.target as Node)) {
+      setSeletorLivroAberto(false);
+    }
+  }
+  document.addEventListener("mousedown", aoClicarFora);
+  return () => document.removeEventListener("mousedown", aoClicarFora);
+}, [seletorLivroAberto]);
+
   // modal de criação
   const [modalHistoriaAberto, setModalHistoriaAberto] = useState(false);
   const [tituloH, setTituloH] = useState("");
