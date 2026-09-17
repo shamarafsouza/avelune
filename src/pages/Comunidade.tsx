@@ -1400,58 +1400,87 @@ useEffect(() => {
                     </button>
                   </div>
 
-                  {subAbaResenha === "biblioteca" ? (
-                    <>
-                      <input
-                        className="comunidade-busca-livro-resenha"
-                        value={buscaLivroResenha}
-                        onChange={(evento) => setBuscaLivroResenha(evento.target.value)}
-                        placeholder="Buscar livro ou autor..."
-                        aria-label="Buscar livro para fazer uma resenha"
-                      />
+                 {subAbaResenha === "biblioteca" ? (
+  <div className="comunidade-seletor-livro" ref={seletorLivroRef}>
+    <button
+      type="button"
+      className={`comunidade-seletor-livro-botao ${seletorLivroAberto ? "aberto" : ""}`}
+      onClick={() => setSeletorLivroAberto((atual) => !atual)}
+    >
+      <span className="comunidade-seletor-placeholder">
+        Selecionar livro da biblioteca...
+      </span>
+      <span className="comunidade-seletor-livro-seta">
+        {seletorLivroAberto ? "▲" : "▼"}
+      </span>
+    </button>
 
-                      {livrosCarregando ? (
-                        <p className="comunidade-sidebar-vazio">Carregando livros...</p>
-                      ) : livrosErro ? (
-                        <p className="comunidade-sidebar-vazio">{livrosErro}</p>
-                      ) : (
-                        <div className="comunidade-livros-resenha-lista">
-                          {livros
-                            .filter((livro) => {
-                              const termo = buscaLivroResenha.trim().toLowerCase();
-                              return (
-                                !termo ||
-                                livro.titulo.toLowerCase().includes(termo) ||
-                                livro.autor.toLowerCase().includes(termo)
-                              );
-                            })
-                            .map((livro) => (
-                              <button
-                                type="button"
-                                className="comunidade-livro-resenha-item"
-                                key={livro.titulo}
-                                onClick={() => {
-                                  if (!exigirConta()) return;
-                                  setLivroDigitado(livro.titulo);
-                                  setAutorDigitado(livro.autor);
-                                  setLinkLivroDigitado("");
-                                  setModoResenha(true);
-                                  setAbaComunidade("publicacoes");
-                                  mostrarMensagem(`Livro selecionado: ${livro.titulo}`);
-                                }}
-                              >
-                                <span className="comunidade-livro-resenha-simbolo">✦</span>
-                                <span className="comunidade-livro-resenha-dados">
-                                  <strong>{livro.titulo}</strong>
-                                  <small>{livro.autor} · {livro.genero}</small>
-                                </span>
-                                <span className="comunidade-livro-resenha-acao">RESENHAR →</span>
-                              </button>
-                            ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
+    {seletorLivroAberto && (
+      <div className="comunidade-seletor-livro-painel">
+        <input
+          className="comunidade-seletor-livro-busca"
+          value={buscaLivroResenha}
+          onChange={(evento) => setBuscaLivroResenha(evento.target.value)}
+          placeholder="Buscar livro ou autor..."
+          aria-label="Buscar livro para fazer uma resenha"
+          autoFocus
+        />
+
+        {livrosCarregando ? (
+          <p className="comunidade-seletor-livro-vazio">Carregando livros...</p>
+        ) : livrosErro ? (
+          <p className="comunidade-seletor-livro-vazio">{livrosErro}</p>
+        ) : (
+          <div className="comunidade-seletor-livro-lista">
+            {livros
+              .filter((livro) => {
+                const termo = buscaLivroResenha.trim().toLowerCase();
+                return (
+                  !termo ||
+                  livro.titulo.toLowerCase().includes(termo) ||
+                  livro.autor.toLowerCase().includes(termo)
+                );
+              })
+              .map((livro) => (
+                <button
+                  type="button"
+                  className="comunidade-seletor-livro-item"
+                  key={livro.titulo}
+                  onClick={() => {
+                    if (!exigirConta()) return;
+                    setLivroDigitado(livro.titulo);
+                    setAutorDigitado(livro.autor);
+                    setLinkLivroDigitado("");
+                    setModoResenha(true);
+                    setSeletorLivroAberto(false);
+                    setAbaComunidade("publicacoes");
+                    mostrarMensagem(`Livro selecionado: ${livro.titulo}`);
+                  }}
+                >
+                  <strong>{livro.titulo}</strong>
+                  <small>{livro.autor} · {livro.genero}</small>
+                </button>
+              ))}
+
+            {livros.filter((livro) => {
+              const termo = buscaLivroResenha.trim().toLowerCase();
+              return (
+                !termo ||
+                livro.titulo.toLowerCase().includes(termo) ||
+                livro.autor.toLowerCase().includes(termo)
+              );
+            }).length === 0 && (
+              <p className="comunidade-seletor-livro-vazio">Nenhum livro encontrado.</p>
+            )}
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+) : (
+  // o formulário "USAR LINK" continua igual
+  ...
+)}
                     <div className="comunidade-resenha-link-form">
                       <label>Nome do livro *
                         <input
