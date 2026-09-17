@@ -655,13 +655,69 @@ function Biblioteca({
                       </div>
                       <div className="livro-informacoes"><div><h3>{livro.titulo}</h3><p>{livro.autor}</p></div></div>
                       <span className="livro-genero">{livro.genero}</span>
+
+                      {filtroBiblioteca === "estante" && (
+                        <div
+                          className="livro-progresso"
+                          onClick={(event) => event.stopPropagation()}
+                        >
+                          <div className="livro-progresso-campos">
+                            <input
+                              type="number"
+                              min={0}
+                              value={
+                                progressoLeitura[livro.id]?.paginaAtual || ""
+                              }
+                              onChange={(evento) =>
+                                atualizarProgresso(
+                                  livro.id,
+                                  "paginaAtual",
+                                  Number(evento.target.value)
+                                )
+                              }
+                              placeholder="Pág. atual"
+                            />
+                            <span>de</span>
+                            <input
+                              type="number"
+                              min={0}
+                              value={
+                                progressoLeitura[livro.id]?.paginaTotal || ""
+                              }
+                              onChange={(evento) =>
+                                atualizarProgresso(
+                                  livro.id,
+                                  "paginaTotal",
+                                  Number(evento.target.value)
+                                )
+                              }
+                              placeholder="Total"
+                            />
+                          </div>
+
+                          <div className="livro-progresso-barra">
+                            <div
+                              className="livro-progresso-barra-preenchida"
+                              style={{
+                                width: `${calcularPercentual(livro.id)}%`,
+                              }}
+                            />
+                          </div>
+
+                          <span className="livro-progresso-percentual">
+                            {calcularPercentual(livro.id)}% concluído
+                          </span>
+                        </div>
+                      )}
+
                       {livro.amazonUrl && <a className="livro-amazon" href={livro.amazonUrl} target="_blank" rel="noopener noreferrer" onClick={(event) => event.stopPropagation()}>COMPRAR NA AMAZON ↗</a>}
                     </article>
                   );
                 })}
               </div>
             ) : (
-              <div className="nenhum-livro"><span>{filtroBiblioteca === "favoritos" ? "♥" : "✦"}</span><h3>{filtroBiblioteca === "estante" ? "Sua estante está vazia." : filtroBiblioteca === "favoritos" ? "Você ainda não tem favoritos." : "Nenhuma história encontrada."}</h3><p>{filtroBiblioteca === "estante" ? "Escolha uma história na biblioteca para começar sua coleção." : "Tente buscar por outro título, autor ou categoria."}</p><button type="button" onClick={limparFiltros}>EXPLORAR TODAS AS HISTÓRIAS</button></div>
+              <div className="nenhum-livro">
+                <span>{filtroBiblioteca === "favoritos" ? "♥" : "✦"}</span><h3>{filtroBiblioteca === "estante" ? "Sua estante está vazia." : filtroBiblioteca === "favoritos" ? "Você ainda não tem favoritos." : "Nenhuma história encontrada."}</h3><p>{filtroBiblioteca === "estante" ? "Escolha uma história na biblioteca para começar sua coleção." : "Tente buscar por outro título, autor ou categoria."}</p><button type="button" onClick={limparFiltros}>EXPLORAR TODAS AS HISTÓRIAS</button></div>
             )}
           </section>
         )}
