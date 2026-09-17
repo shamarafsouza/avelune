@@ -1323,6 +1323,7 @@ useEffect(() => {
                     <button
                       type="button"
                       aria-label="Criar resenha"
+                      title="Criar resenha de um livro"
                       className={
                         modoResenha
                           ? "selecionado"
@@ -1336,6 +1337,7 @@ useEffect(() => {
                     <button
                       type="button"
                       aria-label="Adicionar imagem"
+                      title="Adicionar foto"
                       onClick={abrirImagem}
                     >
                       ◫
@@ -1344,6 +1346,7 @@ useEffect(() => {
                     <button
                       type="button"
                       aria-label="Adicionar citação"
+                      title="Inserir citação"
                       onClick={() => {
                         if (!exigirConta()) {
                           return;
