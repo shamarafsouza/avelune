@@ -79,6 +79,69 @@ const VIBES_RESENHA = [
   "Slow Burn", "Enemies to Lovers", "Dark Romance", "Morally Gray MC",
   "Angst", "Fluff", "Spice", "Plot Twist", "Final Feliz", "Final Trágico",
 ];
+const TROPES_DARK_ROMANCE = [
+  "Abuso",
+  "Age Gap",
+  "Age Gap Reverso",
+  "Bully Romance",
+  "Casamento Arranjado",
+  "CEO",
+  "Dark Romance",
+  "Dark Taboo",
+  "Hackers",
+  "Máfia",
+  "Possessivos",
+  "Sequestro",
+  "Serial Killer",
+  "Sociedades Secretas",
+  "Stalker",
+  "Trisal",
+  "Vilão fica com a garota",
+];
+
+const TROPES_CONTEMPORANEO = [
+  "Bebê Secreto",
+  "Cowboy",
+  "Dark Academia",
+  "Enemies to Lovers",
+  "Escola/Faculdade",
+  "Fake Dating",
+  "Friends to Lovers",
+  "Grumpy X Sunshine",
+  "Guarda Costas",
+  "Pais Solteiros",
+  "Plus Size",
+  "Professor X Aluna",
+  "Rockstars",
+];
+
+const TROPES_FANTASIA = [
+  "Alien Romance",
+  "Demônios",
+  "Faes e Feéricos",
+  "Lobos e Shifters",
+  "Mitologia",
+  "Monster Romance",
+  "Shifters",
+  "Vampiros",
+];
+
+const GATILHOS = [
+  "Abuso",
+  "BDSM",
+  "Blood Play",
+  "CNC",
+  "Exibicionismo",
+  "Fear Play",
+  "Kink",
+  "Knife Play",
+  "Mask Kink",
+  "Pegging",
+  "Praise Kink",
+  "Role Play",
+  "Submissão - Homens",
+  "Voyeurismo",
+];
 
 const CLASSIFICACOES = ["Livre", "12", "14", "16", "18"];
 
