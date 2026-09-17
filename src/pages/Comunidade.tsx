@@ -557,6 +557,7 @@ useEffect(() => {
     setAvaliacaoDigitada(5);
     setFotoSelecionada("");
     setModoResenha(false);
+    setTagsResenha([]);
   }
 
   function publicar() {
