@@ -2484,3 +2484,32 @@
   color: rgba(211, 157, 85, 0.75);
   font-size: 9px;
 }
+
+/* ==========================================
+   BRILHO DOURADO — TÍTULO DA BIBLIOTECA
+========================================== */
+
+.biblioteca-hero h1 {
+  color: #f1e2c2;
+  text-shadow:
+    0 0 5px rgba(238, 207, 153, 0.45),
+    0 0 15px rgba(180, 125, 55, 0.35),
+    0 0 35px rgba(145, 91, 35, 0.2);
+
+  animation: brilhoTitulo 5s ease-in-out infinite;
+}
+
+@keyframes brilhoTitulo {
+  0%, 100% {
+    text-shadow:
+      0 0 5px rgba(238, 207, 153, 0.45),
+      0 0 15px rgba(180, 125, 55, 0.35);
+  }
+
+  50% {
+    text-shadow:
+      0 0 8px rgba(255, 232, 180, 0.8),
+      0 0 25px rgba(205, 153, 75, 0.65),
+      0 0 45px rgba(145, 91, 35, 0.4);
+  }
+}
