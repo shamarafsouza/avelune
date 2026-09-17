@@ -372,7 +372,9 @@ useEffect(() => {
   const [novoPersonagemNome, setNovoPersonagemNome] = useState("");
   const [novoPersonagemFaceClaim, setNovoPersonagemFaceClaim] = useState("");
   const [novoPersonagemDescricao, setNovoPersonagemDescricao] = useState("");
-  const [, setHistoriaAberta] = useState<Historia | null>(null);
+  const [historiaAberta, setHistoriaAberta] = useState<Historia | null>(null);
+  const [capituloDepoisTitulo, setCapituloDepoisTitulo] = useState("");
+  const [capituloDepoisConteudo, setCapituloDepoisConteudo] = useState("");
 
   function alternarGeneroH(genero: string) {
     setGenerosH((atual) =>
@@ -425,6 +427,43 @@ useEffect(() => {
     setClassificacaoH("Livre");
     setCapaH("");
     setPersonagensH([]);
+  }
+
+  function adicionarCapituloDepois() {
+    if (!historiaAberta) return;
+
+    const titulo = capituloDepoisTitulo.trim();
+    const conteudo = capituloDepoisConteudo.trim();
+
+    if (!titulo || !conteudo) {
+      mostrarMensagem("Preencha o título e o conteúdo do capítulo.");
+      return;
+    }
+
+    const novoCapitulo: Capitulo = {
+      id: Date.now(),
+      titulo,
+      conteudo,
+      publicado: true,
+    };
+
+    setHistorias((atuais) =>
+      atuais.map((historia) =>
+        historia.id === historiaAberta.id
+          ? { ...historia, capitulos: [...historia.capitulos, novoCapitulo] }
+          : historia
+      )
+    );
+
+    setHistoriaAberta((atual) =>
+      atual
+        ? { ...atual, capitulos: [...atual.capitulos, novoCapitulo] }
+        : atual
+    );
+
+    setCapituloDepoisTitulo("");
+    setCapituloDepoisConteudo("");
+    mostrarMensagem("Capítulo adicionado à história.");
   }
 
   function publicarHistoria() {
@@ -1701,6 +1740,7 @@ useEffect(() => {
                     type="button"
                     className="comunidade-escrever-historia"
                     onClick={() => setModalHistoriaAberto(true)}
+                    style={{ position: "relative", zIndex: 100001, pointerEvents: "auto", cursor: "pointer" }}
                   >
                     + ESCREVER UMA HISTÓRIA
                   </button>
@@ -1758,8 +1798,31 @@ useEffect(() => {
         </div>
 
         {modalHistoriaAberto && (
-          <div className="comunidade-historia-modal-fundo" onClick={() => setModalHistoriaAberto(false)}>
-            <div className="comunidade-historia-modal" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="comunidade-historia-modal-fundo"
+            onClick={() => setModalHistoriaAberto(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 99999,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflowY: "auto",
+              pointerEvents: "auto",
+            }}
+          >
+            <div
+              className="comunidade-historia-modal"
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                position: "relative",
+                zIndex: 100000,
+                pointerEvents: "auto",
+                maxHeight: "90vh",
+                overflowY: "auto",
+              }}
+            >
               <button
                 type="button"
                 className="comunidade-historia-modal-fechar"
@@ -1899,6 +1962,36 @@ useEffect(() => {
   ))}
 </div>
 
+              <label>Capa da história</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(evento: ChangeEvent<HTMLInputElement>) => {
+                  const arquivo = evento.target.files?.[0];
+                  if (!arquivo) return;
+
+                  const leitor = new FileReader();
+                  leitor.onload = () => {
+                    if (typeof leitor.result === "string") {
+                      setCapaH(leitor.result);
+                    }
+                  };
+                  leitor.readAsDataURL(arquivo);
+                }}
+              />
+
+              {capaH && (
+                <img
+                  src={capaH}
+                  alt="Prévia da capa"
+                  style={{ width: "140px", maxHeight: "200px", objectFit: "cover" }}
+                />
+              )}
+
+              <p style={{ marginTop: "1rem", opacity: 0.75 }}>
+                Você poderá adicionar os capítulos depois que a história for publicada.
+              </p>
+
               <label>Elenco imaginado</label>
               <div className="comunidade-historia-personagens-lista">
                 {personagensH.map((p) => (
@@ -1927,6 +2020,81 @@ useEffect(() => {
               <button type="button" className="comunidade-historia-publicar" onClick={publicarHistoria}>
                 PUBLICAR
               </button>
+            </div>
+          </div>
+        )}
+
+        {historiaAberta && (
+          <div
+            className="comunidade-historia-modal-fundo"
+            onClick={() => setHistoriaAberta(null)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 100000,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflowY: "auto",
+              background: "rgba(0,0,0,0.78)",
+              padding: "1rem",
+            }}
+          >
+            <div
+              className="comunidade-historia-modal"
+              onClick={(evento) => evento.stopPropagation()}
+              style={{
+                position: "relative",
+                zIndex: 100001,
+                width: "min(760px, 100%)",
+                maxHeight: "90vh",
+                overflowY: "auto",
+              }}
+            >
+              <button
+                type="button"
+                className="comunidade-historia-modal-fechar"
+                onClick={() => setHistoriaAberta(null)}
+              >
+                ×
+              </button>
+
+              <h2>{historiaAberta.titulo}</h2>
+              <p>{historiaAberta.sinopse}</p>
+
+              <h3>Capítulos publicados</h3>
+              {historiaAberta.capitulos.length === 0 ? (
+                <p>Ainda não há capítulos publicados.</p>
+              ) : (
+                <div>
+                  {historiaAberta.capitulos.map((capitulo, indice) => (
+                    <article key={capitulo.id} style={{ marginBottom: "1rem" }}>
+                      <strong>{indice + 1}. {capitulo.titulo}</strong>
+                      <p style={{ whiteSpace: "pre-wrap" }}>{capitulo.conteudo}</p>
+                    </article>
+                  ))}
+                </div>
+              )}
+
+              {usuarioAtual && (
+                <>
+                  <h3>Adicionar novo capítulo</h3>
+                  <input
+                    value={capituloDepoisTitulo}
+                    onChange={(evento) => setCapituloDepoisTitulo(evento.target.value)}
+                    placeholder="Título do capítulo"
+                  />
+                  <textarea
+                    value={capituloDepoisConteudo}
+                    onChange={(evento) => setCapituloDepoisConteudo(evento.target.value)}
+                    placeholder="Escreva o conteúdo do capítulo..."
+                    rows={8}
+                  />
+                  <button type="button" onClick={adicionarCapituloDepois}>
+                    + PUBLICAR CAPÍTULO
+                  </button>
+                </>
+              )}
             </div>
           </div>
         )}
