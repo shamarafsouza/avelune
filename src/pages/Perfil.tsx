@@ -63,14 +63,19 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [editando, setEditando] = useState(false);
 
   const [nomePerfil, setNomePerfil] = useState("");
-const [usuarioPerfil, setUsuarioPerfil] = useState("");
-const [bioPerfil, setBioPerfil] = useState("");
-const [iniciaisPerfil, setIniciaisPerfil] = useState("");
+  const [usuarioPerfil, setUsuarioPerfil] = useState("");
+  const [bioPerfil, setBioPerfil] = useState("");
+  const [iniciaisPerfil, setIniciaisPerfil] = useState("");
+  const [fotoPerfil, setFotoPerfil] = useState("");
 
-const [nomeEditado, setNomeEditado] = useState("");
-const [usuarioEditado, setUsuarioEditado] = useState("");
-const [bioEditada, setBioEditada] = useState("");
-const [iniciaisEditadas, setIniciaisEditadas] = useState("");
+  const [nomeEditado, setNomeEditado] = useState("");
+  const [usuarioEditado, setUsuarioEditado] = useState("");
+  const [bioEditada, setBioEditada] = useState("");
+  const [iniciaisEditadas, setIniciaisEditadas] = useState("");
+  const [fotoPerfilEditada, setFotoPerfilEditada] = useState("");
+
+  const inputGaleriaRef = useRef<HTMLInputElement>(null);
+  const inputCameraRef = useRef<HTMLInputElement>(null);
   
   useEffect(() => {
     let ativo = true;
