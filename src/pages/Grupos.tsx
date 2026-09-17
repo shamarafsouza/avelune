@@ -527,8 +527,7 @@ async function removerMembro(membroId: string) {
         <header className="grupos-detalhes-header">
           <button
             type="button"
-            onClick={() => onNavigate?.("inicio")}
-          >
+              onClick={() => onNavigate?.("biblioteca")}          >
             ⌂ Página inicial
           </button>
 
