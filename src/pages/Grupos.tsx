@@ -533,11 +533,6 @@ return (
 
     <main className="grupos-pagina grupos-detalhes">
         <header className="grupos-detalhes-header">
-          <button
-            type="button"
-              onClick={() => onNavigate?.("biblioteca")}          >
-            ⌂ Página inicial
-          </button>
 
           <button
             type="button"
