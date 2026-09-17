@@ -54,7 +54,7 @@ const simbolosDisponiveis = [
   "❧",
 ];
 
-function Grupos({ onNavigate }: GruposProps) {
+function Grupos() {
   const [grupos, setGrupos] = useState<Grupo[]>([]);
   const [grupoSelecionado, setGrupoSelecionado] = useState<Grupo | null>(
     null
@@ -64,8 +64,6 @@ function Grupos({ onNavigate }: GruposProps) {
   const [membros, setMembros] = useState<string[]>([]);
 
   const [usuarioId, setUsuarioId] = useState<string | null>(null);
-  const [usuarioEmail, setUsuarioEmail] = useState<string>("");
-
   const [carregando, setCarregando] = useState(true);
   const [carregandoMensagens, setCarregandoMensagens] = useState(false);
   const [erro, setErro] = useState("");
@@ -106,7 +104,6 @@ function Grupos({ onNavigate }: GruposProps) {
     }
 
     setUsuarioId(data.user.id);
-    setUsuarioEmail(data.user.email ?? "");
 
     await carregarGrupos();
   }
