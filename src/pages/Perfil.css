@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap");
+
 .perfil {
   position: relative;
   width: 100%;
@@ -1154,4 +1156,54 @@
   font-family: Georgia, "Times New Roman", serif;
   font-size: 12px;
   line-height: 1.7;
+}
+
+.perfil-acesso-conteudo {
+  min-height: 65vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 60px 24px;
+}
+
+.perfil-acesso-simbolo {
+  color: #c8954d;
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+.perfil-acesso-conteudo h1 {
+  color: #ead8b5;
+  font-family: Georgia, serif;
+  font-size: 36px;
+  margin: 12px 0;
+}
+
+.perfil-acesso-conteudo > p:not(.perfil-kicker) {
+  color: #a99a87;
+  line-height: 1.8;
+}
+
+.perfil-acesso-acoes {
+  display: flex;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.perfil-acesso-acoes button {
+  padding: 13px 26px;
+  border: 1px solid #76532c;
+  background: #17100c;
+  color: #e5c58e;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.perfil-acesso-acoes button:hover {
+  background: #2b1b12;
 }
