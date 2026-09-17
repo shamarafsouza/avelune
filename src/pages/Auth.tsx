@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "../lib/supabase";
 import type { FormEvent } from "react";
 import "./Auth.css";
 
@@ -37,7 +38,7 @@ function Auth({
     setMensagem("");
   }
 
-  function enviarFormulario(
+  async function enviarFormulario(
     evento: FormEvent<HTMLFormElement>
   ) {
     evento.preventDefault();
@@ -89,43 +90,52 @@ function Auth({
           .join("")
           .toUpperCase() || "VC";
 
-      try {
-        localStorage.setItem(
-          "avelune-conta",
-          JSON.stringify({
+      const { data, error } = await supabase.auth.signUp({
+        email: emailLimpo,
+        password: senha,
+        options: {
+          data: {
             nome: nomeLimpo,
             usuario: `@${usuarioLimpo}`,
-            email: emailLimpo,
-          })
-        );
-
-        localStorage.setItem(
-          "avelune-perfil",
-          JSON.stringify({
-            nome: nomeLimpo,
-            usuario: `@${usuarioLimpo}`,
-            bio:
-              "Apaixonada por histórias e mundos que ficam com a gente.",
             iniciais,
-            foto: "",
-          })
-        );
+          },
+        },
+      });
 
-        localStorage.setItem(
-          "avelune-usuario-logado",
-          "true"
-        );
+      if (error) {
+        setErro(error.message);
+        return;
+      }
 
-        setMensagem(
-          "Conta criada. Bem-vinda à comunidade..."
-        );
+      localStorage.setItem(
+        "avelune-conta",
+        JSON.stringify({
+          nome: nomeLimpo,
+          usuario: `@${usuarioLimpo}`,
+          email: emailLimpo,
+        })
+      );
 
+      localStorage.setItem(
+        "avelune-perfil",
+        JSON.stringify({
+          nome: nomeLimpo,
+          usuario: `@${usuarioLimpo}`,
+          bio:
+            "Apaixonada por histórias e mundos que ficam com a gente.",
+          iniciais,
+          foto: "",
+        })
+      );
+
+      if (data.session) {
+        setMensagem("Conta criada. Bem-vinda à comunidade...");
         window.setTimeout(() => {
           onAuthenticated();
         }, 700);
-      } catch {
-        setErro(
-          "Não foi possível criar a conta neste navegador."
+      } else {
+        setMensagem(
+          "Conta criada! Confirme seu e-mail para entrar no Avelune."
         );
       }
 
@@ -139,17 +149,15 @@ function Auth({
       return;
     }
 
-    /*
-     * Temporariamente o login usa o navegador
-     * apenas para testar o fluxo da aplicação.
-     *
-     * Depois esta parte será substituída pelo
-     * Supabase Auth. Nenhuma senha é salva aqui.
-     */
-    localStorage.setItem(
-      "avelune-usuario-logado",
-      "true"
-    );
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password: senha,
+    });
+
+    if (error) {
+      setErro("E-mail ou senha inválidos.");
+      return;
+    }
 
     setMensagem("Entrando no Avelune...");
 
