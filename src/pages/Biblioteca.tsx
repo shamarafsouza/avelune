@@ -184,6 +184,13 @@ function Biblioteca({
     );
   }, [queroLer]);
 
+  useEffect(() => {
+    localStorage.setItem(
+      "avelune-progresso-leitura",
+      JSON.stringify(progressoLeitura)
+    );
+  }, [progressoLeitura]);
+
   const livrosFiltrados = useMemo(() => {
   const texto = busca.toLowerCase().trim();
 
