@@ -3821,6 +3821,64 @@
   text-transform: uppercase;
 }
 
+/* Corrige a sobreposição: aumenta a especificidade para vencer a regra genérica */
+.comunidade-publicar-rodape > .comunidade-publicar-botoes .comunidade-cancelar-resenha {
+  width: auto;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid rgba(211, 159, 87, 0.2);
+  background: transparent;
+  color: rgba(225, 195, 155, 0.55);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.comunidade-publicar-rodape > .comunidade-publicar-botoes .comunidade-cancelar-resenha:hover {
+  border-color: rgba(211, 159, 87, 0.4);
+  color: #ead7b8;
+}
+
+.comunidade-publicar-rodape > .comunidade-publicar-botoes .comunidade-publicar-botao {
+  width: auto;
+  height: 38px;
+  min-width: 118px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(211, 159, 87, 0.42);
+  background: linear-gradient(135deg, rgba(112, 52, 25, 0.82), rgba(67, 31, 17, 0.88));
+  color: #e9d2aa;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+/* Ícones de ação (resenha, imagem, citação) maiores e reconhecíveis */
+.comunidade-publicar-rodape > div:first-child button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(213, 157, 83, 0.16);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 18px;
+  color: rgba(224, 199, 163, 0.65);
+}
+
+.comunidade-publicar-rodape > div:first-child button:hover {
+  border-color: rgba(213, 157, 83, 0.4);
+  background: rgba(126, 61, 25, 0.18);
+  color: #ead7b8;
+}
+
+.comunidade-publicar-rodape > div:first-child button.selecionado {
+  border-color: rgba(213, 157, 83, 0.55);
+  background: rgba(126, 61, 25, 0.3);
+  color: #e5c58f;
+}
+
 @media (max-width: 900px) {
   .comunidade-post-tags {
     margin-left: 0;
