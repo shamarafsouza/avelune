@@ -11,6 +11,7 @@ type Pagina =
   | "biblioteca"
   | "explorar"
   | "comunidade"
+  | "grupos"
   | "perfil"
   | "auth-cadastro"
   | "auth-login";
@@ -49,6 +50,10 @@ function App() {
 
   if (pagina === "comunidade") {
     return <Comunidade onNavigate={navegar} />;
+  }
+
+  if (pagina === "grupos") {
+    return <Grupos onNavigate={navegar} />;
   }
 
   if (pagina === "perfil") {
