@@ -1733,20 +1733,57 @@ useEffect(() => {
 
           </section>
 
-          <aside className="comunidade-sidebar">
-            <div className="comunidade-card">
-              <div className="comunidade-card-titulo"><span>✦</span><div><span>EM DESTAQUE</span><strong>Leitores da semana</strong></div></div>
-              {destaquesReais.length === 0 ? <p className="comunidade-sidebar-vazio">Os destaques aparecerão quando houver interações reais.</p> : <div className="comunidade-destaques-lista">{destaquesReais.map((post) => <div key={post.id} className="comunidade-destaque"><div className="comunidade-destaque-avatar">{post.iniciais}</div><div className="comunidade-destaque-dados"><strong>@{post.usuario}</strong><span>{post.curtidas} {post.curtidas === 1 ? "curtida" : "curtidas"}</span></div></div>)}</div>}
-            </div>
-            <div className="comunidade-card comunidade-tendencias">
-              <div className="comunidade-card-titulo"><span>⌁</span><div><span>AGORA NA COMUNIDADE</span><strong>Tendências</strong></div></div>
-              {tendenciasReais.length === 0 ? <p className="comunidade-sidebar-vazio">As tendências aparecerão conforme os leitores utilizarem hashtags.</p> : <div className="comunidade-tendencias-lista">{tendenciasReais.map(([hashtag, quantidade]) => <div key={hashtag} className="comunidade-tendencia-item"><strong>{hashtag}</strong><span>{quantidade} {quantidade === 1 ? "publicação" : "publicações"}</span></div>)}</div>}
-            </div>
-            <div className="comunidade-card">
-              <div className="comunidade-card-titulo"><span>☾</span><div><span>DESCUBRA</span><strong>Leitores para seguir</strong></div></div>
-              {leitoresReais.length === 0 ? <p className="comunidade-sidebar-vazio">Novos leitores aparecerão aqui quando começarem a publicar.</p> : <div className="comunidade-leitores-lista">{leitoresReais.map((leitor) => <div key={leitor.usuario} className="comunidade-leitor"><div className="comunidade-avatar mini">{leitor.iniciais}</div><div><strong>@{leitor.usuario}</strong><span>Leitor da comunidade</span></div><button type="button" onClick={() => { if (!exigirConta()) return; mostrarMensagem("O sistema de seguidores será conectado ao perfil do usuário."); }}>{leitor.seguindo ? "SEGUINDO" : "SEGUIR"}</button></div>)}</div>}
-            </div>
-          </aside>
+          {(destaquesReais.length > 0 || tendenciasReais.length > 0 || leitoresReais.length > 0) && (
+            <aside className="comunidade-sidebar">
+              {destaquesReais.length > 0 && (
+                <div className="comunidade-card">
+                  <div className="comunidade-card-titulo"><span>✦</span><div><span>EM DESTAQUE</span><strong>Leitores da semana</strong></div></div>
+                  <div className="comunidade-destaques-lista">
+                    {destaquesReais.map((post) => (
+                      <div key={post.id} className="comunidade-destaque">
+                        <div className="comunidade-destaque-avatar">{post.iniciais}</div>
+                        <div className="comunidade-destaque-dados">
+                          <strong>@{post.usuario}</strong>
+                          <span>{post.curtidas} {post.curtidas === 1 ? "curtida" : "curtidas"}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {tendenciasReais.length > 0 && (
+                <div className="comunidade-card comunidade-tendencias">
+                  <div className="comunidade-card-titulo"><span>⌁</span><div><span>AGORA NA COMUNIDADE</span><strong>Tendências</strong></div></div>
+                  <div className="comunidade-tendencias-lista">
+                    {tendenciasReais.map(([hashtag, quantidade]) => (
+                      <div key={hashtag} className="comunidade-tendencia-item">
+                        <strong>{hashtag}</strong>
+                        <span>{quantidade} {quantidade === 1 ? "publicação" : "publicações"}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {leitoresReais.length > 0 && (
+                <div className="comunidade-card">
+                  <div className="comunidade-card-titulo"><span>☾</span><div><span>DESCUBRA</span><strong>Leitores para seguir</strong></div></div>
+                  <div className="comunidade-leitores-lista">
+                    {leitoresReais.map((leitor) => (
+                      <div key={leitor.usuario} className="comunidade-leitor">
+                        <div className="comunidade-avatar mini">{leitor.iniciais}</div>
+                        <div><strong>@{leitor.usuario}</strong><span>Leitor da comunidade</span></div>
+                        <button type="button" onClick={() => { if (!exigirConta()) return; mostrarMensagem("O sistema de seguidores será conectado ao perfil do usuário."); }}>
+                          {leitor.seguindo ? "SEGUINDO" : "SEGUIR"}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </aside>
+          )}
         </div>
 
         {modalHistoriaAberto && usuarioAtual && (
