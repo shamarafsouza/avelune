@@ -1166,9 +1166,34 @@ useEffect(() => {
     );
   }
 
-  const destaquesReais = [...postagens].sort((a, b) => b.curtidas - a.curtidas).slice(0, 3);
 
-  const leitoresReais = Array.from(new Map(postagens.map((post) => [post.usuario, { usuario: post.usuario, iniciais: post.iniciais, seguindo: post.seguindo ?? false }])).values()).slice(0, 3);
+        const destaquesReais = [...postagens]
+        .filter(
+          (post) =>
+            post.usuario !== "Você" &&
+            !post.origemUsuario &&
+            post.curtidas > 0
+        )
+        .sort((a, b) => b.curtidas - a.curtidas)
+        .slice(0, 3);
+
+      const leitoresReais = Array.from(
+        new Map(
+          postagens
+            .filter(
+              (post) =>
+                post.usuario !== "Você" && !post.origemUsuario
+            )
+            .map((post) => [
+              post.usuario,
+              {
+                usuario: post.usuario,
+                iniciais: post.iniciais,
+                seguindo: post.seguindo ?? false,
+              },
+            ])
+        ).values()
+      ).slice(0, 3);
 
   const contagemHashtags = new Map<string, number>();
   postagens.forEach((post) => {
