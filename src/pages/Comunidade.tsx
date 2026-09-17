@@ -338,6 +338,7 @@ useEffect(() => {
   const [comentarioInspiracaoH, setComentarioInspiracaoH] = useState("");
   const [generosH, setGenerosH] = useState<string[]>([]);
   const [tropesH, setTropesH] = useState<string[]>([]);
+  const [gatilhosH, setGatilhosH] = useState<string[]>([]);
   const [classificacaoH, setClassificacaoH] = useState("Livre");
   const [capaH, setCapaH] = useState("");
   const [personagensH, setPersonagensH] = useState<Personagem[]>([]);
@@ -356,6 +357,13 @@ useEffect(() => {
     setTropesH((atual) =>
       atual.includes(trope) ? atual.filter((t) => t !== trope) : [...atual, trope]
     );
+  }
+  function alternarGatilhoH(gatilho: string) {
+    setGatilhosH((atual) =>
+      atual.includes(gatilho)
+        ? atual.filter((g) => g !== gatilho)
+        : [...atual, gatilho]
+      );
   }
 
   function adicionarPersonagem() {
@@ -386,6 +394,7 @@ useEffect(() => {
     setComentarioInspiracaoH("");
     setGenerosH([]);
     setTropesH([]);
+    setGatilhosH([]);
     setClassificacaoH("Livre");
     setCapaH("");
     setPersonagensH([]);
@@ -408,7 +417,7 @@ useEffect(() => {
       comentarioInspiracao: comentarioInspiracaoH,
       generos: generosH,
       tropes: tropesH,
-      gatilhos: [],
+      gatilhos: gatilhosH,
       classificacao: classificacaoH,
       capa: capaH,
       personagens: personagensH,
@@ -1793,19 +1802,47 @@ useEffect(() => {
                 ))}
               </div>
 
-              <label>Tropes</label>
-              <div className="comunidade-historia-tags-selecao">
-                {TROPES_SUGERIDOS.map((trope) => (
-                  <button
-                    type="button"
-                    key={trope}
-                    className={tropesH.includes(trope) ? "ativo" : ""}
-                    onClick={() => alternarTropeH(trope)}
-                  >
-                    {trope}
-                  </button>
-                ))}
-              </div>
+             <label>Tropes — Dark Romance</label>
+<div className="comunidade-historia-tags-selecao">
+  {TROPES_DARK_ROMANCE.map((trope) => (
+    <button
+      type="button"
+      key={trope}
+      className={tropesH.includes(trope) ? "ativo" : ""}
+      onClick={() => alternarTropeH(trope)}
+    >
+      {trope}
+    </button>
+  ))}
+</div>
+
+<label>Tropes — Romance Contemporâneo</label>
+<div className="comunidade-historia-tags-selecao">
+  {TROPES_CONTEMPORANEO.map((trope) => (
+    <button
+      type="button"
+      key={trope}
+      className={tropesH.includes(trope) ? "ativo" : ""}
+      onClick={() => alternarTropeH(trope)}
+    >
+      {trope}
+    </button>
+  ))}
+</div>
+
+<label>Tropes — Fantasia e Distopia</label>
+<div className="comunidade-historia-tags-selecao">
+  {TROPES_FANTASIA.map((trope) => (
+    <button
+      type="button"
+      key={trope}
+      className={tropesH.includes(trope) ? "ativo" : ""}
+      onClick={() => alternarTropeH(trope)}
+    >
+      {trope}
+    </button>
+  ))}
+</div>
 
               <label>Classificação</label>
               <div className="comunidade-historia-tags-selecao">
