@@ -35,6 +35,11 @@ type FiltroBiblioteca =
   | "estante"
   | "favoritos";
 
+type ProgressoLeitura = {
+  paginaAtual: number;
+  paginaTotal: number;
+};
+
 type BibliotecaProps = {
   onNavigate?: (
     pagina:
