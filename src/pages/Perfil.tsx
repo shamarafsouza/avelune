@@ -547,7 +547,7 @@ function Perfil({ onNavigate }: PerfilProps) {
               ))}
             </p>
 
-            <div className="perfil-estatisticas">
+                 <div className="perfil-estatisticas">
               <div>
                 <strong>{publicacoes.length}</strong>
                 <span>publicações</span>
@@ -570,6 +570,17 @@ function Perfil({ onNavigate }: PerfilProps) {
                 <span>na estante</span>
               </div>
             </div>
+
+            {publicacoes.length === 0 &&
+              totalSeguidores === 0 &&
+              totalSeguindo === 0 &&
+              livrosNaEstante.length === 0 && (
+                <p className="perfil-estatisticas-convite">
+                  Sua jornada em Avelune está apenas começando.
+                  Explore a biblioteca, siga outros leitores e
+                  compartilhe sua primeira leitura.
+                </p>
+              )}
           </div>
         </section>
 
