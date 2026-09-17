@@ -907,7 +907,6 @@ function Biblioteca({
                     ? "✓ NA MINHA ESTANTE"
                     : "＋ QUERO LER"}
                 </button>
-
                 <button
                   type="button"
                   className={
@@ -931,10 +930,68 @@ function Biblioteca({
                 </button>
 
               </div>
+
+              {queroLer.includes(livroSelecionado.id) && (
+                <div className="modal-progresso">
+                  <span className="modal-progresso-titulo">
+                    PROGRESSO DE LEITURA
+                  </span>
+
+                  <div className="modal-progresso-campos">
+                    <input
+                      type="number"
+                      min={0}
+                      value={
+                        progressoLeitura[livroSelecionado.id]
+                          ?.paginaAtual || ""
+                      }
+                      onChange={(evento) =>
+                        atualizarProgresso(
+                          livroSelecionado.id,
+                          "paginaAtual",
+                          Number(evento.target.value)
+                        )
+                      }
+                      placeholder="Página atual"
+                    />
+                    <span>de</span>
+                    <input
+                      type="number"
+                      min={0}
+                      value={
+                        progressoLeitura[livroSelecionado.id]
+                          ?.paginaTotal || ""
+                      }
+                      onChange={(evento) =>
+                        atualizarProgresso(
+                          livroSelecionado.id,
+                          "paginaTotal",
+                          Number(evento.target.value)
+                        )
+                      }
+                      placeholder="Total de páginas"
+                    />
+                  </div>
+
+                  <div className="modal-progresso-barra">
+                    <div
+                      className="modal-progresso-barra-preenchida"
+                      style={{
+                        width: `${calcularPercentual(livroSelecionado.id)}%`,
+                      }}
+                    />
+                  </div>
+
+                  <span className="modal-progresso-percentual">
+                    {calcularPercentual(livroSelecionado.id)}% concluído
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
+
     </main>
   );
 }
