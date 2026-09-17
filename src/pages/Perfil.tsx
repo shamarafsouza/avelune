@@ -982,32 +982,29 @@ const [iniciaisEditadas, setIniciaisEditadas] = useState("");
                 type="button"
                 className="perfil-modal-salvar"
                 onClick={async () => {
-                  const nomeFinal =
-                    nomeEditado.trim() || "Você";
+                 const nomeFinal = nomeEditado.trim();
 
-                  let usuarioFinal =
-                    usuarioEditado.trim();
+let usuarioFinal = usuarioEditado.trim();
 
-                  if (!usuarioFinal) {
-                    usuarioFinal = "@aventureiro";
-                  }
+if (!nomeFinal || !usuarioFinal) {
+  setMensagem("Preencha seu nome e usuário.");
+  return;
+}
 
-                  if (!usuarioFinal.startsWith("@")) {
-                    usuarioFinal = `@${usuarioFinal}`;
-                  }
+if (!usuarioFinal.startsWith("@")) {
+  usuarioFinal = `@${usuarioFinal}`;
+}
 
-                  const bioFinal =
-                    bioEditada.trim() ||
-                    "Entre páginas, mundos e histórias.";
+const bioFinal = bioEditada.trim();
 
-                  const iniciaisFinal =
-                    iniciaisEditadas.trim() ||
-                    nomeFinal
-                      .split(/\s+/)
-                      .map((parte) => parte[0])
-                      .join("")
-                      .slice(0, 3)
-                      .toUpperCase();
+const iniciaisFinal =
+  iniciaisEditadas.trim() ||
+  nomeFinal
+    .split(/\s+/)
+    .map((parte) => parte[0])
+    .join("")
+    .slice(0, 3)
+    .toUpperCase();
 
                   try {
                     const { data: usuarioAuth, error: erroUsuario } =
