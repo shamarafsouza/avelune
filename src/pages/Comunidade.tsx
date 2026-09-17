@@ -1257,8 +1257,7 @@ useEffect(() => {
                               type="button"
                               key={indice}
                               className={
-                                indice 
-                                  avaliacaoDigitada
+                                indice < avaliacaoDigitada
                                   ? "ativa"
                                   : ""
                               }
