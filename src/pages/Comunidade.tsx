@@ -1249,7 +1249,7 @@ useEffect(() => {
                               type="button"
                               key={indice}
                               className={
-                                indice <
+                                indice 
                                   avaliacaoDigitada
                                   ? "ativa"
                                   : ""
@@ -1271,7 +1271,24 @@ useEffect(() => {
                         {avaliacaoDigitada}/5
                       </strong>
                     </div>
-                  </div>
+
+                    <div className="comunidade-resenha-vibes">
+                      <span>VIBE DESSA LEITURA</span>
+                      <div className="comunidade-resenha-vibes-lista">
+                        {VIBES_RESENHA.map((tag) => (
+                          <button
+                            type="button"
+                            key={tag}
+                            className={
+                              tagsResenha.includes(tag) ? "ativo" : ""
+                            }
+                            onClick={() => alternarTagResenha(tag)}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                 )}
 
                 {fotoSelecionada && (
