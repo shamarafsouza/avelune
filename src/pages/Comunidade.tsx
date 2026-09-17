@@ -1280,7 +1280,7 @@ useEffect(() => {
                       </strong>
                     </div>
 
-                    <div className="comunidade-resenha-vibes">
+                                      <div className="comunidade-resenha-vibes">
                       <span>VIBE DESSA LEITURA</span>
                       <div className="comunidade-resenha-vibes-lista">
                         {VIBES_RESENHA.map((tag) => (
@@ -1297,6 +1297,7 @@ useEffect(() => {
                         ))}
                       </div>
                     </div>
+                  </div>
                 )}
 
                 {fotoSelecionada && (
