@@ -62,37 +62,16 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [mensagem, setMensagem] = useState("");
   const [editando, setEditando] = useState(false);
 
-  const [nomePerfil, setNomePerfil] = useState("Você");
-  const [usuarioPerfil, setUsuarioPerfil] =
-    useState("@aventureiro");
-  const [bioPerfil, setBioPerfil] = useState(
-    "Entre páginas, mundos e histórias.\nSempre procurando o próximo livro que vai deixar uma marca."
-  );
-  const [iniciaisPerfil, setIniciaisPerfil] =
-    useState("VC");
+  const [nomePerfil, setNomePerfil] = useState("");
+const [usuarioPerfil, setUsuarioPerfil] = useState("");
+const [bioPerfil, setBioPerfil] = useState("");
+const [iniciaisPerfil, setIniciaisPerfil] = useState("");
 
-  const [nomeEditado, setNomeEditado] =
-    useState("Você");
-  const [usuarioEditado, setUsuarioEditado] =
-    useState("@aventureiro");
-  const [bioEditada, setBioEditada] = useState(
-    "Entre páginas, mundos e histórias.\nSempre procurando o próximo livro que vai deixar uma marca."
-  );
-  const [iniciaisEditadas, setIniciaisEditadas] =
-    useState("VC");
-
-  const [fotoPerfil, setFotoPerfil] =
-    useState("");
-
-  const [fotoPerfilEditada, setFotoPerfilEditada] =
-    useState("");
-
-  const inputGaleriaRef =
-    useRef<HTMLInputElement>(null);
-
-  const inputCameraRef =
-    useRef<HTMLInputElement>(null);
-
+const [nomeEditado, setNomeEditado] = useState("");
+const [usuarioEditado, setUsuarioEditado] = useState("");
+const [bioEditada, setBioEditada] = useState("");
+const [iniciaisEditadas, setIniciaisEditadas] = useState("");
+  
   useEffect(() => {
     let ativo = true;
 
