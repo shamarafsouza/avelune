@@ -366,6 +366,15 @@ useEffect(() => {
   const [avaliacaoDigitada, setAvaliacaoDigitada] =
     useState(5);
 
+  const [tagsResenha, setTagsResenha] =
+    useState<string[]>([]);
+
+  function alternarTagResenha(tag: string) {
+    setTagsResenha((atual) =>
+      atual.includes(tag) ? atual.filter((t) => t !== tag) : [...atual, tag]
+    );
+  }
+
   const [modoResenha, setModoResenha] =
     useState(false);
 
