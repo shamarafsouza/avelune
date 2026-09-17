@@ -272,6 +272,39 @@ function Biblioteca({
     });
   }
 
+  function atualizarProgresso(
+    id: string,
+    campo: "paginaAtual" | "paginaTotal",
+    valor: number
+  ) {
+    setProgressoLeitura((atual) => {
+      const existente = atual[id] ?? {
+        paginaAtual: 0,
+        paginaTotal: 0,
+      };
+
+      return {
+        ...atual,
+        [id]: {
+          ...existente,
+          [campo]: Math.max(0, valor),
+        },
+      };
+    });
+  }
+
+  function calcularPercentual(id: string) {
+    const progresso = progressoLeitura[id];
+
+    if (!progresso || !progresso.paginaTotal) {
+      return 0;
+    }
+
+    const percentual =
+      (progresso.paginaAtual / progresso.paginaTotal) * 100;
+
+    return Math.min(100, Math.max(0, Math.round(percentual)));
+  }
   function limparFiltros() {
     setBusca("");
     setCategoriaAtiva("Todos");
