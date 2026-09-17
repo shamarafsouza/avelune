@@ -95,6 +95,7 @@ type Publicacao = {
   autorLivro?: string;
   linkLivro?: string;
   avaliacao?: number;
+  tags?: string[];
   cor?: string;
   simbolo?: string;
   foto?: string;
