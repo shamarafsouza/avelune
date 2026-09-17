@@ -1,6 +1,6 @@
 import "./AveluneHeader.css";
 
-type Pagina = "biblioteca" | "comunidade" | "perfil";
+type Pagina = "biblioteca" | "comunidade" | "grupos" | "perfil";
 
 type AveluneHeaderProps = {
   paginaAtual: Pagina;
