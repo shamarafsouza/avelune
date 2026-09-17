@@ -13,6 +13,7 @@ type Pagina =
   | "inicio"
   | "biblioteca"
   | "comunidade"
+  | "grupos"
   | "perfil";
 
 type PublicacaoPerfil = {
