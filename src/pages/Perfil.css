@@ -1120,3 +1120,27 @@
 .perfil-conteudo { width:min(1180px,88%); padding:75px 0 90px; }
 .perfil-kicker { color:#b68148; }
 .perfil-cabecalho,.perfil-post,.perfil-card-livro { border-color:rgba(211,159,87,.16); }
+
+
+.perfil-sair {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 2px;
+  border: 1px solid rgba(211, 159, 87, 0.28);
+  background: transparent;
+  color: rgba(230, 201, 161, 0.7);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease,
+    background 0.25s ease;
+}
+
+.perfil-sair:hover {
+  border-color: rgba(211, 159, 87, 0.52);
+  color: #ead7b8;
+  background: rgba(126, 61, 25, 0.14);
+}
