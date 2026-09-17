@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { criarCena } from "./three/Scene";
 import Biblioteca from "./pages/Biblioteca";
 import Comunidade from "./pages/Comunidade";
+import Grupos from "./pages/Grupos";
 import Perfil from "./pages/Perfil";
 import Auth from "./pages/Auth";
-import "./App.css";
 
 type Pagina =
   | "inicio"
