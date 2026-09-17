@@ -602,9 +602,13 @@ useEffect(() => {
         autorLimpo || undefined,
       linkLivro:
         linkLivroLimpo || undefined,
-      avaliacao:
+          avaliacao:
         livroLimpo
           ? avaliacaoDigitada
+          : undefined,
+      tags:
+        modoResenha && tagsResenha.length > 0
+          ? tagsResenha
           : undefined,
       foto: fotoSelecionada || undefined,
       curtidas: 0,
