@@ -46,6 +46,7 @@ type BibliotecaProps = {
       | "inicio"
       | "biblioteca"
       | "comunidade"
+      | "grupos"
       | "perfil"
   ) => void;
 };
