@@ -773,12 +773,19 @@ async function removerMembro(membroId: string) {
     );
   }
 
-  return (
+return (
+  <>
+    <AveluneHeader
+      paginaAtual="grupos"
+      onNavigate={(pagina) => onNavigate?.(pagina)}
+    />
+
     <main className="grupos-pagina">
       <header className="grupos-header">
         <button
           type="button"
-              onClick={() => onNavigate?.("biblioteca")}        >
+          onClick={() => onNavigate?.("biblioteca")}
+        >
           ⌂ Página inicial
         </button>
 
