@@ -784,12 +784,6 @@ return (
 
     <main className="grupos-pagina">
       <header className="grupos-header">
-        <button
-          type="button"
-          onClick={() => onNavigate?.("biblioteca")}
-        >
-          ⌂ Página inicial
-        </button>
 
         <div className="grupos-header-texto">
           <span className="grupos-eyebrow">Avelune · Comunidade</span>
