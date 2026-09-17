@@ -71,10 +71,6 @@ const GENEROS_HISTORIA = [
   "Fantasia", "Romance", "Dark Romance", "Mistério", "Terror", "Ficção", "Aventura",
 ];
 
-const TROPES_SUGERIDOS = [
-  "Enemies to Lovers", "Slow Burn", "Found Family", "Segunda Chance", "Amigos de Infância",
-];
-
 const VIBES_RESENHA = [
   "Slow Burn", "Enemies to Lovers", "Dark Romance", "Morally Gray MC",
   "Angst", "Fluff", "Spice", "Plot Twist", "Final Feliz", "Final Trágico",
@@ -1857,6 +1853,25 @@ useEffect(() => {
                   </button>
                 ))}
               </div>
+
+              <label>Gatilhos de conteúdo</label>
+
+<div className="comunidade-historia-tags-selecao">
+  {GATILHOS.map((gatilho) => (
+    <button
+      key={gatilho}
+      type="button"
+      className={
+        gatilhosH.includes(gatilho)
+          ? "selecionado"
+          : ""
+      }
+      onClick={() => alternarGatilhoH(gatilho)}
+    >
+      {gatilho}
+    </button>
+  ))}
+</div>
 
               <label>Elenco imaginado</label>
               <div className="comunidade-historia-personagens-lista">
