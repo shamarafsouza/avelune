@@ -719,7 +719,7 @@ function Biblioteca({
                           {livro.simbolo}
                         </span>
 
-                        <span>
+                        <span className="estante-livro-info">
                           <strong>
                             {
                               livro.titulo
@@ -729,6 +729,24 @@ function Biblioteca({
                           <small>
                             {livro.autor}
                           </small>
+
+                          {progressoLeitura[livro.id]?.paginaTotal ? (
+                            <span className="estante-progresso">
+                              <span className="estante-progresso-barra">
+                                <span
+                                  className="estante-progresso-barra-preenchida"
+                                  style={{
+                                    width: `${calcularPercentual(livro.id)}%`,
+                                  }}
+                                />
+                              </span>
+                              <small>{calcularPercentual(livro.id)}%</small>
+                            </span>
+                          ) : (
+                            <small className="estante-progresso-vazio">
+                              Ainda sem progresso registrado
+                            </small>
+                          )}
                         </span>
                       </button>
                     ))}
