@@ -8,6 +8,7 @@ import type { ChangeEvent } from "react";
 import "./Comunidade.css";
 import AveluneHeader from "../components/AveluneHeader";
 import { useLivros } from "../hooks/useLivros";
+import { supabase } from "../lib/supabase";
 
 type Pagina =
   | "inicio"
@@ -289,6 +290,27 @@ function redimensionarImagem(
 function Comunidade({
   onNavigate,
 }: ComunidadeProps) {
+  const [usuarioAtual, setUsuarioAtual] = useState<any>(null);
+  const [carregandoAuth, setCarregandoAuth] = useState(true);
+
+  useEffect(() => {
+    let ativo = true;
+    async function verificarSessao() {
+      const { data } = await supabase.auth.getSession();
+      if (!ativo) return;
+      setUsuarioAtual(data.session?.user ?? null);
+      setCarregandoAuth(false);
+    }
+    verificarSessao();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_evento, sessao) => {
+      setUsuarioAtual(sessao?.user ?? null);
+      setCarregandoAuth(false);
+    });
+    return () => {
+      ativo = false;
+      subscription.unsubscribe();
+    };
+  }, []);
   const [postagens, setPostagens] =
     useState<Publicacao[]>(
       carregarPostagens
@@ -504,13 +526,7 @@ useEffect(() => {
   }, [postagens]);
 
   function estaAutenticado() {
-    try {
-      return localStorage.getItem(
-        "avelune-usuario-logado"
-      ) === "true";
-    } catch {
-      return false;
-    }
+  return usuarioAtual !== null;
   }
 
   function exigirConta() {
@@ -1257,7 +1273,8 @@ useEffect(() => {
                 ✦
               </span>
             </div>
-
+             {!carregandoAuth && usuarioAtual && (
+      
             <div className="comunidade-publicar">
               <div className="comunidade-avatar pequeno comunidade-avatar-visitante">
                 ◌
@@ -1471,6 +1488,7 @@ useEffect(() => {
                 </div>
               </div>
             </div>
+            )}
 
             {mensagem && (
               <div
@@ -1667,18 +1685,17 @@ useEffect(() => {
                 </div>
               </div>
             )}
-            {abaComunidade === "historias" && (
+     {abaComunidade === "historias" && (
               <div className="comunidade-historias">
-                <button
-                  type="button"
-                  className="comunidade-escrever-historia"
-                  onClick={() => {
-                    if (!exigirConta()) return;
-                    setModalHistoriaAberto(true);
-                  }}
-                >
-                  + ESCREVER UMA HISTÓRIA
-                </button>
+                {!carregandoAuth && usuarioAtual && (
+                  <button
+                    type="button"
+                    className="comunidade-escrever-historia"
+                    onClick={() => setModalHistoriaAberto(true)}
+                  >
+                    + ESCREVER UMA HISTÓRIA
+                  </button>
+                )}
 
                 {historias.length === 0 ? (
                   <div className="comunidade-post">
@@ -1713,6 +1730,7 @@ useEffect(() => {
                 )}
               </div>
             )}
+
           </section>
 
           <aside className="comunidade-sidebar">
@@ -1731,7 +1749,7 @@ useEffect(() => {
           </aside>
         </div>
 
-        {modalHistoriaAberto && (
+        {modalHistoriaAberto && usuarioAtual && (
           <div className="comunidade-historia-modal-fundo" onClick={() => setModalHistoriaAberto(false)}>
             <div className="comunidade-historia-modal" onClick={(e) => e.stopPropagation()}>
               <button
