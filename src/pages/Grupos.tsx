@@ -54,7 +54,7 @@ const simbolosDisponiveis = [
   "❧",
 ];
 
-function Grupos() {
+function Grupos({ onNavigate: _onNavigate }: GruposProps) {
   const [grupos, setGrupos] = useState<Grupo[]>([]);
   const [grupoSelecionado, setGrupoSelecionado] = useState<Grupo | null>(
     null
