@@ -114,119 +114,8 @@ function carregarHistorias(): Historia[] {
   return [];
 }
 
-const postagensIniciais: Publicacao[] = [
-  {
-    id: 1,
-    usuario: "Luna Valmont",
-    iniciais: "LV",
-    tempo: "há 18 min",
-    texto:
-      "Terminei A Corte das Sombras e ainda estou tentando processar tudo. A atmosfera desse livro é simplesmente maravilhosa. Preciso conversar com alguém sobre esse final.",
-    livro: "A Corte das Sombras",
-    autorLivro: "Elena Beaumont",
-    avaliacao: 5,
-    cor: "vinho",
-    simbolo: "✦",
-    curtidas: 128,
-    comentarios: 24,
-    curtido: false,
-    salva: false,
-    seguindo: true,
-    comentariosLista: [
-      {
-        id: 101,
-        usuario: "Clara Moon",
-        texto:
-          "SIM! O final me deixou olhando para o teto por uns dez minutos.",
-      },
-      {
-        id: 102,
-        usuario: "Noah Evernight",
-        texto:
-          "Essa é definitivamente uma leitura que merece uma releitura.",
-      },
-    ],
-  },
-  {
-    id: 2,
-    usuario: "Arthur Black",
-    iniciais: "AB",
-    tempo: "há 42 min",
-    texto:
-      "O Jardim das Estrelas tem aquela sensação rara de livro que parece existir fora do tempo. Cada capítulo parece uma pequena lembrança.",
-    livro: "O Jardim das Estrelas",
-    autorLivro: "Clara Whitmore",
-    avaliacao: 4,
-    cor: "azul",
-    simbolo: "✧",
-    curtidas: 94,
-    comentarios: 16,
-    curtido: false,
-    salva: false,
-    seguindo: false,
-    comentariosLista: [
-      {
-        id: 201,
-        usuario: "Luna Valmont",
-        texto:
-          "Você descreveu exatamente a sensação que eu tive lendo.",
-      },
-    ],
-  },
-  {
-    id: 3,
-    usuario: "Clara Moon",
-    iniciais: "CM",
-    tempo: "há 1 h",
-    texto:
-      "Pergunta séria para a comunidade: qual livro vocês gostariam de esquecer só para poder ler pela primeira vez novamente?",
-    curtidas: 76,
-    comentarios: 31,
-    curtido: false,
-    salva: false,
-    seguindo: true,
-    comentariosLista: [
-      {
-        id: 301,
-        usuario: "Arthur Black",
-        texto:
-          "Entre Mundos. Sem pensar duas vezes.",
-      },
-      {
-        id: 302,
-        usuario: "Luna Valmont",
-        texto:
-          "A Corte das Sombras. Eu queria sentir aquele impacto de novo.",
-      },
-    ],
-  },
-  {
-    id: 4,
-    usuario: "Noah Evernight",
-    iniciais: "NE",
-    tempo: "há 2 h",
-    texto:
-      "Comecei Entre Mundos sem grandes expectativas e agora não consigo parar. A ideia de atravessar realidades diferentes é muito bem construída.",
-    livro: "Entre Mundos",
-    autorLivro: "Adrian Blackwood",
-    avaliacao: 5,
-    cor: "roxo",
-    simbolo: "◇",
-    curtidas: 61,
-    comentarios: 11,
-    curtido: false,
-    salva: false,
-    seguindo: false,
-    comentariosLista: [
-      {
-        id: 401,
-        usuario: "Clara Moon",
-        texto:
-          "Esse livro me pegou completamente de surpresa também.",
-      },
-    ],
-  },
-];
+const postagensIniciais: Publicacao[] = [];
+
 
 function dataUrlParaBlob(dataUrl: string): Blob {
   const partes = dataUrl.split(",");
@@ -1608,12 +1497,9 @@ function Comunidade({
               <button
                 type="button"
                 className={abaComunidade === "resenhas" ? "ativo" : ""}
-                onClick={() => {
-                    setAbaComunidade("resenhas");
-                    ativarResenha();
-                  }}
-                >
-                  RESENHAS
+                onClick={() => setAbaComunidade("resenhas")}
+              >
+                RESENHAS
               </button>
               <button
                 type="button"
