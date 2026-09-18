@@ -71,14 +71,10 @@ return `há ${dias} ${dias === 1 ? "dia" : "dias"}`;
 
 function Perfil({ onNavigate }: PerfilProps) {
 const [aba, setAba] = useState<
-"publicacoes" | "estante" | "favoritos"
+  "publicacoes" | "estante" | "favoritos"
+>("publicacoes");
 
-("publicacoes");
-
-const [publicacoes, setPublicacoes] = useState<
-PublicacaoPerfil[]
-
-([]);
+const [publicacoes, setPublicacoes] = useState<PublicacaoPerfil[]>([]);
 
 const [favoritos, setFavoritos] = useState<string[]>([]);
 const [queroLer, setQueroLer] = useState<string[]>([]);
