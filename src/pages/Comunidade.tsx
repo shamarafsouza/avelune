@@ -6,7 +6,6 @@ import {
 } from "react";
 import type { ChangeEvent } from "react";
 import "./Comunidade.css";
-import "./ComunidadeCapituloEditor.css";
 import AveluneHeader from "../components/AveluneHeader";
 import { useLivros } from "../hooks/useLivros";
 import { supabase } from "../lib/supabase";
