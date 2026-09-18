@@ -4091,3 +4091,56 @@
   text-indent: 1.5em;
   margin: 0 0 1rem;
 }
+
+/* Menu de opções da publicação */
+.comunidade-post-opcoes {
+  position: relative;
+  margin-left: auto;
+}
+
+.comunidade-post-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  right: 0;
+  z-index: 50;
+  min-width: 210px;
+  padding: 0.35rem;
+  border: 1px solid rgba(181, 125, 75, 0.35);
+  border-radius: 10px;
+  background: #1b100c;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+}
+
+.comunidade-post-menu-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #eadbca;
+  text-align: left;
+  cursor: pointer;
+}
+
+.comunidade-post-menu-dropdown button:hover {
+  background: rgba(181, 125, 75, 0.16);
+}
+
+.comunidade-post-menu-dropdown button.perigo {
+  color: #e9a08f;
+}
+
+/* Publicação sem imagem: não cria o card grande da foto */
+.comunidade-post.sem-foto .comunidade-post-acoes {
+  margin-top: 0.85rem;
+}
+
+.comunidade-post.sem-foto .comunidade-post-legenda {
+  margin-top: 0.9rem;
+}
+
+.comunidade-post.com-foto .comunidade-post-foto {
+  display: block;
+}
+
