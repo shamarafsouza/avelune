@@ -1,0 +1,331 @@
+/* =========================================
+   BUSCAR PESSOAS — AVELUNE
+   Componente independente
+========================================= */
+
+.buscar-pessoas {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  z-index: 100;
+  font-family: inherit;
+}
+
+/* =========================================
+   CAMPO DE BUSCA
+========================================= */
+
+.buscar-pessoas-campo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 17px;
+
+  background: rgba(22, 17, 27, 0.92);
+  border: 1px solid rgba(184, 143, 92, 0.28);
+  border-radius: 10px;
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.buscar-pessoas-campo:focus-within {
+  background: rgba(29, 21, 34, 0.98);
+  border-color: rgba(184, 143, 92, 0.7);
+
+  box-shadow:
+    0 0 0 3px rgba(184, 143, 92, 0.08),
+    0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Ícone */
+
+.buscar-pessoas-campo > span {
+  flex-shrink: 0;
+
+  color: #c5a273;
+  font-size: 1.6rem;
+  line-height: 1;
+
+  transform: rotate(-15deg);
+}
+
+/* Input */
+
+.buscar-pessoas-campo input {
+  width: 100%;
+  min-width: 0;
+
+  padding: 0;
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #eadcc8;
+  font-family: inherit;
+  font-size: 0.88rem;
+}
+
+.buscar-pessoas-campo input::placeholder {
+  color: #88778e;
+  opacity: 1;
+}
+
+/* =========================================
+   PAINEL DE RESULTADOS
+========================================= */
+
+.buscar-pessoas-painel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+
+  max-height: 380px;
+  overflow-y: auto;
+
+  padding: 8px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(39, 27, 43, 0.99),
+      rgba(20, 15, 25, 0.99)
+    );
+
+  border: 1px solid rgba(184, 143, 92, 0.3);
+  border-radius: 12px;
+
+  box-shadow:
+    0 15px 45px rgba(0, 0, 0, 0.45),
+    inset 0 0 30px rgba(184, 143, 92, 0.025);
+
+  animation: painelBuscarEntrada 0.2s ease-out;
+}
+
+@keyframes painelBuscarEntrada {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Barra de rolagem */
+
+.buscar-pessoas-painel::-webkit-scrollbar {
+  width: 5px;
+}
+
+.buscar-pessoas-painel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.buscar-pessoas-painel::-webkit-scrollbar-thumb {
+  background: rgba(184, 143, 92, 0.35);
+  border-radius: 10px;
+}
+
+/* =========================================
+   ITEM DE USUÁRIO
+========================================= */
+
+.buscar-pessoas-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px;
+
+  border-bottom: 1px solid rgba(184, 143, 92, 0.1);
+  border-radius: 8px;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.buscar-pessoas-item:last-child {
+  border-bottom: none;
+}
+
+.buscar-pessoas-item:hover {
+  background: rgba(110, 64, 89, 0.2);
+  transform: translateX(2px);
+}
+
+/* =========================================
+   AVATAR
+========================================= */
+
+.buscar-pessoas-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(110, 64, 89, 0.7),
+      rgba(31, 22, 37, 0.95)
+    );
+
+  border: 1px solid rgba(184, 143, 92, 0.4);
+  border-radius: 50%;
+
+  color: #d0af7b;
+  font-size: 1.15rem;
+}
+
+.buscar-pessoas-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+/* =========================================
+   DADOS DO USUÁRIO
+========================================= */
+
+.buscar-pessoas-dados {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.buscar-pessoas-dados strong {
+  overflow: hidden;
+
+  color: #e8d4b0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buscar-pessoas-dados span {
+  overflow: hidden;
+
+  color: #97869c;
+  font-size: 0.77rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================
+   BOTÃO SEGUIR
+========================================= */
+
+.buscar-pessoas-item button {
+  flex-shrink: 0;
+
+  padding: 8px 11px;
+
+  background: transparent;
+  border: 1px solid rgba(184, 143, 92, 0.45);
+  border-radius: 6px;
+
+  color: #d5b788;
+
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.buscar-pessoas-item button:hover {
+  background: #b88f5c;
+  border-color: #b88f5c;
+  color: #241823;
+}
+
+/* Estado seguindo */
+
+.buscar-pessoas-item button.ativo {
+  background: rgba(184, 143, 92, 0.12);
+  border-color: rgba(184, 143, 92, 0.25);
+  color: #a99aab;
+}
+
+.buscar-pessoas-item button.ativo:hover {
+  background: rgba(180, 75, 93, 0.18);
+  border-color: rgba(180, 75, 93, 0.45);
+  color: #d69ca8;
+}
+
+/* =========================================
+   MENSAGENS
+========================================= */
+
+.buscar-pessoas-vazio {
+  margin: 0;
+  padding: 22px 12px;
+
+  color: #a99aab;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.88rem;
+  font-style: italic;
+  text-align: center;
+}
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (max-width: 600px) {
+  .buscar-pessoas {
+    max-width: 100%;
+  }
+
+  .buscar-pessoas-campo {
+    padding: 12px 14px;
+  }
+
+  .buscar-pessoas-painel {
+    max-height: 320px;
+  }
+
+  .buscar-pessoas-item {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .buscar-pessoas-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .buscar-pessoas-item button {
+    padding: 8px 9px;
+    font-size: 0.62rem;
+  }
+}
