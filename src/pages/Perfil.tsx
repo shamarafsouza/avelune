@@ -41,6 +41,17 @@ type PerfilSeguindo = {
   avatar_url?: string | null;
 };
 
+type NotificacaoPerfil = {
+  id: number;
+  tipo: "seguir" | "curtida" | "comentario";
+  autor_id: string;
+  publicacao_id?: number | null;
+  comentario_id?: number | null;
+  lida: boolean;
+  created_at: string;
+  autor?: { nome: string | null; username: string | null; avatar_url: string | null };
+};
+
 type ProgressoLeitura = {
   paginaAtual?: number;
   totalPaginas?: number;
@@ -82,6 +93,8 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [janelaDetalhes, setJanelaDetalhes] = useState<"seguindo" | "estante" | null>(null);
   const [pessoasSeguindo, setPessoasSeguindo] = useState<PerfilSeguindo[]>([]);
   const [progressoLeitura, setProgressoLeitura] = useState<Record<string, ProgressoLeitura>>({});
+  const [notificacoes, setNotificacoes] = useState<NotificacaoPerfil[]>([]);
+  const [mostrarNotificacoes, setMostrarNotificacoes] = useState(false);
 
   const [nomePerfil, setNomePerfil] = useState("");
   const [usuarioPerfil, setUsuarioPerfil] = useState("");
@@ -118,6 +131,31 @@ function Perfil({ onNavigate }: PerfilProps) {
         setCarregandoSessao(false);
 
         const usuarioId = usuarioAuth.user.id;
+
+        const { data: notificacoesBanco, error: erroNotificacoes } = await supabase
+          .from("notificacoes")
+          .select("id, tipo, autor_id, publicacao_id, comentario_id, lida, created_at")
+          .eq("usuario_id", usuarioId)
+          .order("created_at", { ascending: false })
+          .limit(30);
+
+        if (erroNotificacoes) {
+          console.error("Erro ao carregar notificações:", erroNotificacoes);
+        } else if (notificacoesBanco?.length) {
+          const idsAutores = [...new Set(notificacoesBanco.map((item) => item.autor_id))];
+          const { data: autores } = await supabase
+            .from("profiles")
+            .select("id, nome, username, avatar_url")
+            .in("id", idsAutores);
+
+          const autoresMap = new Map((autores ?? []).map((autor) => [autor.id, autor]));
+          setNotificacoes(notificacoesBanco.map((item) => ({
+            ...item,
+            autor: autoresMap.get(item.autor_id),
+          })) as NotificacaoPerfil[]);
+        } else {
+          setNotificacoes([]);
+        }
 
         const [resultadoPublicacoes, resultadoSeguidores, resultadoSeguindo] =
           await Promise.all([
@@ -607,6 +645,53 @@ function Perfil({ onNavigate }: PerfilProps) {
       />
 
       <div className="perfil-conteudo">
+        <section className="perfil-notificacoes">
+          <div className="perfil-notificacoes-topo">
+            <div>
+              <p className="perfil-kicker">SINAIS DE AVELUNE</p>
+              <h2>Notificações</h2>
+            </div>
+            <button type="button" onClick={() => setMostrarNotificacoes((atual) => !atual)}>
+              {mostrarNotificacoes ? "Ocultar" : "Ver notificações"}
+              {notificacoes.some((item) => !item.lida) ? " •" : ""}
+            </button>
+          </div>
+
+          {mostrarNotificacoes && (
+            <div className="perfil-notificacoes-lista">
+              {notificacoes.length === 0 ? (
+                <p className="perfil-detalhes-vazio">Você ainda não tem notificações.</p>
+              ) : (
+                notificacoes.map((notificacao) => {
+                  const nomeAutor = notificacao.autor?.nome || "Alguém";
+                  const texto = notificacao.tipo === "seguir"
+                    ? "começou a seguir você."
+                    : notificacao.tipo === "curtida"
+                      ? "curtiu sua publicação."
+                      : "comentou sua publicação.";
+
+                  return (
+                    <button
+                      type="button"
+                      className={`perfil-notificacao-item ${notificacao.lida ? "" : "perfil-notificacao-item--nova"}`}
+                      key={notificacao.id}
+                      onClick={async () => {
+                        if (!notificacao.lida) {
+                          await supabase.from("notificacoes").update({ lida: true }).eq("id", notificacao.id);
+                          setNotificacoes((atuais) => atuais.map((item) => item.id === notificacao.id ? { ...item, lida: true } : item));
+                        }
+                      }}
+                    >
+                      <span className="perfil-notificacao-simbolo">{notificacao.tipo === "seguir" ? "✦" : notificacao.tipo === "curtida" ? "♡" : "◌"}</span>
+                      <span><strong>{nomeAutor}</strong> {texto}<small>{formatarTempoPerfil(notificacao.created_at)}</small></span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </section>
+
         <section className="perfil-cabecalho">
           <div
             className={`perfil-avatar-grande ${
