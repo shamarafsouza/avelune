@@ -1329,6 +1329,34 @@
   background: rgba(0, 0, 0, 0.14);
 }
 
+.perfil-pessoa-item {
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.perfil-pessoa-item:hover {
+  border-color: rgba(211, 159, 87, 0.45);
+  background: rgba(184, 132, 78, 0.10);
+  transform: translateY(-1px);
+}
+
+.perfil-pessoa-dados {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.perfil-pessoa-seta {
+  margin-left: auto;
+  color: rgba(216, 169, 103, 0.75);
+  font-size: 1rem;
+}
+
 .perfil-pessoa-item > div:last-child,
 .perfil-detalhe-livro > div:first-child {
   display: flex;
@@ -1527,3 +1555,181 @@
     width: calc(100vw - 32px);
   }
 }
+.perfil-modal-publico {
+  width: min(920px, calc(100vw - 32px));
+  max-width: 920px;
+  max-height: min(88vh, 900px);
+  overflow: auto;
+}
+
+.perfil-publico-cabecalho {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.perfil-publico-identidade h3 {
+  margin: 0;
+  color: #ead8bd;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 400;
+}
+
+.perfil-publico-bio {
+  max-width: 560px;
+  margin: 1rem 0 0;
+  white-space: pre-line;
+  color: rgba(222, 197, 162, 0.66);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.7;
+}
+
+.perfil-publico-estatisticas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  margin-top: 1rem;
+}
+
+.perfil-publico-estatisticas span {
+  color: rgba(218, 190, 151, 0.6);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+.perfil-publico-estatisticas strong {
+  color: #ead8bd;
+  font-size: 1rem;
+}
+
+.perfil-publico-seguir {
+  min-width: 108px;
+  padding: 0.72rem 1rem;
+  border: 1px solid rgba(207, 154, 82, 0.45);
+  background: transparent;
+  color: #d9bc95;
+  cursor: pointer;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.perfil-publico-seguir:hover,
+.perfil-publico-seguir.ativo {
+  background: rgba(184, 132, 78, 0.13);
+  border-color: rgba(211, 159, 87, 0.65);
+}
+
+.perfil-publico-separador {
+  height: 1px;
+  margin: 1.35rem 0;
+  background: rgba(184, 132, 78, 0.22);
+}
+
+.perfil-publico-publicacoes-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.perfil-publico-publicacoes-topo > p {
+  margin: 0;
+}
+
+.perfil-publico-publicacoes-topo > span {
+  color: rgba(218, 190, 151, 0.56);
+  font-size: 0.8rem;
+}
+
+.perfil-publico-publicacoes {
+  display: grid;
+  gap: 1rem;
+}
+
+.perfil-publico-publicacao {
+  padding: 1rem;
+  border: 1px solid rgba(184, 132, 78, 0.2);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.perfil-publico-publicacao-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.perfil-publico-publicacao-topo strong {
+  color: #ead8bd;
+}
+
+.perfil-publico-publicacao-topo span {
+  color: rgba(218, 190, 151, 0.45);
+  font-size: 0.72rem;
+}
+
+.perfil-publico-publicacao > p {
+  margin: 0.85rem 0 0;
+  color: #ddc9ad;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.perfil-publico-publicacao-foto {
+  display: block;
+  width: 100%;
+  max-height: 440px;
+  margin-top: 1rem;
+  object-fit: cover;
+  border: 1px solid rgba(184, 132, 78, 0.18);
+}
+
+.perfil-publico-publicacao-livro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1rem;
+  padding: 0.9rem;
+  border-left: 2px solid rgba(211, 159, 87, 0.55);
+  background: rgba(184, 132, 78, 0.07);
+}
+
+.perfil-publico-publicacao-livro strong {
+  color: #ead8bd;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+}
+
+.perfil-publico-publicacao-livro span {
+  color: rgba(218, 190, 151, 0.53);
+  font-size: 0.78rem;
+}
+
+.perfil-publico-publicacao-interacoes {
+  display: flex;
+  gap: 1.25rem;
+  padding-top: 0.9rem;
+  color: rgba(218, 190, 151, 0.48);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .perfil-modal-publico {
+    width: calc(100vw - 20px);
+    max-height: 92vh;
+  }
+
+  .perfil-publico-cabecalho {
+    grid-template-columns: 1fr;
+  }
+
+  .perfil-publico-seguir {
+    width: 100%;
+  }
+}
+
