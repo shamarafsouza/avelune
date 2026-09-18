@@ -8,7 +8,7 @@ import type { ChangeEvent } from "react";
 import "./Comunidade.css";
 import AveluneHeader from "../components/AveluneHeader";
 import { useLivros } from "../hooks/useLivros";
-import BuscarPessoas from "../components/BuscarPessoas";
+import BuscarPessoas from "./BuscarPessoas";
 import { supabase } from "../lib/supabase";
 
 type Pagina =
