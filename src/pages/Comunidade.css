@@ -4144,3 +4144,83 @@
   display: block;
 }
 
+/* Progresso de leitura nas publicações */
+.comunidade-progresso-campos {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(190, 143, 91, 0.28);
+  background: rgba(40, 20, 14, 0.45);
+}
+
+.comunidade-progresso-campos > input,
+.comunidade-progresso-numeros input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid rgba(190, 143, 91, 0.32);
+  background: rgba(12, 6, 5, 0.72);
+  color: inherit;
+}
+
+.comunidade-progresso-numeros {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.comunidade-progresso-numeros label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.comunidade-post-progresso {
+  margin: 14px 0;
+  padding: 15px;
+  border: 1px solid rgba(190, 143, 91, 0.35);
+  background: linear-gradient(135deg, rgba(70, 37, 25, 0.72), rgba(24, 12, 10, 0.8));
+}
+
+.comunidade-post-progresso > span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: #c6a27a;
+}
+
+.comunidade-post-progresso > strong {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.comunidade-progresso-barra {
+  height: 7px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.comunidade-progresso-barra span {
+  display: block;
+  height: 100%;
+  background: #b58a5b;
+  transition: width 0.25s ease;
+}
+
+.comunidade-post-progresso small {
+  display: block;
+  margin-top: 8px;
+  color: rgba(238, 221, 201, 0.72);
+}
+
+@media (max-width: 520px) {
+  .comunidade-progresso-numeros {
+    grid-template-columns: 1fr;
+  }
+}
+
