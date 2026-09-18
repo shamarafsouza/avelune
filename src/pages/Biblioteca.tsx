@@ -192,6 +192,89 @@ function Biblioteca({
     );
   }, [progressoLeitura]);
 
+  // Sincroniza o progresso de leitura do usuário autenticado com o Supabase.
+  useEffect(() => {
+    let ativo = true;
+
+    async function carregarLeiturasDoSupabase() {
+      if (livros.length === 0) return;
+
+      const { data: usuarioData } = await supabase.auth.getUser();
+      const usuario = usuarioData.user;
+      if (!usuario || !ativo) return;
+
+      const { data, error } = await supabase
+        .from("leituras")
+        .select("titulo, pagina_atual, total_paginas")
+        .eq("usuario_id", usuario.id);
+
+      if (error) {
+        console.error("Erro ao carregar progresso do Supabase:", error);
+        return;
+      }
+
+      const progressoSincronizado: Record<string, ProgressoLeitura> = {};
+
+      for (const leitura of data ?? []) {
+        const livroCorrespondente = livros.find(
+          (livro) => livro.titulo.trim().toLowerCase() === String(leitura.titulo ?? "").trim().toLowerCase()
+        );
+
+        if (livroCorrespondente) {
+          progressoSincronizado[livroCorrespondente.id] = {
+            paginaAtual: Number(leitura.pagina_atual ?? 0),
+            paginaTotal: Number(leitura.total_paginas ?? 0),
+          };
+        }
+      }
+
+      if (ativo && Object.keys(progressoSincronizado).length > 0) {
+        setProgressoLeitura((atual) => ({
+          ...atual,
+          ...progressoSincronizado,
+        }));
+      }
+    }
+
+    carregarLeiturasDoSupabase();
+
+    return () => {
+      ativo = false;
+    };
+  }, [livros]);
+
+  async function salvarProgressoNoSupabase(
+    id: string,
+    paginaAtual: number,
+    paginaTotal: number
+  ) {
+    const { data: usuarioData } = await supabase.auth.getUser();
+    const usuario = usuarioData.user;
+    const livro = livros.find((item) => item.id === id);
+
+    if (!usuario || !livro) return;
+
+    const { error } = await supabase
+      .from("leituras")
+      .upsert(
+        {
+          usuario_id: usuario.id,
+          titulo: livro.titulo,
+          autor: livro.autor ?? "",
+          genero: livro.genero ?? "",
+          status: paginaTotal > 0 && paginaAtual >= paginaTotal ? "lido" : "lendo",
+          pagina_atual: Math.max(0, paginaAtual),
+          total_paginas: Math.max(0, paginaTotal),
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "usuario_id,titulo" }
+      );
+
+    if (error) {
+      console.error("Erro ao salvar progresso no Supabase:", error);
+    }
+  }
+
   const livrosFiltrados = useMemo(() => {
   const texto = busca.toLowerCase().trim();
 
@@ -284,12 +367,23 @@ function Biblioteca({
         paginaTotal: 0,
       };
 
+      const atualizado = {
+        ...existente,
+        [campo]: Math.max(0, valor),
+      };
+
+      const paginaAtual = campo === "paginaAtual"
+        ? atualizado.paginaAtual
+        : existente.paginaAtual;
+      const paginaTotal = campo === "paginaTotal"
+        ? atualizado.paginaTotal
+        : existente.paginaTotal;
+
+      void salvarProgressoNoSupabase(id, paginaAtual, paginaTotal);
+
       return {
         ...atual,
-        [id]: {
-          ...existente,
-          [campo]: Math.max(0, valor),
-        },
+        [id]: atualizado,
       };
     });
   }
