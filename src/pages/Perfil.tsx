@@ -107,6 +107,7 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [pessoasSeguidoras, setPessoasSeguidoras] = useState<PerfilSeguindo[]>([]);
   const [pessoasSeguindo, setPessoasSeguindo] = useState<PerfilSeguindo[]>([]);
   const [perfilPublico, setPerfilPublico] = useState<PerfilPublico | null>(null);
+  const [origemPerfilPublico, setOrigemPerfilPublico] = useState<"seguidores" | "seguindo" | null>(null);
   const [publicacoesPerfilPublico, setPublicacoesPerfilPublico] = useState<PublicacaoPerfil[]>([]);
   const [carregandoPerfilPublico, setCarregandoPerfilPublico] = useState(false);
   const [processandoSeguirPerfilPublico, setProcessandoSeguirPerfilPublico] = useState(false);
@@ -627,7 +628,9 @@ function Perfil({ onNavigate }: PerfilProps) {
     mostrarMensagem("Publicação excluída com sucesso.");
   }
 
-  async function abrirPerfilPublico(id: string) {
+  async function abrirPerfilPublico(id: string, origem: "seguidores" | "seguindo" | null = null) {
+    setJanelaDetalhes(null);
+    setOrigemPerfilPublico(origem);
     setCarregandoPerfilPublico(true);
     setPerfilPublico(null);
     setPublicacoesPerfilPublico([]);
@@ -1618,7 +1621,7 @@ const iniciaisFinal =
                 <p className="perfil-kicker">PERFIL PÚBLICO</p>
                 <h2>Perfil de {perfilPublico.nome}</h2>
               </div>
-              <button type="button" className="perfil-modal-fechar" onClick={() => setPerfilPublico(null)} aria-label="Fechar perfil público">
+              <button type="button" className="perfil-modal-fechar" onClick={() => { setPerfilPublico(null); setOrigemPerfilPublico(null); }} aria-label="Fechar perfil público">
                 ×
               </button>
             </div>
@@ -1742,7 +1745,7 @@ const iniciaisFinal =
                       type="button"
                       className="perfil-pessoa-item"
                       key={pessoa.id}
-                      onClick={() => void abrirPerfilPublico(pessoa.id)}
+                      onClick={() => void abrirPerfilPublico(pessoa.id, janelaDetalhes === "seguidores" ? "seguidores" : "seguindo")}
                     >
                       <span className="perfil-avatar-post">
                         {pessoa.avatar_url ? <img src={pessoa.avatar_url} alt="" /> : "✦"}
