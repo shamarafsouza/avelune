@@ -834,8 +834,8 @@ useEffect(() => {
     setTagsResenha([]);
   }
 
-  function publicar() {
-    if (!exigirConta()) {
+  async function publicar() {
+    if (!exigirConta() || !usuarioAtual) {
       return;
     }
 
@@ -844,11 +844,7 @@ useEffect(() => {
     const autorLimpo = autorDigitado.trim();
     const linkLivroLimpo = linkLivroDigitado.trim();
 
-    if (
-      !textoLimpo &&
-      !fotoSelecionada &&
-      !livroLimpo
-    ) {
+    if (!textoLimpo && !fotoSelecionada && !livroLimpo) {
       mostrarMensagem(
         "Adicione uma foto, escreva uma resenha ou informe um livro."
       );
@@ -856,53 +852,62 @@ useEffect(() => {
     }
 
     if (modoResenha && !livroLimpo) {
-      mostrarMensagem(
-        "Informe qual livro você está resenhando."
-      );
+      mostrarMensagem("Informe qual livro você está resenhando.");
+      return;
+    }
+
+    const { data: registro, error } = await supabase
+      .from("publicacoes")
+      .insert({
+        usuario_id: usuarioAtual.id,
+        texto: textoLimpo || "Minha nova leitura no Avelune.",
+        livro: livroLimpo || null,
+        autor_livro: autorLimpo || null,
+        avaliacao: livroLimpo ? avaliacaoDigitada : null,
+        foto_url: fotoSelecionada || null,
+        curtidas: 0,
+        comentarios: 0,
+        spoiler: false,
+      })
+      .select(
+        "id, usuario_id, texto, livro, autor_livro, avaliacao, foto_url, curtidas, comentarios, created_at"
+      )
+      .single();
+
+    if (error || !registro) {
+      console.error("Erro ao publicar no Supabase:", error);
+      mostrarMensagem("Não foi possível publicar. Tente novamente.");
       return;
     }
 
     const novaPostagem: Publicacao = {
-      id: Date.now(),
+      id: registro.id,
       usuario: "Você",
       iniciais: "VC",
       tempo: "agora",
-      texto:
-        textoLimpo ||
-        "Minha nova leitura no Avelune.",
-      livro: livroLimpo || undefined,
-      autorLivro:
-        autorLimpo || undefined,
-      linkLivro:
-        linkLivroLimpo || undefined,
-          avaliacao:
-        livroLimpo
-          ? avaliacaoDigitada
-          : undefined,
+      texto: registro.texto,
+      livro: registro.livro || undefined,
+      autorLivro: registro.autor_livro || undefined,
+      linkLivro: linkLivroLimpo || undefined,
+      avaliacao: registro.avaliacao ?? undefined,
       tags:
         modoResenha && tagsResenha.length > 0
           ? tagsResenha
           : undefined,
-      foto: fotoSelecionada || undefined,
-      curtidas: 0,
-      comentarios: 0,
+      foto: registro.foto_url || undefined,
+      curtidas: registro.curtidas ?? 0,
+      comentarios: registro.comentarios ?? 0,
       curtido: false,
       salva: false,
       seguindo: true,
       origemUsuario: true,
-      autorId: usuarioAtual?.id,
+      autorId: registro.usuario_id,
       comentariosLista: [],
     };
 
-    setPostagens((atual) => [
-      novaPostagem,
-      ...atual,
-    ]);
-
+    setPostagens((atual) => [novaPostagem, ...atual]);
     limparCompositor();
-    mostrarMensagem(
-      "Sua publicação foi adicionada à comunidade."
-    );
+    mostrarMensagem("Sua publicação foi adicionada à comunidade.");
   }
 
   function ehDonoDaPublicacao(post: Publicacao) {
