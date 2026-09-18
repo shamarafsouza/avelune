@@ -34,6 +34,19 @@ type PerfilProps = {
   onNavigate?: (pagina: Pagina) => void;
 };
 
+type PerfilSeguindo = {
+  id: string;
+  nome: string;
+  username: string;
+  avatar_url?: string | null;
+};
+
+type ProgressoLeitura = {
+  paginaAtual?: number;
+  totalPaginas?: number;
+  percentual?: number;
+};
+
 function formatarTempoPerfil(data: string) {
   const diferenca = Math.max(0, Date.now() - new Date(data).getTime());
   const minutos = Math.floor(diferenca / 60000);
@@ -66,6 +79,9 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [carregandoSessao, setCarregandoSessao] = useState(true);
   const [usuarioLogado, setUsuarioLogado] = useState(false);
   const [menuPublicacaoAberto, setMenuPublicacaoAberto] = useState<number | null>(null);
+  const [janelaDetalhes, setJanelaDetalhes] = useState<"seguindo" | "estante" | null>(null);
+  const [pessoasSeguindo, setPessoasSeguindo] = useState<PerfilSeguindo[]>([]);
+  const [progressoLeitura, setProgressoLeitura] = useState<Record<string, ProgressoLeitura>>({});
 
   const [nomePerfil, setNomePerfil] = useState("");
   const [usuarioPerfil, setUsuarioPerfil] = useState("");
@@ -156,6 +172,40 @@ function Perfil({ onNavigate }: PerfilProps) {
           );
           setTotalSeguidores(resultadoSeguidores.count ?? 0);
           setTotalSeguindo(resultadoSeguindo.count ?? 0);
+
+          const { data: seguindoRows, error: erroSeguindo } = await supabase
+            .from("seguidores")
+            .select("seguido_id")
+            .eq("seguidor_id", usuarioId);
+
+          if (erroSeguindo) {
+            console.error("Erro ao carregar pessoas seguidas:", erroSeguindo);
+          } else if (seguindoRows?.length) {
+            const idsSeguidos = seguindoRows.map((item) => item.seguido_id);
+            const { data: perfisSeguidos, error: erroPerfisSeguidos } =
+              await supabase
+                .from("profiles")
+                .select("id, nome, username, avatar_url")
+                .in("id", idsSeguidos);
+
+            if (erroPerfisSeguidos) {
+              console.error("Erro ao carregar perfis seguidos:", erroPerfisSeguidos);
+            } else if (ativo) {
+              setPessoasSeguindo((perfisSeguidos ?? []) as PerfilSeguindo[]);
+            }
+          }
+
+          try {
+            const progressoSalvo = localStorage.getItem("avelune-progresso-leitura");
+            if (progressoSalvo) {
+              const dadosProgresso = JSON.parse(progressoSalvo);
+              if (dadosProgresso && typeof dadosProgresso === "object") {
+                setProgressoLeitura(dadosProgresso);
+              }
+            }
+          } catch {
+            setProgressoLeitura({});
+          }
         }
 
         const { data: perfil, error: erroPerfil } =
@@ -624,28 +674,26 @@ function Perfil({ onNavigate }: PerfilProps) {
               ))}
             </p>
 
-                 <div className="perfil-estatisticas">
-              <div>
+            <div className="perfil-estatisticas">
+              <button type="button" className="perfil-estatistica" onClick={() => setAba("publicacoes")}>
                 <strong>{publicacoes.length}</strong>
                 <span>publicações</span>
-              </div>
+              </button>
 
-              <div>
+              <button type="button" className="perfil-estatistica" onClick={() => setJanelaDetalhes("seguindo")}>
                 <strong>{totalSeguidores}</strong>
                 <span>seguidores</span>
-              </div>
+              </button>
 
-              <div>
+              <button type="button" className="perfil-estatistica" onClick={() => setJanelaDetalhes("seguindo")}>
                 <strong>{totalSeguindo}</strong>
                 <span>seguindo</span>
-              </div>
+              </button>
 
-              <div>
-                <strong>
-                  {livrosNaEstante.length}
-                </strong>
+              <button type="button" className="perfil-estatistica" onClick={() => setJanelaDetalhes("estante")}>
+                <strong>{livrosNaEstante.length}</strong>
                 <span>na estante</span>
-              </div>
+              </button>
             </div>
 
             {publicacoes.length === 0 &&
@@ -878,6 +926,16 @@ function Perfil({ onNavigate }: PerfilProps) {
                         {formatarNomeLivro(livro)}
                       </strong>
                       <span>Na minha estante</span>
+                      <span className="perfil-progresso-texto">
+                        {progressoLeitura[livro]?.percentual ?? 0}% lido
+                      </span>
+                      <span className="perfil-progresso-barra">
+                        <span
+                          style={{
+                            width: `${Math.min(100, Math.max(0, progressoLeitura[livro]?.percentual ?? 0))}%`,
+                          }}
+                        />
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -1231,6 +1289,70 @@ const iniciaisFinal =
                 Salvar alterações
               </button>
             </div>
+          </section>
+        </div>
+      )}
+
+      {janelaDetalhes && (
+        <div
+          className="perfil-modal-fundo"
+          onMouseDown={(evento) => {
+            if (evento.target === evento.currentTarget) {
+              setJanelaDetalhes(null);
+            }
+          }}
+        >
+          <section className="perfil-modal perfil-modal-detalhes" role="dialog" aria-modal="true">
+            <div className="perfil-modal-topo">
+              <div>
+                <p className="perfil-kicker">SUA JORNADA</p>
+                <h2>{janelaDetalhes === "seguindo" ? "Pessoas que você segue" : "Minha estante"}</h2>
+              </div>
+              <button type="button" className="perfil-modal-fechar" onClick={() => setJanelaDetalhes(null)} aria-label="Fechar">
+                ×
+              </button>
+            </div>
+
+            {janelaDetalhes === "seguindo" ? (
+              pessoasSeguindo.length === 0 ? (
+                <p className="perfil-detalhes-vazio">Você ainda não segue ninguém.</p>
+              ) : (
+                <div className="perfil-lista-pessoas">
+                  {pessoasSeguindo.map((pessoa) => (
+                    <div className="perfil-pessoa-item" key={pessoa.id}>
+                      <div className="perfil-avatar-post">
+                        {pessoa.avatar_url ? <img src={pessoa.avatar_url} alt="" /> : "✦"}
+                      </div>
+                      <div>
+                        <strong>{pessoa.nome || "Leitor"}</strong>
+                        <span>@{(pessoa.username || "leitor").replace(/^@+/, "")}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : (
+              livrosNaEstante.length === 0 ? (
+                <p className="perfil-detalhes-vazio">Sua estante está vazia.</p>
+              ) : (
+                <div className="perfil-detalhes-estante">
+                  {livrosNaEstante.map((livro) => {
+                    const percentual = Math.min(100, Math.max(0, progressoLeitura[livro]?.percentual ?? 0));
+                    return (
+                      <div className="perfil-detalhe-livro" key={livro}>
+                        <div>
+                          <strong>{formatarNomeLivro(livro)}</strong>
+                          <span>{percentual}% concluído</span>
+                        </div>
+                        <div className="perfil-progresso-barra">
+                          <span style={{ width: `${percentual}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )
+            )}
           </section>
         </div>
       )}
