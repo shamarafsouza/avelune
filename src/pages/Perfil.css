@@ -1207,3 +1207,48 @@
 .perfil-acesso-acoes button:hover {
   background: #2b1b12;
 }
+
+/* Adicione ao final de src/pages/Perfil.css */
+
+.perfil-menu-wrapper {
+  position: relative;
+  margin-left: auto;
+}
+
+.perfil-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  min-width: 190px;
+  padding: 6px;
+  border: 1px solid rgba(190, 137, 82, 0.35);
+  border-radius: 8px;
+  background: #21130f;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.perfil-menu-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: #eadbc9;
+  cursor: pointer;
+  text-align: left;
+}
+
+.perfil-menu-dropdown button:hover {
+  background: rgba(190, 137, 82, 0.14);
+}
+
+.perfil-menu-dropdown button.perigo {
+  color: #e9a0a0;
+}
+
+.perfil-menu-dropdown button.perigo:hover {
+  background: rgba(170, 60, 60, 0.16);
+}
+
