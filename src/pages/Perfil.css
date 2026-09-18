@@ -1733,3 +1733,45 @@
   }
 }
 
+
+/* Perfil público: abre imediatamente após selecionar uma pessoa da lista. */
+.perfil-modal-fundo-publico {
+  z-index: 1200;
+  align-items: flex-start;
+  padding: 6vh 24px 7vh;
+}
+
+.perfil-modal-publico {
+  width: min(980px, calc(100vw - 48px));
+  max-width: 980px;
+  min-height: min(78vh, 760px);
+  max-height: 88vh;
+  overflow-y: auto;
+  border-radius: 0;
+}
+
+.perfil-pessoa-item {
+  cursor: pointer;
+}
+
+.perfil-pessoa-item:hover {
+  border-color: rgba(211, 159, 87, 0.5);
+  background: rgba(184, 132, 78, 0.06);
+}
+
+.perfil-pessoa-item:focus-visible {
+  outline: 1px solid rgba(211, 159, 87, 0.72);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .perfil-modal-fundo-publico {
+    padding: 10px;
+  }
+
+  .perfil-modal-publico {
+    width: calc(100vw - 20px);
+    min-height: 92vh;
+    max-height: 96vh;
+  }
+}
