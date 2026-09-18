@@ -107,7 +107,6 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [pessoasSeguidoras, setPessoasSeguidoras] = useState<PerfilSeguindo[]>([]);
   const [pessoasSeguindo, setPessoasSeguindo] = useState<PerfilSeguindo[]>([]);
   const [perfilPublico, setPerfilPublico] = useState<PerfilPublico | null>(null);
-  const [origemPerfilPublico, setOrigemPerfilPublico] = useState<"seguidores" | "seguindo" | null>(null);
   const [publicacoesPerfilPublico, setPublicacoesPerfilPublico] = useState<PublicacaoPerfil[]>([]);
   const [carregandoPerfilPublico, setCarregandoPerfilPublico] = useState(false);
   const [processandoSeguirPerfilPublico, setProcessandoSeguirPerfilPublico] = useState(false);
