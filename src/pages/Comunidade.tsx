@@ -1724,9 +1724,12 @@ function Comunidade({
                           : ""
                       }
                       onClick={() => {
-                        if (!exigirConta()) return;
-                        setModoResenha((atual) => !atual);
-                        setModoProgresso(false);
+                        if (modoResenha) {
+                          setModoResenha(false);
+                          return;
+                        }
+
+                        ativarResenha();
                       }}
                     >
                       ♧
@@ -2206,47 +2209,17 @@ function Comunidade({
                 </div>
               </div>
 
-              <div className="comunidade-destaque">
+              <div className="comunidade-destaque comunidade-destaque-vazio">
                 <div className="comunidade-avatar pequeno">
-                  LV
+                  ✦
                 </div>
 
                 <div className="comunidade-destaque-dados">
                   <strong>
-                    Luna Valmont
+                    Ainda não há leitores em destaque
                   </strong>
                   <span>
-                    128 curtidas recebidas
-                  </span>
-                </div>
-              </div>
-
-              <div className="comunidade-destaque">
-                <div className="comunidade-avatar pequeno">
-                  CM
-                </div>
-
-                <div className="comunidade-destaque-dados">
-                  <strong>
-                    Clara Moon
-                  </strong>
-                  <span>
-                    107 interações
-                  </span>
-                </div>
-              </div>
-
-              <div className="comunidade-destaque">
-                <div className="comunidade-avatar pequeno">
-                  AB
-                </div>
-
-                <div className="comunidade-destaque-dados">
-                  <strong>
-                    Arthur Black
-                  </strong>
-                  <span>
-                    94 curtidas recebidas
+                    Os destaques aparecerão quando houver atividade real na comunidade.
                   </span>
                 </div>
               </div>
