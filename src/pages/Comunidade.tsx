@@ -6,6 +6,7 @@ import {
 } from "react";
 import type { ChangeEvent } from "react";
 import "./Comunidade.css";
+import "./ComunidadeCapituloEditor.css";
 import AveluneHeader from "../components/AveluneHeader";
 import { useLivros } from "../hooks/useLivros";
 import { supabase } from "../lib/supabase";
@@ -376,6 +377,7 @@ useEffect(() => {
   const [historiaAberta, setHistoriaAberta] = useState<Historia | null>(null);
   const [capituloDepoisTitulo, setCapituloDepoisTitulo] = useState("");
   const [capituloDepoisConteudo, setCapituloDepoisConteudo] = useState("");
+  const editorCapituloRef = useRef<HTMLDivElement | null>(null);
 
   function alternarGeneroH(genero: string) {
     setGenerosH((atual) =>
@@ -430,13 +432,91 @@ useEffect(() => {
     setPersonagensH([]);
   }
 
+  function executarComandoEditor(comando: string, valor?: string) {
+    editorCapituloRef.current?.focus();
+    document.execCommand(comando, false, valor);
+    setCapituloDepoisConteudo(editorCapituloRef.current?.innerHTML ?? "");
+  }
+
+  function atualizarConteudoCapitulo() {
+    setCapituloDepoisConteudo(editorCapituloRef.current?.innerHTML ?? "");
+  }
+
+  function limparHtmlCapitulo(html: string) {
+    if (typeof window === "undefined") return html;
+
+    const documento = new DOMParser().parseFromString(html, "text/html");
+    const tagsPermitidas = new Set([
+      "B", "STRONG", "I", "EM", "U", "S", "P", "BR", "H1", "H2",
+      "H3", "H4", "H5", "H6", "UL", "OL", "LI", "BLOCKQUOTE", "DIV", "SPAN", "FONT",
+    ]);
+
+    documento.body.querySelectorAll("*").forEach((elemento) => {
+      if (!tagsPermitidas.has(elemento.tagName)) {
+        elemento.replaceWith(...Array.from(elemento.childNodes));
+        return;
+      }
+
+      Array.from(elemento.attributes).forEach((atributo) => {
+        const nome = atributo.name.toLowerCase();
+        let permitido = false;
+
+        if (elemento.tagName === "FONT" && ["face", "size", "color"].includes(nome)) {
+          permitido = true;
+        }
+
+        if (["align"].includes(nome) && ["left", "center", "right", "justify"].includes(atributo.value.toLowerCase())) {
+          permitido = true;
+        }
+
+        if (nome === "style") {
+          const estilosPermitidos = atributo.value
+            .split(";")
+            .map((regra) => regra.trim())
+            .filter((regra) => {
+              const [propriedade, valor] = regra.split(":").map((parte) => parte.trim().toLowerCase());
+              if (!propriedade || !valor) return false;
+
+              if (propriedade === "text-align") {
+                return ["left", "center", "right", "justify"].includes(valor);
+              }
+
+              if (propriedade === "text-indent" || propriedade === "margin-left" || propriedade === "margin-right") {
+                return /^\d+(?:\.\d+)?(?:px|em|rem|%)$/.test(valor);
+              }
+
+              if (propriedade === "line-height") {
+                return /^(?:\d+(?:\.\d+)?|\d+(?:\.\d+)?(?:px|em|rem))$/.test(valor);
+              }
+
+              return false;
+            });
+
+          if (estilosPermitidos.length > 0) {
+            elemento.setAttribute("style", estilosPermitidos.join("; "));
+            permitido = true;
+          } else {
+            elemento.removeAttribute("style");
+          }
+        }
+
+        if (!permitido && nome !== "style") elemento.removeAttribute(nome);
+      });
+    });
+
+    return documento.body.innerHTML;
+  }
+
   function adicionarCapituloDepois() {
     if (!historiaAberta) return;
 
     const titulo = capituloDepoisTitulo.trim();
-    const conteudo = capituloDepoisConteudo.trim();
+    const htmlBruto = editorCapituloRef.current?.innerHTML ?? capituloDepoisConteudo;
+    const conteudo = limparHtmlCapitulo(htmlBruto);
+    const textoSemMarcacao = editorCapituloRef.current?.innerText.trim() ??
+      conteudo.replace(/<[^>]*>/g, "").trim();
 
-    if (!titulo || !conteudo) {
+    if (!titulo || !textoSemMarcacao) {
       mostrarMensagem("Preencha o título e o conteúdo do capítulo.");
       return;
     }
@@ -464,6 +544,7 @@ useEffect(() => {
 
     setCapituloDepoisTitulo("");
     setCapituloDepoisConteudo("");
+    if (editorCapituloRef.current) editorCapituloRef.current.innerHTML = "";
     mostrarMensagem("Capítulo adicionado à história.");
   }
 
@@ -2126,7 +2207,14 @@ useEffect(() => {
                   {historiaAberta.capitulos.map((capitulo, indice) => (
                     <article key={capitulo.id} style={{ marginBottom: "1rem" }}>
                       <strong>{indice + 1}. {capitulo.titulo}</strong>
-                      <p style={{ whiteSpace: "pre-wrap" }}>{capitulo.conteudo}</p>
+                      {/<[a-z][\s\S]*>/i.test(capitulo.conteudo) ? (
+                        <div
+                          className="capitulo-conteudo-formatado"
+                          dangerouslySetInnerHTML={{ __html: limparHtmlCapitulo(capitulo.conteudo) }}
+                        />
+                      ) : (
+                        <p style={{ whiteSpace: "pre-wrap" }}>{capitulo.conteudo}</p>
+                      )}
                     </article>
                   ))}
                 </div>
@@ -2140,14 +2228,67 @@ useEffect(() => {
                     onChange={(evento) => setCapituloDepoisTitulo(evento.target.value)}
                     placeholder="Título do capítulo"
                   />
-                  <textarea
-                    value={capituloDepoisConteudo}
-                    onChange={(evento) => setCapituloDepoisConteudo(evento.target.value)}
-                    placeholder="Escreva o conteúdo do capítulo..."
-                    rows={8}
-                  />
-                  <button type="button" onClick={adicionarCapituloDepois}>
-                    + PUBLICAR CAPÍTULO
+                  <div className="capitulo-editor">
+                    <div className="capitulo-editor-ferramentas" role="toolbar" aria-label="Formatação do capítulo">
+                      <select
+                        className="capitulo-editor-select"
+                        defaultValue="Arial"
+                        aria-label="Fonte"
+                        onChange={(evento) => executarComandoEditor("fontName", evento.target.value)}
+                      >
+                        <option value="Arial">Arial</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="Courier New">Courier New</option>
+                      </select>
+
+                      <select
+                        className="capitulo-editor-select capitulo-editor-tamanho"
+                        defaultValue="3"
+                        aria-label="Tamanho da fonte"
+                        onChange={(evento) => executarComandoEditor("fontSize", evento.target.value)}
+                      >
+                        <option value="1">Muito pequena</option>
+                        <option value="2">Pequena</option>
+                        <option value="3">Normal</option>
+                        <option value="4">Grande</option>
+                        <option value="5">Muito grande</option>
+                        <option value="6">Título</option>
+                        <option value="7">Título grande</option>
+                      </select>
+
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("bold")} aria-label="Negrito"><strong>B</strong></button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("italic")} aria-label="Itálico"><em>I</em></button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("underline")} aria-label="Sublinhado"><u>U</u></button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("strikeThrough")} aria-label="Tachado"><s>S</s></button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("insertUnorderedList")} aria-label="Lista com marcadores">☷</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("insertOrderedList")} aria-label="Lista numerada">☷¹</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("justifyLeft")} aria-label="Alinhar à esquerda">≡</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("justifyCenter")} aria-label="Centralizar">☰</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("justifyRight")} aria-label="Alinhar à direita">≡›</button>
+                      <button type="button" className="capitulo-editor-botao capitulo-editor-botao-destaque" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("justifyFull")} aria-label="Texto justificado">☷</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("indent")} aria-label="Aumentar recuo">⇥</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("outdent")} aria-label="Diminuir recuo">⇤</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("formatBlock", "p")} aria-label="Novo parágrafo">¶</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("formatBlock", "blockquote")} aria-label="Citação">❝</button>
+                      <button type="button" className="capitulo-editor-botao" onMouseDown={(evento) => evento.preventDefault()} onClick={() => executarComandoEditor("removeFormat")} aria-label="Limpar formatação">Tx</button>
+                    </div>
+
+                    <div
+                      ref={editorCapituloRef}
+                      className="capitulo-editor-area"
+                      contentEditable
+                      role="textbox"
+                      aria-multiline="true"
+                      data-placeholder="Escreva o conteúdo do capítulo..."
+                      suppressContentEditableWarning
+                      onInput={atualizarConteudoCapitulo}
+                    />
+                  </div>
+
+                  <button type="button" className="comunidade-capitulo-publicar" onClick={adicionarCapituloDepois}>
+                    <span>＋</span> PUBLICAR CAPÍTULO
                   </button>
                 </>
               )}
