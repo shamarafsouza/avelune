@@ -41,6 +41,19 @@ type PerfilSeguindo = {
   avatar_url?: string | null;
 };
 
+type PerfilPublico = {
+  id: string;
+  nome: string;
+  username: string;
+  bio: string;
+  avatar_url?: string | null;
+  totalPublicacoes: number;
+  totalSeguidores: number;
+  totalSeguindo: number;
+  seguindo: boolean;
+};
+
+
 type NotificacaoPerfil = {
   id: number;
   tipo: "seguir" | "curtida" | "comentario";
@@ -93,6 +106,10 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [janelaDetalhes, setJanelaDetalhes] = useState<"seguidores" | "seguindo" | "estante" | null>(null);
   const [pessoasSeguidoras, setPessoasSeguidoras] = useState<PerfilSeguindo[]>([]);
   const [pessoasSeguindo, setPessoasSeguindo] = useState<PerfilSeguindo[]>([]);
+  const [perfilPublico, setPerfilPublico] = useState<PerfilPublico | null>(null);
+  const [publicacoesPerfilPublico, setPublicacoesPerfilPublico] = useState<PublicacaoPerfil[]>([]);
+  const [carregandoPerfilPublico, setCarregandoPerfilPublico] = useState(false);
+  const [processandoSeguirPerfilPublico, setProcessandoSeguirPerfilPublico] = useState(false);
   const [progressoLeitura, setProgressoLeitura] = useState<Record<string, ProgressoLeitura>>({});
   const [notificacoes, setNotificacoes] = useState<NotificacaoPerfil[]>([]);
   const [mostrarNotificacoes, setMostrarNotificacoes] = useState(false);
@@ -608,6 +625,136 @@ function Perfil({ onNavigate }: PerfilProps) {
     );
     setMenuPublicacaoAberto(null);
     mostrarMensagem("Publicação excluída com sucesso.");
+  }
+
+  async function abrirPerfilPublico(id: string) {
+    setCarregandoPerfilPublico(true);
+    setPerfilPublico(null);
+    setPublicacoesPerfilPublico([]);
+
+    try {
+      const { data: usuarioAtual } = await supabase.auth.getUser();
+
+      const [resultadoPerfil, resultadoPublicacoes, resultadoSeguidores, resultadoSeguindo] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("id, nome, username, bio, avatar_url")
+          .eq("id", id)
+          .maybeSingle(),
+        supabase
+          .from("publicacoes")
+          .select("id, texto, livro, autor_livro, avaliacao, foto_url, curtidas, comentarios, created_at")
+          .eq("usuario_id", id)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("seguidores")
+          .select("id", { count: "exact", head: true })
+          .eq("seguido_id", id),
+        supabase
+          .from("seguidores")
+          .select("id", { count: "exact", head: true })
+          .eq("seguidor_id", id),
+      ]);
+
+      if (resultadoPerfil.error || !resultadoPerfil.data) {
+        console.error("Erro ao carregar perfil público:", resultadoPerfil.error);
+        mostrarMensagem("Não foi possível abrir este perfil.");
+        return;
+      }
+
+      const seguindoAtual = usuarioAtual.user
+        ? await supabase
+            .from("seguidores")
+            .select("id")
+            .eq("seguidor_id", usuarioAtual.user.id)
+            .eq("seguido_id", id)
+            .maybeSingle()
+        : { data: null };
+
+      const perfilBanco = resultadoPerfil.data;
+      const publicacoesBanco = resultadoPublicacoes.data ?? [];
+
+      setPerfilPublico({
+        id: perfilBanco.id,
+        nome: perfilBanco.nome?.trim() || "Leitor",
+        username: perfilBanco.username?.trim() || "@leitor",
+        bio: perfilBanco.bio?.trim() || "Entre páginas, mundos e histórias.",
+        avatar_url: perfilBanco.avatar_url,
+        totalPublicacoes: publicacoesBanco.length,
+        totalSeguidores: resultadoSeguidores.count ?? 0,
+        totalSeguindo: resultadoSeguindo.count ?? 0,
+        seguindo: Boolean(seguindoAtual.data),
+      });
+
+      setPublicacoesPerfilPublico(
+        publicacoesBanco.map((item) => ({
+          id: item.id,
+          texto: item.texto,
+          livro: item.livro ?? undefined,
+          autor: item.autor_livro ?? undefined,
+          curtidas: item.curtidas ?? 0,
+          comentarios: item.comentarios ?? 0,
+          tempo: formatarTempoPerfil(item.created_at),
+          foto: item.foto_url ?? undefined,
+          avaliacao: item.avaliacao ?? undefined,
+        }))
+      );
+    } catch (erro) {
+      console.error("Erro ao abrir perfil público:", erro);
+      mostrarMensagem("Não foi possível abrir este perfil.");
+    } finally {
+      setCarregandoPerfilPublico(false);
+    }
+  }
+
+  async function alternarSeguirPerfilPublico() {
+    if (!perfilPublico || processandoSeguirPerfilPublico) return;
+
+    const { data: usuarioAtual } = await supabase.auth.getUser();
+    if (!usuarioAtual.user || usuarioAtual.user.id === perfilPublico.id) return;
+
+    setProcessandoSeguirPerfilPublico(true);
+
+    try {
+      if (perfilPublico.seguindo) {
+        const { error } = await supabase
+          .from("seguidores")
+          .delete()
+          .eq("seguidor_id", usuarioAtual.user.id)
+          .eq("seguido_id", perfilPublico.id);
+
+        if (error) {
+          mostrarMensagem("Não foi possível deixar de seguir.");
+          return;
+        }
+
+        setPerfilPublico((atual) =>
+          atual
+            ? { ...atual, seguindo: false, totalSeguidores: Math.max(0, atual.totalSeguidores - 1) }
+            : atual
+        );
+      } else {
+        const { error } = await supabase
+          .from("seguidores")
+          .insert({
+            seguidor_id: usuarioAtual.user.id,
+            seguido_id: perfilPublico.id,
+          });
+
+        if (error) {
+          mostrarMensagem("Não foi possível seguir esta pessoa.");
+          return;
+        }
+
+        setPerfilPublico((atual) =>
+          atual
+            ? { ...atual, seguindo: true, totalSeguidores: atual.totalSeguidores + 1 }
+            : atual
+        );
+      }
+    } finally {
+      setProcessandoSeguirPerfilPublico(false);
+    }
   }
 
   function abrirEdicaoPerfil() {
@@ -1456,6 +1603,113 @@ const iniciaisFinal =
         </div>
       )}
 
+      {perfilPublico && (
+        <div
+          className="perfil-modal-fundo perfil-modal-fundo-publico"
+          onMouseDown={(evento) => {
+            if (evento.target === evento.currentTarget) {
+              setPerfilPublico(null);
+            }
+          }}
+        >
+          <section className="perfil-modal perfil-modal-publico" role="dialog" aria-modal="true">
+            <div className="perfil-modal-topo">
+              <div>
+                <p className="perfil-kicker">PERFIL PÚBLICO</p>
+                <h2>Perfil de {perfilPublico.nome}</h2>
+              </div>
+              <button type="button" className="perfil-modal-fechar" onClick={() => setPerfilPublico(null)} aria-label="Fechar perfil público">
+                ×
+              </button>
+            </div>
+
+            {carregandoPerfilPublico ? (
+              <p className="perfil-detalhes-vazio">Carregando perfil...</p>
+            ) : (
+              <>
+                <div className="perfil-publico-cabecalho">
+                  <div className={`perfil-avatar-grande ${perfilPublico.avatar_url ? "perfil-avatar-grande--foto" : ""}`}>
+                    {perfilPublico.avatar_url ? (
+                      <img src={perfilPublico.avatar_url} alt={`Foto de perfil de ${perfilPublico.nome}`} />
+                    ) : (
+                      <span>{perfilPublico.nome.charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
+
+                  <div className="perfil-publico-identidade">
+                    <h3>{perfilPublico.nome}</h3>
+                    <p className="perfil-usuario">{perfilPublico.username.startsWith("@") ? perfilPublico.username : `@${perfilPublico.username}`}</p>
+                    <p className="perfil-publico-bio">{perfilPublico.bio}</p>
+
+                    <div className="perfil-publico-estatisticas">
+                      <span><strong>{perfilPublico.totalPublicacoes}</strong> publicações</span>
+                      <span><strong>{perfilPublico.totalSeguidores}</strong> seguidores</span>
+                      <span><strong>{perfilPublico.totalSeguindo}</strong> seguindo</span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    className={`perfil-publico-seguir ${perfilPublico.seguindo ? "ativo" : ""}`}
+                    onClick={() => void alternarSeguirPerfilPublico()}
+                    disabled={processandoSeguirPerfilPublico}
+                  >
+                    {processandoSeguirPerfilPublico ? "..." : perfilPublico.seguindo ? "Seguindo" : "Seguir"}
+                  </button>
+                </div>
+
+                <div className="perfil-publico-separador" />
+
+                <div className="perfil-publico-publicacoes">
+                  <div className="perfil-publico-publicacoes-topo">
+                    <p className="perfil-kicker">PUBLICAÇÕES</p>
+                    <span>{publicacoesPerfilPublico.length}</span>
+                  </div>
+
+                  {publicacoesPerfilPublico.length === 0 ? (
+                    <p className="perfil-detalhes-vazio">Esta pessoa ainda não publicou nada.</p>
+                  ) : (
+                    publicacoesPerfilPublico.map((publicacao) => (
+                      <article className="perfil-publico-publicacao" key={publicacao.id}>
+                        <div className="perfil-publico-publicacao-topo">
+                          <strong>{perfilPublico.nome}</strong>
+                          <span>{publicacao.tempo}</span>
+                        </div>
+
+                        <p>{publicacao.texto}</p>
+
+                        {publicacao.foto && (
+                          <img
+                            className="perfil-publico-publicacao-foto"
+                            src={publicacao.foto}
+                            alt="Imagem da publicação"
+                          />
+                        )}
+
+                        {publicacao.livro && (
+                          <div className="perfil-publico-publicacao-livro">
+                            <strong>{publicacao.livro}</strong>
+                            {publicacao.autor && <span>{publicacao.autor}</span>}
+                            {publicacao.avaliacao && (
+                              <span>{"★".repeat(Math.max(0, Math.min(5, publicacao.avaliacao)))}{"☆".repeat(5 - Math.max(0, Math.min(5, publicacao.avaliacao)))}</span>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="perfil-publico-publicacao-interacoes">
+                          <span>♡ {publicacao.curtidas}</span>
+                          <span>◌ {publicacao.comentarios}</span>
+                        </div>
+                      </article>
+                    ))
+                  )}
+                </div>
+              </>
+            )}
+          </section>
+        </div>
+      )}
+
       {janelaDetalhes && (
         <div
           className="perfil-modal-fundo"
@@ -1484,15 +1738,21 @@ const iniciaisFinal =
               ) : (
                 <div className="perfil-lista-pessoas">
                   {(janelaDetalhes === "seguidores" ? pessoasSeguidoras : pessoasSeguindo).map((pessoa) => (
-                    <div className="perfil-pessoa-item" key={pessoa.id}>
-                      <div className="perfil-avatar-post">
+                    <button
+                      type="button"
+                      className="perfil-pessoa-item"
+                      key={pessoa.id}
+                      onClick={() => void abrirPerfilPublico(pessoa.id)}
+                    >
+                      <span className="perfil-avatar-post">
                         {pessoa.avatar_url ? <img src={pessoa.avatar_url} alt="" /> : "✦"}
-                      </div>
-                      <div>
+                      </span>
+                      <span className="perfil-pessoa-dados">
                         <strong>{pessoa.nome || "Leitor"}</strong>
                         <span>@{(pessoa.username || "leitor").replace(/^@+/, "")}</span>
-                      </div>
-                    </div>
+                      </span>
+                      <span className="perfil-pessoa-seta" aria-hidden="true">→</span>
+                    </button>
                   ))}
                 </div>
               )
