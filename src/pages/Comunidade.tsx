@@ -174,6 +174,7 @@ type Publicacao = {
   salva: boolean;
   seguindo?: boolean;
   origemUsuario?: boolean;
+  autorId?: string;
   comentariosLista?: Comentario[];
 };
 
@@ -660,6 +661,9 @@ useEffect(() => {
   const [comentariosAbertos, setComentariosAbertos] =
     useState<number | null>(null);
 
+  const [menuPublicacaoAberto, setMenuPublicacaoAberto] =
+    useState<number | null>(null);
+
   const [comentarioDigitado, setComentarioDigitado] =
     useState<Record<number, string>>({});
 
@@ -886,6 +890,7 @@ useEffect(() => {
       salva: false,
       seguindo: true,
       origemUsuario: true,
+      autorId: usuarioAtual?.id,
       comentariosLista: [],
     };
 
@@ -898,6 +903,53 @@ useEffect(() => {
     mostrarMensagem(
       "Sua publicação foi adicionada à comunidade."
     );
+  }
+
+  function ehDonoDaPublicacao(post: Publicacao) {
+    if (!usuarioAtual) return false;
+
+    // Publicações novas são identificadas pelo ID real do usuário.
+    // O fallback mantém compatibilidade com publicações antigas salvas
+    // no localStorage antes da inclusão do autorId.
+    return (
+      post.autorId === usuarioAtual.id ||
+      (!post.autorId && post.origemUsuario === true && post.usuario === "Você")
+    );
+  }
+
+  async function excluirPublicacao(post: Publicacao) {
+    if (!exigirConta() || !usuarioAtual) return;
+
+    // Proteção no frontend: somente o dono pode iniciar a exclusão.
+    if (!ehDonoDaPublicacao(post)) {
+      mostrarMensagem("Você só pode excluir suas próprias publicações.");
+      setMenuPublicacaoAberto(null);
+      return;
+    }
+
+    const confirmar = window.confirm(
+      "Tem certeza de que deseja excluir esta publicação? Essa ação não pode ser desfeita."
+    );
+
+    if (!confirmar) return;
+
+    // Proteção no banco: o filtro por usuario_id e a política RLS
+    // impedem a exclusão de publicações pertencentes a outra conta.
+    const { error } = await supabase
+      .from("publicacoes")
+      .delete()
+      .eq("id", post.id)
+      .eq("usuario_id", usuarioAtual.id);
+
+    if (error) {
+      console.error("Erro ao excluir publicação:", error);
+      mostrarMensagem("Não foi possível excluir a publicação.");
+      return;
+    }
+
+    setPostagens((atual) => atual.filter((item) => item.id !== post.id));
+    setMenuPublicacaoAberto(null);
+    mostrarMensagem("Publicação excluída.");
   }
 
   function alternarCurtida(id: number) {
@@ -1032,7 +1084,10 @@ useEffect(() => {
     const primeiroComentario = comentarios[0];
 
     return (
-      <article className="comunidade-post" key={post.id}>
+      <article
+        className={`comunidade-post ${post.foto ? "com-foto" : "sem-foto"}`}
+        key={post.id}
+      >
                     <div className="comunidade-post-cabecalho">
                       <div className="comunidade-avatar">
                         {post.iniciais}
@@ -1045,46 +1100,64 @@ useEffect(() => {
                         <span>{post.tempo}</span>
                       </div>
 
-                      <button
-                        type="button"
-                        className="comunidade-post-menu"
-                        aria-label="Mais opções"
-                        onClick={() =>
-                          mostrarMensagem(
-                            "As opções desta publicação serão adicionadas depois."
-                          )
-                        }
-                      >
-                        ···
-                      </button>
+                      <div className="comunidade-post-opcoes">
+                        <button
+                          type="button"
+                          className="comunidade-post-menu"
+                          aria-label="Mais opções"
+                          aria-expanded={menuPublicacaoAberto === post.id}
+                          onClick={() =>
+                            setMenuPublicacaoAberto((atual) =>
+                              atual === post.id ? null : post.id
+                            )
+                          }
+                        >
+                          ···
+                        </button>
+
+                        {menuPublicacaoAberto === post.id && (
+                          <div className="comunidade-post-menu-dropdown">
+                            {ehDonoDaPublicacao(post) && (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    mostrarMensagem(
+                                      "A edição de publicações será disponibilizada em breve."
+                                    )
+                                  }
+                                >
+                                  ✎ Editar
+                                </button>
+                                <button
+                                  type="button"
+                                  className="perigo"
+                                  onClick={() => excluirPublicacao(post)}
+                                >
+                                  🗑 Apagar publicação
+                                </button>
+                              </>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                alternarSalvo(post.id);
+                                setMenuPublicacaoAberto(null);
+                              }}
+                            >
+                              {post.salva ? "◆ Remover dos salvos" : "◇ Salvar"}
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    {post.foto ? (
+                    {post.foto && (
                       <div className="comunidade-post-foto">
                         <img
                           src={post.foto}
                           alt={`Publicação de ${post.usuario}`}
                         />
-                      </div>
-                    ) : (
-                      <div
-                        className={`comunidade-post-foto comunidade-post-foto--arte ${post.cor ?? "simples"
-                          }`}
-                      >
-                        <div className="comunidade-foto-luz" />
-                        <span>
-                          {post.simbolo ?? "✦"}
-                        </span>
-                        {post.livro && (
-                          <strong>
-                            {post.livro}
-                          </strong>
-                        )}
-                        {post.autorLivro && (
-                          <small>
-                            {post.autorLivro}
-                          </small>
-                        )}
                       </div>
                     )}
 
