@@ -3895,3 +3895,199 @@
   letter-spacing: 0.08em;
   white-space: nowrap;
 }
+
+
+/* Editor de capítulos do Avelune */
+.capitulo-editor {
+  width: 100%;
+  margin: 0.75rem 0 0.9rem;
+  border: 1px solid rgba(166, 126, 83, 0.45);
+  border-radius: 4px;
+  overflow: hidden;
+  background: #100604;
+}
+
+.capitulo-editor-ferramentas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem;
+  border-bottom: 1px solid rgba(166, 126, 83, 0.35);
+  background: #24100c;
+}
+
+.capitulo-editor-select,
+.capitulo-editor-botao {
+  min-height: 32px;
+  border: 1px solid rgba(205, 166, 116, 0.45);
+  border-radius: 3px;
+  background: #160907;
+  color: #eadbc8;
+  font: inherit;
+}
+
+.capitulo-editor-select {
+  max-width: 175px;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+}
+
+.capitulo-editor-tamanho {
+  max-width: 145px;
+}
+
+.capitulo-editor-botao {
+  min-width: 32px;
+  padding: 0.3rem 0.55rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.capitulo-editor-botao:hover,
+.capitulo-editor-select:hover {
+  background: #49251d;
+  border-color: #b78b5e;
+}
+
+.capitulo-editor-botao:active {
+  transform: translateY(1px);
+}
+
+.capitulo-editor-area {
+  min-height: 235px;
+  padding: 1rem;
+  outline: none;
+  color: #eadbc8;
+  background: #100604;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.capitulo-editor-area:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(234, 219, 200, 0.38);
+  pointer-events: none;
+}
+
+.capitulo-editor-area p {
+  margin: 0 0 0.65rem;
+}
+
+.capitulo-editor-area blockquote,
+.capitulo-conteudo-formatado blockquote {
+  margin: 0.8rem 0;
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid #a8794e;
+  color: #d2b99d;
+  background: rgba(166, 126, 83, 0.08);
+}
+
+.capitulo-editor-area ul,
+.capitulo-editor-area ol,
+.capitulo-conteudo-formatado ul,
+.capitulo-conteudo-formatado ol {
+  padding-left: 1.5rem;
+}
+
+.comunidade-capitulo-publicar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #b78b5e;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #7d4930, #4a251d);
+  color: #fff2df;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.comunidade-capitulo-publicar span {
+  font-size: 1.1rem;
+}
+
+.comunidade-capitulo-publicar:hover {
+  filter: brightness(1.18);
+  box-shadow: 0 0 18px rgba(183, 139, 94, 0.18);
+}
+
+.comunidade-capitulo-publicar:active {
+  transform: translateY(1px);
+}
+
+.capitulo-conteudo-formatado {
+  color: inherit;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.capitulo-conteudo-formatado p {
+  margin: 0 0 0.8rem;
+}
+
+@media (max-width: 560px) {
+  .capitulo-editor-select {
+    flex: 1 1 135px;
+    max-width: none;
+  }
+
+  .capitulo-editor-ferramentas {
+    gap: 0.25rem;
+  }
+}
+
+
+.capitulo-editor-botao-destaque {
+  font-weight: 800;
+  border-color: #d1a675;
+}
+
+.capitulo-editor-area p {
+  margin: 0 0 1rem;
+  text-indent: 1.5em;
+  text-align: left;
+}
+
+.capitulo-editor-area p + p {
+  margin-top: 0.35rem;
+}
+
+.capitulo-editor-area [style*="text-align: justify"],
+.capitulo-conteudo-formatado [style*="text-align: justify"],
+.capitulo-editor-area[align="justify"],
+.capitulo-conteudo-formatado[align="justify"] {
+  text-align: justify;
+}
+
+.capitulo-editor-area [style*="text-align: center"],
+.capitulo-conteudo-formatado [style*="text-align: center"] {
+  text-align: center;
+}
+
+.capitulo-editor-area [style*="text-align: right"],
+.capitulo-conteudo-formatado [style*="text-align: right"] {
+  text-align: right;
+}
+
+.capitulo-editor-area [style*="text-indent"],
+.capitulo-conteudo-formatado [style*="text-indent"] {
+  text-indent: 1.5em;
+}
+
+.capitulo-conteudo-formatado p {
+  text-indent: 1.5em;
+  margin: 0 0 1rem;
+}
