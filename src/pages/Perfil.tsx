@@ -47,18 +47,26 @@ totalPaginas?: number;
 percentual?: number;
 };
 
+type LivroPerfil = {
+  id: string;
+  titulo: string;
+  autor?: string | null;
+  autora?: string | null;
+  capa_url?: string | null;
+};
+
 function formatarTempoPerfil(data: string) {
 const diferenca = Math.max(0, Date.now() - new Date(data).getTime());
 const minutos = Math.floor(diferenca / 60000);
 
 if (minutos < 1) return "agora";
-if (minutos < 60) return há ${minutos} min;
+if (minutos < 60) return `há ${minutos} min`;
 
 const horas = Math.floor(minutos / 60);
-if (horas < 24) return há ${horas} h;
+if (horas < 24) return `há ${horas} h`;
 
 const dias = Math.floor(horas / 24);
-return há ${dias} ${dias === 1 ? "dia" : "dias"};
+return `há ${dias} ${dias === 1 ? "dia" : "dias"}`;
 }
 
 function Perfil({ onNavigate }: PerfilProps) {
@@ -84,6 +92,7 @@ const [menuPublicacaoAberto, setMenuPublicacaoAberto] = useState<number | null>(
 const [janelaDetalhes, setJanelaDetalhes] = useState<"seguindo" | "estante" | null>(null);
 const [pessoasSeguindo, setPessoasSeguindo] = useState<PerfilSeguindo[]>([]);
 const [progressoLeitura, setProgressoLeitura] = useState<Record<string, ProgressoLeitura>>({});
+const [mapaLivros, setMapaLivros] = useState<Record<string, LivroPerfil>>({});
 
 const [nomePerfil, setNomePerfil] = useState("");
 const [usuarioPerfil, setUsuarioPerfil] = useState("");
@@ -352,6 +361,43 @@ return () => {
 }, []);
 
 useEffect(() => {
+  let ativo = true;
+
+  async function carregarLivrosParaEstante() {
+    const { data, error } = await supabase
+      .from("livros")
+      .select("id, titulo, autora, capa_url");
+
+    if (error) {
+      console.error("Erro ao carregar livros para a estante:", error);
+      return;
+    }
+
+    if (ativo && data) {
+      const mapa: Record<string, LivroPerfil> = {};
+
+      data.forEach((item) => {
+        mapa[item.id] = {
+          id: item.id,
+          titulo: item.titulo,
+          autor: item.autora ?? "Autor desconhecido",
+          autora: item.autora,
+          capa_url: item.capa_url ?? null,
+        };
+      });
+
+      setMapaLivros(mapa);
+    }
+  }
+
+  void carregarLivrosParaEstante();
+
+  return () => {
+    ativo = false;
+  };
+}, []);
+
+useEffect(() => {
 if (!mensagem) {
 return;
 }
@@ -384,15 +430,6 @@ onNavigate?.(pagina);
 
 function mostrarMensagem(texto: string) {
 setMensagem(texto);
-}
-
-function formatarNomeLivro(item: string) {
-if (typeof item !== "string") {
-return "Livro";
-}
-
-return item;
-
 }
 
 async function selecionarFotoPerfil(
@@ -921,32 +958,43 @@ onNavigate={(pagina) => onNavigate?.(pagina)}
             </div>
           ) : (
             <div className="perfil-grade-livros">
-              {livrosNaEstante.map((livro) => (
-                <button
-                  type="button"
-                  className="perfil-card-livro"
-                  key={livro}
-                  onClick={() => navegar("biblioteca")}
-                >
-                  <div className="perfil-capa">
-                    <span>✦</span>
-                  </div>
-                  <strong>
-                    {formatarNomeLivro(livro)}
-                  </strong>
-                  <span>Na minha estante</span>
-                  <span className="perfil-progresso-texto">
-                    {progressoLeitura[livro]?.percentual ?? 0}% lido
-                  </span>
-                  <span className="perfil-progresso-barra">
-                    <span
-                      style={{
-                        width: `${Math.min(100, Math.max(0, progressoLeitura[livro]?.percentual ?? 0))}%`,
-                      }}
-                    />
-                  </span>
-                </button>
-              ))}
+              {livrosNaEstante.map((livroId) => {
+                const livroInfo = mapaLivros[livroId];
+                const percentual = Math.min(
+                  100,
+                  Math.max(0, progressoLeitura[livroId]?.percentual ?? 0)
+                );
+
+                return (
+                  <button
+                    type="button"
+                    className="perfil-card-livro"
+                    key={livroId}
+                    onClick={() => navegar("biblioteca")}
+                  >
+                    <div className="perfil-capa">
+                      {livroInfo?.capa_url ? (
+                        <img
+                          src={livroInfo.capa_url}
+                          alt={`Capa de ${livroInfo.titulo}`}
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <span>✦</span>
+                      )}
+                    </div>
+                    <strong>{livroInfo?.titulo ?? "Livro removido"}</strong>
+                    <span>{livroInfo?.autor ?? "Na minha estante"}</span>
+                    <span className="perfil-progresso-texto">
+                      {percentual}% lido
+                    </span>
+                    <span className="perfil-progresso-barra">
+                      <span style={{ width: `${percentual}%` }} />
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -971,22 +1019,33 @@ onNavigate={(pagina) => onNavigate?.(pagina)}
             </div>
           ) : (
             <div className="perfil-grade-livros">
-              {livrosFavoritos.map((livro) => (
-                <button
-                  type="button"
-                  className="perfil-card-livro"
-                  key={livro}
-                  onClick={() => navegar("biblioteca")}
-                >
-                  <div className="perfil-capa perfil-capa--favorito">
-                    <span>♡</span>
-                  </div>
-                  <strong>
-                    {formatarNomeLivro(livro)}
-                  </strong>
-                  <span>Favorito</span>
-                </button>
-              ))}
+              {livrosFavoritos.map((livroId) => {
+                const livroInfo = mapaLivros[livroId];
+
+                return (
+                  <button
+                    type="button"
+                    className="perfil-card-livro"
+                    key={livroId}
+                    onClick={() => navegar("biblioteca")}
+                  >
+                    <div className="perfil-capa perfil-capa--favorito">
+                      {livroInfo?.capa_url ? (
+                        <img
+                          src={livroInfo.capa_url}
+                          alt={`Capa de ${livroInfo.titulo}`}
+                          loading="lazy"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <span>♡</span>
+                      )}
+                    </div>
+                    <strong>{livroInfo?.titulo ?? "Livro removido"}</strong>
+                    <span>{livroInfo?.autor ?? "Favorito"}</span>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
@@ -1182,7 +1241,7 @@ return;
 }
 
 if (!usuarioFinal.startsWith("@")) {
-usuarioFinal = @${usuarioFinal};
+usuarioFinal = `@${usuarioFinal}`;
 }
 
 const bioFinal = bioEditada.trim();
@@ -1345,12 +1404,16 @@ nomeFinal
             <p className="perfil-detalhes-vazio">Sua estante está vazia.</p>
           ) : (
             <div className="perfil-detalhes-estante">
-              {livrosNaEstante.map((livro) => {
-                const percentual = Math.min(100, Math.max(0, progressoLeitura[livro]?.percentual ?? 0));
+              {livrosNaEstante.map((livroId) => {
+                const percentual = Math.min(
+                  100,
+                  Math.max(0, progressoLeitura[livroId]?.percentual ?? 0)
+                );
+
                 return (
-                  <div className="perfil-detalhe-livro" key={livro}>
+                  <div className="perfil-detalhe-livro" key={livroId}>
                     <div>
-                      <strong>{formatarNomeLivro(livro)}</strong>
+                      <strong>{mapaLivros[livroId]?.titulo ?? "Livro removido"}</strong>
                       <span>{percentual}% concluído</span>
                     </div>
                     <div className="perfil-progresso-barra">
