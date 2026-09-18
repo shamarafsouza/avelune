@@ -1608,9 +1608,12 @@ function Comunidade({
               <button
                 type="button"
                 className={abaComunidade === "resenhas" ? "ativo" : ""}
-                onClick={() => setAbaComunidade("resenhas")}
-              >
-                RESENHAS
+                onClick={() => {
+                    setAbaComunidade("resenhas");
+                    ativarResenha();
+                  }}
+                >
+                  RESENHAS
               </button>
               <button
                 type="button"
