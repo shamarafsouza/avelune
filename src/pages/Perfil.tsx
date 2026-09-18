@@ -627,9 +627,8 @@ function Perfil({ onNavigate }: PerfilProps) {
     mostrarMensagem("Publicação excluída com sucesso.");
   }
 
-  async function abrirPerfilPublico(id: string, origem: "seguidores" | "seguindo" | null = null) {
+  async function abrirPerfilPublico(id: string) {
     setJanelaDetalhes(null);
-    setOrigemPerfilPublico(origem);
     setCarregandoPerfilPublico(true);
     setPerfilPublico(null);
     setPublicacoesPerfilPublico([]);
@@ -1620,7 +1619,7 @@ const iniciaisFinal =
                 <p className="perfil-kicker">PERFIL PÚBLICO</p>
                 <h2>Perfil de {perfilPublico.nome}</h2>
               </div>
-              <button type="button" className="perfil-modal-fechar" onClick={() => { setPerfilPublico(null); setOrigemPerfilPublico(null); }} aria-label="Fechar perfil público">
+              <button type="button" className="perfil-modal-fechar" onClick={() => setPerfilPublico(null)} aria-label="Fechar perfil público">
                 ×
               </button>
             </div>
@@ -1744,7 +1743,7 @@ const iniciaisFinal =
                       type="button"
                       className="perfil-pessoa-item"
                       key={pessoa.id}
-                      onClick={() => void abrirPerfilPublico(pessoa.id, janelaDetalhes === "seguidores" ? "seguidores" : "seguindo")}
+                      onClick={() => void abrirPerfilPublico(pessoa.id)}
                     >
                       <span className="perfil-avatar-post">
                         {pessoa.avatar_url ? <img src={pessoa.avatar_url} alt="" /> : "✦"}
