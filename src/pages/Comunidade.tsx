@@ -1462,6 +1462,10 @@ useEffect(() => {
           </p>
         </div>
 
+        <div className="comunidade-busca-pessoas">
+          <BuscarPessoas />
+        </div>
+
         <div className="comunidade-abas-principais">
           <button type="button" className={abaComunidade === "publicacoes" ? "ativo" : ""} onClick={() => setAbaComunidade("publicacoes")}>
             PUBLICAÇÕES
