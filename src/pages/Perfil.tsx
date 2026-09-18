@@ -47,6 +47,12 @@ type ProgressoLeitura = {
   percentual?: number;
 };
 
+type LivroPerfil = {
+  id: string;
+  titulo: string;
+  autora: string | null;
+};
+
 function formatarTempoPerfil(data: string) {
   const diferenca = Math.max(0, Date.now() - new Date(data).getTime());
   const minutos = Math.floor(diferenca / 60000);
@@ -82,6 +88,7 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [janelaDetalhes, setJanelaDetalhes] = useState<"seguindo" | "estante" | null>(null);
   const [pessoasSeguindo, setPessoasSeguindo] = useState<PerfilSeguindo[]>([]);
   const [progressoLeitura, setProgressoLeitura] = useState<Record<string, ProgressoLeitura>>({});
+  const [catalogoLivros, setCatalogoLivros] = useState<LivroPerfil[]>([]);
 
   const [nomePerfil, setNomePerfil] = useState("");
   const [usuarioPerfil, setUsuarioPerfil] = useState("");
@@ -349,6 +356,33 @@ function Perfil({ onNavigate }: PerfilProps) {
   }, []);
 
   useEffect(() => {
+    const idsDosLivros = Array.from(
+      new Set([...queroLer, ...favoritos].filter((item) => typeof item === "string" && item.trim()))
+    );
+
+    if (idsDosLivros.length === 0) {
+      setCatalogoLivros([]);
+      return;
+    }
+
+    async function carregarCatalogoLivros() {
+      const { data, error } = await supabase
+        .from("livros")
+        .select("id, titulo, autora")
+        .in("id", idsDosLivros);
+
+      if (error) {
+        console.error("Erro ao carregar títulos dos livros:", error);
+        return;
+      }
+
+      setCatalogoLivros((data ?? []) as LivroPerfil[]);
+    }
+
+    void carregarCatalogoLivros();
+  }, [favoritos, queroLer]);
+
+  useEffect(() => {
     if (!mensagem) {
       return;
     }
@@ -382,12 +416,20 @@ function Perfil({ onNavigate }: PerfilProps) {
     setMensagem(texto);
   }
 
+  function obterLivroCatalogo(idOuTitulo: string) {
+    return catalogoLivros.find((livro) => livro.id === idOuTitulo);
+  }
+
   function formatarNomeLivro(item: string) {
     if (typeof item !== "string") {
       return "Livro";
     }
 
-    return item;
+    return obterLivroCatalogo(item)?.titulo ?? item;
+  }
+
+  function formatarAutorLivro(item: string) {
+    return obterLivroCatalogo(item)?.autora || "Autor não informado";
   }
 
   async function selecionarFotoPerfil(
@@ -925,6 +967,7 @@ function Perfil({ onNavigate }: PerfilProps) {
                       <strong>
                         {formatarNomeLivro(livro)}
                       </strong>
+                      <span>{formatarAutorLivro(livro)}</span>
                       <span>Na minha estante</span>
                       <span className="perfil-progresso-texto">
                         {progressoLeitura[livro]?.percentual ?? 0}% lido
@@ -975,6 +1018,7 @@ function Perfil({ onNavigate }: PerfilProps) {
                       <strong>
                         {formatarNomeLivro(livro)}
                       </strong>
+                      <span>{formatarAutorLivro(livro)}</span>
                       <span>Favorito</span>
                     </button>
                   ))}
