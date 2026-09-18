@@ -65,6 +65,7 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [editando, setEditando] = useState(false);
   const [carregandoSessao, setCarregandoSessao] = useState(true);
   const [usuarioLogado, setUsuarioLogado] = useState(false);
+  const [menuPublicacaoAberto, setMenuPublicacaoAberto] = useState<number | null>(null);
 
   const [nomePerfil, setNomePerfil] = useState("");
   const [usuarioPerfil, setUsuarioPerfil] = useState("");
@@ -459,6 +460,38 @@ function Perfil({ onNavigate }: PerfilProps) {
     });
   }
 
+  async function excluirPublicacao(publicacao: PublicacaoPerfil) {
+    const { data: usuarioAuth, error: erroUsuario } =
+      await supabase.auth.getUser();
+
+    if (erroUsuario || !usuarioAuth.user) {
+      mostrarMensagem("Sua sessão expirou. Entre novamente.");
+      return;
+    }
+
+    if (!window.confirm("Deseja excluir esta publicação? Essa ação não pode ser desfeita.")) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from("publicacoes")
+      .delete()
+      .eq("id", publicacao.id)
+      .eq("usuario_id", usuarioAuth.user.id);
+
+    if (error) {
+      console.error("Erro ao excluir publicação:", error);
+      mostrarMensagem("Não foi possível excluir a publicação.");
+      return;
+    }
+
+    setPublicacoes((atuais) =>
+      atuais.filter((item) => item.id !== publicacao.id)
+    );
+    setMenuPublicacaoAberto(null);
+    mostrarMensagem("Publicação excluída com sucesso.");
+  }
+
   function abrirEdicaoPerfil() {
     setNomeEditado(nomePerfil);
     setUsuarioEditado(usuarioPerfil);
@@ -721,18 +754,44 @@ function Perfil({ onNavigate }: PerfilProps) {
                         <span>{publicacao.tempo}</span>
                       </div>
 
-                      <button
-                        type="button"
-                        className="perfil-menu"
-                        onClick={() =>
-                          mostrarMensagem(
-                            "Mais opções estarão disponíveis em breve."
-                          )
-                        }
-                        aria-label="Mais opções"
-                      >
-                        •••
-                      </button>
+                      <div className="perfil-menu-wrapper">
+                        <button
+                          type="button"
+                          className="perfil-menu"
+                          onClick={() =>
+                            setMenuPublicacaoAberto((atual) =>
+                              atual === publicacao.id ? null : publicacao.id
+                            )
+                          }
+                          aria-label="Mais opções"
+                          aria-expanded={menuPublicacaoAberto === publicacao.id}
+                        >
+                          •••
+                        </button>
+
+                        {menuPublicacaoAberto === publicacao.id && (
+                          <div className="perfil-menu-dropdown">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                mostrarMensagem(
+                                  "A edição de publicações será disponibilizada em breve."
+                                );
+                                setMenuPublicacaoAberto(null);
+                              }}
+                            >
+                              ✎ Editar
+                            </button>
+                            <button
+                              type="button"
+                              className="perigo"
+                              onClick={() => excluirPublicacao(publicacao)}
+                            >
+                              🗑 Excluir publicação
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     <p className="perfil-publicacao-texto">
