@@ -1429,12 +1429,7 @@ const iniciaisFinal =
                     }
 
                     if (!perfilSalvo) {
-                      console.error(
-                        "O perfil não foi retornado após a atualização."
-                      );
-                      mostrarMensagem(
-                        "Nenhuma alteração foi gravada. Tente novamente."
-                      );
+                      mostrarMensagem("Não foi possível salvar. Verifique as permissões do perfil.");
                       return;
                     }
 
