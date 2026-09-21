@@ -1394,7 +1394,7 @@ const iniciaisFinal =
                       return;
                     }
 
-                    const { error: erroAtualizacao } =
+                    const { data: perfilSalvo, error: erroAtualizacao } =
                       await supabase
                         .from("profiles")
                         .update({
@@ -1402,7 +1402,9 @@ const iniciaisFinal =
                           username: usernameBanco,
                           bio: bioFinal,
                         })
-                        .eq("id", usuarioAuth.user.id);
+                        .eq("id", usuarioAuth.user.id)
+                        .select("nome, username, bio")
+                        .maybeSingle();
 
                     if (erroAtualizacao) {
                       if (
@@ -1423,6 +1425,16 @@ const iniciaisFinal =
                           "Não foi possível salvar seu perfil."
                         );
                       }
+                      return;
+                    }
+
+                    if (!perfilSalvo) {
+                      console.error(
+                        "O perfil não foi retornado após a atualização."
+                      );
+                      mostrarMensagem(
+                        "Nenhuma alteração foi gravada. Tente novamente."
+                      );
                       return;
                     }
 
