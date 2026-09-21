@@ -270,3 +270,39 @@
       0 0 35px rgba(150, 95, 35, 0.3);
   }
 }
+
+/* =========================================
+   CONTADOR DE NOTIFICAÇÕES
+========================================= */
+
+.avelune-header-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 17px;
+  height: 17px;
+  margin-left: 7px;
+  padding: 0 4px;
+  box-sizing: border-box;
+
+  border-radius: 999px;
+  background: #b88752;
+  color: #170d08;
+
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  vertical-align: middle;
+  text-shadow: none;
+}
+
+@media (max-width: 700px) {
+  .avelune-header-badge {
+    min-width: 14px;
+    height: 14px;
+    margin-left: 4px;
+    font-size: 7px;
+  }
+}
