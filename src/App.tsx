@@ -24,6 +24,7 @@ function App() {
   const [pagina, setPagina] = useState<Pagina>("inicio");
 
   function navegar(novaPagina: Pagina) {
+    setEntrando(false);
     setPagina(novaPagina);
   }
 
