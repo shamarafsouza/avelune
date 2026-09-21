@@ -53,18 +53,6 @@ type PerfilPublico = {
   seguindo: boolean;
 };
 
-
-type NotificacaoPerfil = {
-  id: number;
-  tipo: "seguir" | "curtida" | "comentario";
-  autor_id: string;
-  publicacao_id?: number | null;
-  comentario_id?: number | null;
-  lida: boolean;
-  created_at: string;
-  autor?: { nome: string | null; username: string | null; avatar_url: string | null };
-};
-
 type ProgressoLeitura = {
   paginaAtual?: number;
   totalPaginas?: number;
@@ -111,8 +99,6 @@ function Perfil({ onNavigate }: PerfilProps) {
   const [carregandoPerfilPublico, setCarregandoPerfilPublico] = useState(false);
   const [processandoSeguirPerfilPublico, setProcessandoSeguirPerfilPublico] = useState(false);
   const [progressoLeitura, setProgressoLeitura] = useState<Record<string, ProgressoLeitura>>({});
-  const [notificacoes, setNotificacoes] = useState<NotificacaoPerfil[]>([]);
-  const [mostrarNotificacoes, setMostrarNotificacoes] = useState(false);
 
   const [nomePerfil, setNomePerfil] = useState("");
   const [usuarioPerfil, setUsuarioPerfil] = useState("");
@@ -149,31 +135,6 @@ function Perfil({ onNavigate }: PerfilProps) {
         setCarregandoSessao(false);
 
         const usuarioId = usuarioAuth.user.id;
-
-        const { data: notificacoesBanco, error: erroNotificacoes } = await supabase
-          .from("notificacoes")
-          .select("id, tipo, autor_id, publicacao_id, comentario_id, lida, created_at")
-          .eq("usuario_id", usuarioId)
-          .order("created_at", { ascending: false })
-          .limit(30);
-
-        if (erroNotificacoes) {
-          console.error("Erro ao carregar notificações:", erroNotificacoes);
-        } else if (notificacoesBanco?.length) {
-          const idsAutores = [...new Set(notificacoesBanco.map((item) => item.autor_id))];
-          const { data: autores } = await supabase
-            .from("profiles")
-            .select("id, nome, username, avatar_url")
-            .in("id", idsAutores);
-
-          const autoresMap = new Map((autores ?? []).map((autor) => [autor.id, autor]));
-          setNotificacoes(notificacoesBanco.map((item) => ({
-            ...item,
-            autor: autoresMap.get(item.autor_id),
-          })) as NotificacaoPerfil[]);
-        } else {
-          setNotificacoes([]);
-        }
 
         const [resultadoPublicacoes, resultadoSeguidores, resultadoSeguindo] =
           await Promise.all([
@@ -852,101 +813,6 @@ function Perfil({ onNavigate }: PerfilProps) {
               </div>
 
               <div className="perfil-botoes">
-                <div className="perfil-notificacoes-wrapper">
-                  <button
-                    type="button"
-                    className={`perfil-sino ${mostrarNotificacoes ? "perfil-sino--ativo" : ""}`}
-                    onClick={() => setMostrarNotificacoes((atual) => !atual)}
-                    aria-label="Abrir notificações"
-                    aria-expanded={mostrarNotificacoes}
-                  >
-                    <span aria-hidden="true">🔔</span>
-                    {notificacoes.some((item) => !item.lida) && (
-                      <span className="perfil-sino-contador">
-                        {notificacoes.filter((item) => !item.lida).length > 9 ? "9+" : notificacoes.filter((item) => !item.lida).length}
-                      </span>
-                    )}
-                  </button>
-
-                  {mostrarNotificacoes && (
-                    <div className="perfil-notificacoes-painel" role="dialog" aria-label="Notificações">
-                      <div className="perfil-notificacoes-painel-topo">
-                        <div>
-                          <p className="perfil-kicker">SINAIS DE AVELUNE</p>
-                          <h2>Notificações</h2>
-                        </div>
-                        {notificacoes.some((item) => !item.lida) && (
-                          <button
-                            type="button"
-                            className="perfil-notificacoes-marcar"
-                            onClick={async () => {
-                              const { data: usuarioAuth } = await supabase.auth.getUser();
-                              if (!usuarioAuth.user) return;
-                              const { error } = await supabase
-                                .from("notificacoes")
-                                .update({ lida: true })
-                                .eq("usuario_id", usuarioAuth.user.id)
-                                .eq("lida", false);
-                              if (!error) {
-                                setNotificacoes((atuais) => atuais.map((item) => ({ ...item, lida: true })));
-                              }
-                            }}
-                          >
-                            Marcar como lidas
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="perfil-notificacoes-lista">
-                        {notificacoes.length === 0 ? (
-                          <p className="perfil-detalhes-vazio">Você ainda não tem notificações.</p>
-                        ) : (
-                          notificacoes.map((notificacao) => {
-                            const nomeAutor = notificacao.autor?.nome || "Alguém";
-                            const texto = notificacao.tipo === "seguir"
-                              ? "começou a seguir você."
-                              : notificacao.tipo === "curtida"
-                                ? "curtiu sua publicação."
-                                : "comentou sua publicação.";
-
-                            return (
-                              <button
-                                type="button"
-                                className={`perfil-notificacao-item ${notificacao.lida ? "" : "perfil-notificacao-item--nova"}`}
-                                key={notificacao.id}
-                                onClick={async () => {
-                                  if (!notificacao.lida) {
-                                    const { error } = await supabase
-                                      .from("notificacoes")
-                                      .update({ lida: true })
-                                      .eq("id", notificacao.id);
-                                    if (!error) {
-                                      setNotificacoes((atuais) => atuais.map((item) => item.id === notificacao.id ? { ...item, lida: true } : item));
-                                    }
-                                  }
-                                }}
-                              >
-                                <span className="perfil-notificacao-avatar">
-                                  {notificacao.autor?.avatar_url ? (
-                                    <img src={notificacao.autor.avatar_url} alt="" />
-                                  ) : (
-                                    nomeAutor.charAt(0).toUpperCase()
-                                  )}
-                                </span>
-                                <span className="perfil-notificacao-conteudo">
-                                  <span><strong>{nomeAutor}</strong> {texto}</span>
-                                  <small>{formatarTempoPerfil(notificacao.created_at)}</small>
-                                </span>
-                                {!notificacao.lida && <span className="perfil-notificacao-ponto" aria-label="Não lida" />}
-                              </button>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
                 <button
                   type="button"
                   className="perfil-editar"
