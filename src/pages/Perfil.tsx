@@ -8,6 +8,8 @@ import type { ChangeEvent } from "react";
 import { supabase } from "../lib/supabase";
 import "./Perfil.css";
 import AveluneHeader from "../components/AveluneHeader";
+import { useLivros } from "../hooks/useLivros";
+import { useNotificacoes } from "../hooks/useNotificacoes";
 
 type Pagina =
   | "inicio"
