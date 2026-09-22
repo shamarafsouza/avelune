@@ -23,11 +23,64 @@ function App() {
   const [entrando, setEntrando] = useState(false);
   const [pagina, setPagina] = useState<Pagina>("inicio");
 
-  function navegar(novaPagina: Pagina) {
+  function navegar(
+    novaPagina: Pagina,
+    opcoes?: { substituir?: boolean }
+  ) {
     setEntrando(false);
     setPagina(novaPagina);
+
+    if (typeof window === "undefined") return;
+
+    if (opcoes?.substituir) {
+      window.history.replaceState(
+        { pagina: novaPagina },
+        "",
+        `#${novaPagina}`
+      );
+    } else {
+      window.history.pushState(
+        { pagina: novaPagina },
+        "",
+        `#${novaPagina}`
+      );
+    }
   }
 
+  /*
+   * Controla o botão voltar/avançar do navegador.
+   */
+  useEffect(() => {
+    function aoVoltarOuAvancar(evento: PopStateEvent) {
+      const paginaDoHistorico =
+        (evento.state?.pagina as Pagina) ?? "inicio";
+
+      setEntrando(false);
+      setPagina(paginaDoHistorico);
+    }
+
+    window.addEventListener("popstate", aoVoltarOuAvancar);
+
+    /*
+     * Garante que a página inicial também entre no histórico.
+     */
+    window.history.replaceState(
+      { pagina: "inicio" },
+      "",
+      "#inicio"
+    );
+
+    return () => {
+      window.removeEventListener(
+        "popstate",
+        aoVoltarOuAvancar
+      );
+    };
+  }, []);
+
+  /*
+   * Cria a cena 3D somente na página inicial.
+   */
   useEffect(() => {
     if (pagina !== "inicio" || !containerRef.current) {
       return;
@@ -167,19 +220,26 @@ function App() {
           <span className="numero">∞</span>
         </div>
       </div>
-    {entrando && (
-      <div className="transicao">
-        <div className="transicao-luz" />
-        <div className="vassoura-voando" aria-hidden="true">
-          <div className="vassoura">
-            <span className="vassoura-cabo" />
-            <span className="vassoura-cerdas" />
+
+      {entrando && (
+        <div className="transicao">
+          <div className="transicao-luz" />
+
+          <div
+            className="vassoura-voando"
+            aria-hidden="true"
+          >
+            <div className="vassoura">
+              <span className="vassoura-cabo" />
+              <span className="vassoura-cerdas" />
+            </div>
+
+            <span className="vassoura-rastro" />
           </div>
-          <span className="vassoura-rastro" />
+
+          <p>A biblioteca está esperando...</p>
         </div>
-        <p>A biblioteca está esperando...</p>
-      </div>
-    )}
+      )}
     </main>
   );
 }
