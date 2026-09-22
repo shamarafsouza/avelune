@@ -43,7 +43,7 @@ function App() {
 
     window.setTimeout(() => {
       navegar("biblioteca");
-    }, 1800);
+    }, 3400);
   }
 
   if (pagina === "biblioteca") {
