@@ -1449,34 +1449,36 @@ useEffect(() => {
         onNavigate={(pagina) => onNavigate?.(pagina)}
       />
 
-      <section className="comunidade-conteudo">
-        <div className="comunidade-introducao">
-          <span>UM LUGAR PARA LEITORES</span>
+        <section className="comunidade-conteudo">
+          <div className="comunidade-topo-conteudo">
+            <div className="comunidade-introducao">
+              <span>UM LUGAR PARA LEITORES</span>
 
-          <h1>Comunidade</h1>
+              <h1>Comunidade</h1>
 
-          <p>
-            Compartilhe leituras, encontre pessoas
-            que amam as mesmas histórias e descubra
-            novos mundos através de quem lê com você.
-          </p>
-        </div>
+              <p>
+                Compartilhe leituras, encontre pessoas
+                que amam as mesmas histórias e descubra
+                novos mundos através de quem lê com você.
+              </p>
+            </div>
 
-        <div className="comunidade-busca-pessoas">
-          <BuscarPessoas />
-        </div>
+            <div className="comunidade-busca-pessoas">
+              <BuscarPessoas />
+            </div>
+          </div>
 
-        <div className="comunidade-abas-principais">
-          <button type="button" className={abaComunidade === "publicacoes" ? "ativo" : ""} onClick={() => setAbaComunidade("publicacoes")}>
-            PUBLICAÇÕES
-          </button>
-          <button type="button" className={abaComunidade === "resenhas" ? "ativo" : ""} onClick={() => setAbaComunidade("resenhas")}>
-            RESENHAS
-          </button>
-          <button type="button" className={abaComunidade === "historias" ? "ativo" : ""} onClick={() => setAbaComunidade("historias")}>
-            HISTÓRIAS
-          </button>
-        </div>
+          <div className="comunidade-abas-principais">
+            <button type="button" className={abaComunidade === "publicacoes" ? "ativo" : ""} onClick={() => setAbaComunidade("publicacoes")}>
+              PUBLICAÇÕES
+            </button>
+            <button type="button" className={abaComunidade === "resenhas" ? "ativo" : ""} onClick={() => setAbaComunidade("resenhas")}>
+              RESENHAS
+            </button>
+            <button type="button" className={abaComunidade === "historias" ? "ativo" : ""} onClick={() => setAbaComunidade("historias")}>
+              HISTÓRIAS
+            </button>
+          </div>
 
         <div className="comunidade-layout">
           <section className="comunidade-feed">
