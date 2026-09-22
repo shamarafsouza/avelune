@@ -9,7 +9,6 @@ import { supabase } from "../lib/supabase";
 import "./Perfil.css";
 import AveluneHeader from "../components/AveluneHeader";
 import { useLivros } from "../hooks/useLivros";
-import { useNotificacoes } from "../hooks/useNotificacoes";
 
 type Pagina =
   | "inicio"
@@ -75,10 +74,8 @@ function formatarTempoPerfil(data: string) {
   return `há ${dias} ${dias === 1 ? "dia" : "dias"}`;
 }
 
-    function Perfil({ onNavigate }: PerfilProps) {
-      const { livros } = useLivros();
-      const { notificacoes, naoLidas, marcarComoLida, marcarTodasComoLidas } =
-        useNotificacoes();
+      function Perfil({ onNavigate }: PerfilProps) {
+        const { livros } = useLivros();
 
         const livrosPorId = useMemo(() => {
           const mapa = new Map<string, (typeof livros)[number]>();
@@ -86,9 +83,9 @@ function formatarTempoPerfil(data: string) {
           return mapa;
         }, [livros]);
 
-    const [aba, setAba] = useState<
-      "publicacoes" | "estante" | "favoritos"
-    >("publicacoes");
+        const [aba, setAba] = useState<
+          "publicacoes" | "estante" | "favoritos"
+        >("publicacoes");
 
   const [publicacoes, setPublicacoes] = useState<
     PublicacaoPerfil[]
@@ -908,74 +905,7 @@ function formatarTempoPerfil(data: string) {
           </div>
         </section>
 
-        {notificacoes.length > 0 && (
-          <section className="perfil-notificacoes">
-            <div className="perfil-notificacoes-topo">
-              <p className="perfil-kicker">
-                {naoLidas > 0
-                  ? `${naoLidas} ${naoLidas === 1 ? "NOVIDADE" : "NOVIDADES"}`
-                  : "NOTIFICAÇÕES"}
-              </p>
-
-              {naoLidas > 0 && (
-                <button
-                  type="button"
-                  onClick={() => void marcarTodasComoLidas()}
-                >
-                  Marcar todas como lidas
-                </button>
-              )}
-            </div>
-
-            <div className="perfil-notificacoes-lista">
-              {notificacoes.slice(0, 8).map((notificacao) => {
-                const nomeAutor =
-                  notificacao.autor?.nome?.trim() || "Um leitor";
-
-                const textoNotificacao =
-                  notificacao.tipo === "seguir"
-                    ? `${nomeAutor} começou a seguir você.`
-                    : notificacao.tipo === "curtida"
-                    ? `${nomeAutor} curtiu sua publicação.`
-                    : `${nomeAutor} comentou na sua publicação.`;
-
-                return (
-                  <button
-                    type="button"
-                    key={notificacao.id}
-                    className={`perfil-notificacao-item ${
-                      notificacao.lida ? "" : "nao-lida"
-                    }`}
-                    onClick={() => {
-                      if (!notificacao.lida) {
-                        void marcarComoLida(notificacao.id);
-                      }
-
-                      if (notificacao.autor_id) {
-                        void abrirPerfilPublico(notificacao.autor_id);
-                      }
-                    }}
-                  >
-                    <span className="perfil-avatar-post">
-                      {notificacao.autor?.avatar_url ? (
-                        <img src={notificacao.autor.avatar_url} alt="" />
-                      ) : (
-                        "✦"
-                      )}
-                    </span>
-
-                    <span className="perfil-notificacao-texto">
-                      {textoNotificacao}
-                      <small>
-                        {formatarTempoPerfil(notificacao.created_at)}
-                      </small>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-        )}
+      
 
         <div className="perfil-divisor">
           <span />
