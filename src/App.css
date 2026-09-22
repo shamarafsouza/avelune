@@ -1,6 +1,7 @@
 .avelune {
   position: relative;
   width: 100vw;
+  min-height: 100vh;
   height: 100vh;
   overflow: hidden;
   background: #07040f;
