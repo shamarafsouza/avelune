@@ -699,15 +699,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vassoura-voando {
-    position: fixed;
-    top: 60%;
-    left: -80px;
+    .vassoura-voando {
+      position: fixed;
+      top: 60%;
+      left: -80px;
 
-    z-index: 500;
+      z-index: 500;
 
-    pointer-events: none;
+      pointer-events: none;
 
-    animation: avelune-vassoura-voar 3.2s cubic-bezier(0.42, 0, 0.3, 1) forwards;
-  }
+      animation: avelune-vassoura-voar 3s cubic-bezier(0.42, 0, 0.3, 1) forwards;
+    }
 }
