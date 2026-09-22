@@ -577,3 +577,128 @@
     justify-content: center;
   }
 }
+
+/* =========================================
+   VASSOURA VOANDO — TRANSIÇÃO PARA A BIBLIOTECA
+   ========================================= */
+
+.vassoura-voando {
+  position: fixed;
+  top: 60%;
+  left: -80px;
+
+  z-index: 500;
+
+  pointer-events: none;
+
+  animation: avelune-vassoura-voar 1.7s cubic-bezier(0.42, 0, 0.3, 1) forwards;
+}
+
+.vassoura {
+  position: relative;
+  width: 90px;
+  height: 14px;
+
+  transform: rotate(-18deg);
+}
+
+.vassoura-cabo {
+  position: absolute;
+  left: 0;
+  top: 6px;
+
+  width: 62px;
+  height: 4px;
+
+  background: linear-gradient(90deg, #7a4a26, #a2693a);
+  border-radius: 3px;
+
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+}
+
+.vassoura-cerdas {
+  position: absolute;
+  right: -6px;
+  top: -2px;
+
+  width: 32px;
+  height: 18px;
+
+  background:
+    repeating-linear-gradient(
+      100deg,
+      #caa15a 0px,
+      #caa15a 2px,
+      #8a6a34 2px,
+      #8a6a34 4px
+    );
+
+  clip-path: polygon(0% 40%, 100% 0%, 100% 100%, 0% 60%);
+
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.3));
+}
+
+.vassoura-rastro {
+  position: absolute;
+  left: -70px;
+  top: 6px;
+
+  width: 90px;
+  height: 3px;
+
+  background: linear-gradient(90deg, transparent, rgba(238, 216, 179, 0.55));
+  border-radius: 3px;
+
+  filter: blur(1px);
+}
+
+@keyframes avelune-vassoura-voar {
+  0% {
+    left: -100px;
+    top: 68%;
+    transform: rotate(-14deg) scale(0.9);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  45% {
+    top: 38%;
+    transform: rotate(-22deg) scale(1.05);
+  }
+
+  75% {
+    top: 52%;
+    transform: rotate(-16deg) scale(1);
+  }
+
+  100% {
+    left: 110%;
+    top: 30%;
+    transform: rotate(-20deg) scale(0.95);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 700px) {
+  .vassoura {
+    width: 62px;
+  }
+
+  .vassoura-cabo {
+    width: 42px;
+  }
+
+  .vassoura-cerdas {
+    width: 22px;
+    height: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vassoura-voando {
+    display: none;
+  }
+}
