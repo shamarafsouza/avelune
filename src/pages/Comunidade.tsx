@@ -1442,6 +1442,22 @@ useEffect(() => {
         <span />
         <span />
         <span />
+        <span />
+      </div>
+
+      <div className="comunidade-velas">
+        <div className="comunidade-vela">
+          <span className="chama" />
+          <span className="corpo" />
+        </div>
+        <div className="comunidade-vela">
+          <span className="chama" />
+          <span className="corpo" />
+        </div>
+        <div className="comunidade-vela">
+          <span className="chama" />
+          <span className="corpo" />
+        </div>
       </div>
 
       <AveluneHeader
