@@ -4369,12 +4369,56 @@
   }
 }
 
+/* =========================================
+   VELAS FLUTUANTES
+   ========================================= */
+
+.comunidade-velas {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.comunidade-vela {
+  position: absolute;
+  bottom: -14%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  animation-name: avelune-vela-flutuar, avelune-vela-aparecer;
+  animation-timing-function: linear, linear;
+  animation-iteration-count: infinite, infinite;
+}
+
+.comunidade-vela .corpo {
+  width: 6px;
+  height: 22px;
+  background: linear-gradient(180deg, #e8dcc4, #c9b98f);
+  border-radius: 1px;
+  box-shadow: 0 0 10px 1px rgba(216, 163, 92, 0.18);
+}
+
+.comunidade-vela .chama {
+  width: 6px;
+  height: 9px;
+  margin-bottom: -2px;
+  border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+  background: radial-gradient(circle at 50% 35%, #fff3d6, #f2b04c 55%, #b5541c 100%);
+  box-shadow:
+    0 0 8px 2px rgba(242, 176, 76, 0.55),
+    0 0 18px 6px rgba(197, 108, 34, 0.25);
+  animation: avelune-vela-tremer 2.4s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
 .comunidade-vela:nth-child(1) {
   left: 12%;
   animation-duration: 34s, 34s;
   animation-delay: 0s, 0s;
 }
-
 .comunidade-vela:nth-child(1) .corpo { width: 5px; height: 18px; }
 .comunidade-vela:nth-child(1) .chama { width: 5px; height: 7px; }
 
@@ -4383,7 +4427,6 @@
   animation-duration: 42s, 42s;
   animation-delay: 10s, 10s;
 }
-
 .comunidade-vela:nth-child(2) .corpo { width: 7px; height: 25px; }
 .comunidade-vela:nth-child(2) .chama { width: 7px; height: 10px; animation-delay: 0.3s; }
 
@@ -4392,6 +4435,30 @@
   animation-duration: 38s, 38s;
   animation-delay: 20s, 20s;
 }
-
 .comunidade-vela:nth-child(3) .corpo { width: 4px; height: 15px; }
 .comunidade-vela:nth-child(3) .chama { width: 4px; height: 6px; animation-delay: 0.9s; }
+
+@keyframes avelune-vela-flutuar {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-55vh) translateX(18px); }
+  100% { transform: translateY(-112vh) translateX(-14px); }
+}
+
+@keyframes avelune-vela-aparecer {
+  0% { opacity: 0; }
+  10% { opacity: 0.85; }
+  90% { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
+@keyframes avelune-vela-tremer {
+  0%, 100% { transform: scaleY(1) rotate(0deg); }
+  25% { transform: scaleY(1.08) rotate(-3deg); }
+  50% { transform: scaleY(0.94) rotate(2deg); }
+  75% { transform: scaleY(1.05) rotate(-1deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comunidade-vela { animation: none; opacity: 0.5; }
+  .comunidade-vela .chama { animation: none; }
+}
