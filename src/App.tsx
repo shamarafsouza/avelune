@@ -167,13 +167,19 @@ function App() {
           <span className="numero">∞</span>
         </div>
       </div>
-
-      {entrando && (
-        <div className="transicao">
-          <div className="transicao-luz" />
-          <p>A biblioteca está esperando...</p>
+    {entrando && (
+      <div className="transicao">
+        <div className="transicao-luz" />
+        <div className="vassoura-voando" aria-hidden="true">
+          <div className="vassoura">
+            <span className="vassoura-cabo" />
+            <span className="vassoura-cerdas" />
+          </div>
+          <span className="vassoura-rastro" />
         </div>
-      )}
+        <p>A biblioteca está esperando...</p>
+      </div>
+    )}
     </main>
   );
 }
