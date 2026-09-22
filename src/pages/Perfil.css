@@ -1619,3 +1619,119 @@
     max-height: 96vh;
   }
 }
+.perfil-detalhe-livro {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(211, 159, 87, 0.1);
+}
+
+.perfil-detalhe-livro-capa {
+  width: 44px;
+  height: 60px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 1px solid rgba(215, 163, 94, 0.18);
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #52251d, #27100d);
+  color: rgba(230, 181, 114, 0.72);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.perfil-detalhe-livro-capa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.perfil-detalhe-livro-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.perfil-detalhe-livro-info small {
+  color: rgba(217, 189, 150, 0.5);
+  font-size: 10px;
+}
+
+.perfil-notificacoes {
+  margin-top: 30px;
+  padding: 20px 22px;
+  border: 1px solid rgba(211, 159, 87, 0.16);
+  background: rgba(43, 23, 14, 0.35);
+}
+
+.perfil-notificacoes-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.perfil-notificacoes-topo button {
+  border: 0;
+  background: transparent;
+  color: rgba(230, 202, 158, 0.6);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.perfil-notificacoes-topo button:hover {
+  color: #ead7b8;
+}
+
+.perfil-notificacoes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.perfil-notificacao-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.perfil-notificacao-item:hover {
+  background: rgba(126, 61, 25, 0.14);
+}
+
+.perfil-notificacao-item.nao-lida {
+  background: rgba(126, 61, 25, 0.1);
+}
+
+.perfil-notificacao-item.nao-lida::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d3a25d;
+  flex-shrink: 0;
+}
+
+.perfil-notificacao-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: rgba(237, 220, 197, 0.86);
+  font-size: 12px;
+}
+
+.perfil-notificacao-texto small {
+  color: rgba(216, 187, 146, 0.45);
+  font-size: 9px;
+}

@@ -75,10 +75,20 @@ function formatarTempoPerfil(data: string) {
   return `há ${dias} ${dias === 1 ? "dia" : "dias"}`;
 }
 
-function Perfil({ onNavigate }: PerfilProps) {
-  const [aba, setAba] = useState<
-    "publicacoes" | "estante" | "favoritos"
-  >("publicacoes");
+    function Perfil({ onNavigate }: PerfilProps) {
+      const { livros } = useLivros();
+      const { notificacoes, naoLidas, marcarComoLida, marcarTodasComoLidas } =
+        useNotificacoes();
+
+        const livrosPorId = useMemo(() => {
+          const mapa = new Map<string, (typeof livros)[number]>();
+          livros.forEach((livro) => mapa.set(livro.titulo, livro));
+          return mapa;
+        }, [livros]);
+
+    const [aba, setAba] = useState<
+      "publicacoes" | "estante" | "favoritos"
+    >("publicacoes");
 
   const [publicacoes, setPublicacoes] = useState<
     PublicacaoPerfil[]
@@ -430,7 +440,17 @@ function Perfil({ onNavigate }: PerfilProps) {
     setMensagem(texto);
   }
 
+  function obterLivro(id: string) {
+    return livrosPorId.get(id);
+  }
+
   function formatarNomeLivro(item: string) {
+    const livro = obterLivro(item);
+
+    if (livro) {
+      return livro.titulo;
+    }
+
     if (typeof item !== "string") {
       return "Livro";
     }
@@ -888,6 +908,75 @@ function Perfil({ onNavigate }: PerfilProps) {
           </div>
         </section>
 
+        {notificacoes.length > 0 && (
+          <section className="perfil-notificacoes">
+            <div className="perfil-notificacoes-topo">
+              <p className="perfil-kicker">
+                {naoLidas > 0
+                  ? `${naoLidas} ${naoLidas === 1 ? "NOVIDADE" : "NOVIDADES"}`
+                  : "NOTIFICAÇÕES"}
+              </p>
+
+              {naoLidas > 0 && (
+                <button
+                  type="button"
+                  onClick={() => void marcarTodasComoLidas()}
+                >
+                  Marcar todas como lidas
+                </button>
+              )}
+            </div>
+
+            <div className="perfil-notificacoes-lista">
+              {notificacoes.slice(0, 8).map((notificacao) => {
+                const nomeAutor =
+                  notificacao.autor?.nome?.trim() || "Um leitor";
+
+                const textoNotificacao =
+                  notificacao.tipo === "seguir"
+                    ? `${nomeAutor} começou a seguir você.`
+                    : notificacao.tipo === "curtida"
+                    ? `${nomeAutor} curtiu sua publicação.`
+                    : `${nomeAutor} comentou na sua publicação.`;
+
+                return (
+                  <button
+                    type="button"
+                    key={notificacao.id}
+                    className={`perfil-notificacao-item ${
+                      notificacao.lida ? "" : "nao-lida"
+                    }`}
+                    onClick={() => {
+                      if (!notificacao.lida) {
+                        void marcarComoLida(notificacao.id);
+                      }
+
+                      if (notificacao.autor_id) {
+                        void abrirPerfilPublico(notificacao.autor_id);
+                      }
+                    }}
+                  >
+                    <span className="perfil-avatar-post">
+                      {notificacao.autor?.avatar_url ? (
+                        <img src={notificacao.autor.avatar_url} alt="" />
+                      ) : (
+                        "✦"
+                      )}
+                    </span>
+
+                    <span className="perfil-notificacao-texto">
+                      {textoNotificacao}
+                      <small>
+                        {formatarTempoPerfil(notificacao.created_at)}
+                      </small>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
         <div className="perfil-divisor">
           <span />
           <strong>✦</strong>
@@ -1090,33 +1179,43 @@ function Perfil({ onNavigate }: PerfilProps) {
                   </button>
                 </div>
               ) : (
-                <div className="perfil-grade-livros">
-                  {livrosNaEstante.map((livro) => (
-                    <button
-                      type="button"
-                      className="perfil-card-livro"
-                      key={livro}
-                      onClick={() => navegar("biblioteca")}
-                    >
-                      <div className="perfil-capa">
-                        <span>✦</span>
-                      </div>
-                      <strong>
-                        {formatarNomeLivro(livro)}
-                      </strong>
-                      <span>Na minha estante</span>
-                      <span className="perfil-progresso-texto">
-                        {progressoLeitura[livro]?.percentual ?? 0}% lido
-                      </span>
-                      <span className="perfil-progresso-barra">
-                        <span
-                          style={{
-                            width: `${Math.min(100, Math.max(0, progressoLeitura[livro]?.percentual ?? 0))}%`,
-                          }}
-                        />
-                      </span>
-                    </button>
-                  ))}
+                               <div className="perfil-grade-livros">
+                  {livrosNaEstante.map((livroId) => {
+                    const livro = obterLivro(livroId);
+                    const percentual = Math.min(
+                      100,
+                      Math.max(0, progressoLeitura[livroId]?.percentual ?? 0)
+                    );
+
+                    return (
+                      <button
+                        type="button"
+                        className="perfil-card-livro"
+                        key={livroId}
+                        onClick={() => navegar("biblioteca")}
+                      >
+                        <div className={`perfil-capa ${livro?.cor ?? ""}`}>
+                          {livro?.capaUrl ? (
+                            <img
+                              src={livro.capaUrl}
+                              alt={`Capa de ${livro.titulo}`}
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span>{livro?.simbolo ?? "✦"}</span>
+                          )}
+                        </div>
+                        <strong>{formatarNomeLivro(livroId)}</strong>
+                        <span>{livro?.autor ?? "Na minha estante"}</span>
+                        <span className="perfil-progresso-texto">
+                          {percentual}% lido
+                        </span>
+                        <span className="perfil-progresso-barra">
+                          <span style={{ width: `${percentual}%` }} />
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -1633,20 +1732,33 @@ const iniciaisFinal =
                 </div>
               )
             ) : (
-              livrosNaEstante.length === 0 ? (
+                          livrosNaEstante.length === 0 ? (
                 <p className="perfil-detalhes-vazio">Sua estante está vazia.</p>
               ) : (
                 <div className="perfil-detalhes-estante">
-                  {livrosNaEstante.map((livro) => {
-                    const percentual = Math.min(100, Math.max(0, progressoLeitura[livro]?.percentual ?? 0));
+                  {livrosNaEstante.map((livroId) => {
+                    const livro = obterLivro(livroId);
+                    const percentual = Math.min(
+                      100,
+                      Math.max(0, progressoLeitura[livroId]?.percentual ?? 0)
+                    );
+
                     return (
-                      <div className="perfil-detalhe-livro" key={livro}>
-                        <div>
-                          <strong>{formatarNomeLivro(livro)}</strong>
-                          <span>{percentual}% concluído</span>
+                      <div className="perfil-detalhe-livro" key={livroId}>
+                        <div className="perfil-detalhe-livro-capa">
+                          {livro?.capaUrl ? (
+                            <img src={livro.capaUrl} alt={`Capa de ${livro.titulo}`} />
+                          ) : (
+                            <span>{livro?.simbolo ?? "✦"}</span>
+                          )}
                         </div>
-                        <div className="perfil-progresso-barra">
-                          <span style={{ width: `${percentual}%` }} />
+                        <div className="perfil-detalhe-livro-info">
+                          <strong>{formatarNomeLivro(livroId)}</strong>
+                          {livro?.autor && <small>{livro.autor}</small>}
+                          <span>{percentual}% concluído</span>
+                          <div className="perfil-progresso-barra">
+                            <span style={{ width: `${percentual}%` }} />
+                          </div>
                         </div>
                       </div>
                     );

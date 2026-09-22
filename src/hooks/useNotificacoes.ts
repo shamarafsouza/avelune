@@ -27,19 +27,24 @@ export function useNotificacoes() {
     async function carregar(usuarioId: string) {
       const { data, error } = await supabase
         .from("notificacoes")
-        .select("id, tipo, autor_id, publicacao_id, comentario_id, lida, created_at")
+        .select(
+          "id, tipo, autor_id, publicacao_id, comentario_id, lida, created_at"
+        )
         .eq("usuario_id", usuarioId)
         .order("created_at", { ascending: false })
         .limit(30);
 
-      if (!ativo) return;
+      if (!ativo || error) return;
 
-      if (error || !data?.length) {
+      if (!data?.length) {
         setNotificacoes([]);
         return;
       }
 
-      const idsAutores = [...new Set(data.map((item) => item.autor_id))];
+      const idsAutores = [
+        ...new Set(data.map((item) => item.autor_id)),
+      ];
+
       const { data: autores } = await supabase
         .from("profiles")
         .select("id, nome, username, avatar_url")
@@ -47,14 +52,48 @@ export function useNotificacoes() {
 
       if (!ativo) return;
 
-      const mapa = new Map((autores ?? []).map((autor) => [autor.id, autor]));
-      setNotificacoes(
-        data.map((item) => ({ ...item, autor: mapa.get(item.autor_id) })) as Notificacao[]
+      const mapaAutores = new Map(
+        (autores ?? []).map((autor) => [autor.id, autor])
       );
+
+      setNotificacoes(
+        data.map((item) => ({
+          ...item,
+          autor: mapaAutores.get(item.autor_id),
+        })) as Notificacao[]
+      );
+    }
+
+    async function adicionarNotificacao(
+      notificacao: Notificacao
+    ) {
+      const { data: autor } = await supabase
+        .from("profiles")
+        .select("id, nome, username, avatar_url")
+        .eq("id", notificacao.autor_id)
+        .maybeSingle();
+
+      if (!ativo) return;
+
+      setNotificacoes((atuais) => {
+        const nova = {
+          ...notificacao,
+          autor: autor ?? undefined,
+        };
+
+        const existe = atuais.some(
+          (item) => item.id === nova.id
+        );
+
+        if (existe) return atuais;
+
+        return [nova, ...atuais].slice(0, 30);
+      });
     }
 
     function iniciar(usuarioId: string | null) {
       if (usuarioId === usuarioAtual) return;
+
       usuarioAtual = usuarioId;
 
       if (canal) {
@@ -70,16 +109,61 @@ export function useNotificacoes() {
       void carregar(usuarioId);
 
       canal = supabase
-        .channel(`notificacoes-${usuarioId}-${Math.random().toString(36).slice(2)}`)
+        .channel(`notificacoes-${usuarioId}`)
         .on(
           "postgres_changes",
           {
-            event: "*",
+            event: "INSERT",
             schema: "public",
             table: "notificacoes",
             filter: `usuario_id=eq.${usuarioId}`,
           },
-          () => void carregar(usuarioId)
+          (payload) => {
+            void adicionarNotificacao(
+              payload.new as Notificacao
+            );
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "notificacoes",
+            filter: `usuario_id=eq.${usuarioId}`,
+          },
+          (payload) => {
+            const atualizada = payload.new as Notificacao;
+
+            setNotificacoes((atuais) =>
+              atuais.map((item) =>
+                item.id === atualizada.id
+                  ? {
+                      ...item,
+                      ...atualizada,
+                    }
+                  : item
+              )
+            );
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "DELETE",
+            schema: "public",
+            table: "notificacoes",
+            filter: `usuario_id=eq.${usuarioId}`,
+          },
+          (payload) => {
+            const excluida = payload.old as Notificacao;
+
+            setNotificacoes((atuais) =>
+              atuais.filter(
+                (item) => item.id !== excluida.id
+              )
+            );
+          }
         )
         .subscribe();
     }
@@ -88,46 +172,94 @@ export function useNotificacoes() {
       iniciar(data.session?.user.id ?? null);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_evento, sessao) => {
-      iniciar(sessao?.user.id ?? null);
-    });
+    const { data: listener } =
+      supabase.auth.onAuthStateChange(
+        (_evento, sessao) => {
+          iniciar(sessao?.user.id ?? null);
+        }
+      );
 
     return () => {
       ativo = false;
+
       listener.subscription.unsubscribe();
-      if (canal) void supabase.removeChannel(canal);
+
+      if (canal) {
+        void supabase.removeChannel(canal);
+      }
     };
   }, []);
 
-  const marcarComoLida = useCallback(async (id: number) => {
-    const { error } = await supabase
-      .from("notificacoes")
-      .update({ lida: true })
-      .eq("id", id);
-
-    if (!error) {
+  // Apenas marca como lida.
+  // NÃO remove a notificação.
+  const marcarComoLida = useCallback(
+    async (id: number) => {
       setNotificacoes((atuais) =>
-        atuais.map((item) => (item.id === id ? { ...item, lida: true } : item))
+        atuais.map((item) =>
+          item.id === id
+            ? { ...item, lida: true }
+            : item
+        )
       );
-    }
-  }, []);
 
-  const marcarTodasComoLidas = useCallback(async () => {
-    const { data: usuarioAuth } = await supabase.auth.getUser();
-    if (!usuarioAuth.user) return;
+      await supabase
+        .from("notificacoes")
+        .update({ lida: true })
+        .eq("id", id);
+    },
+    []
+  );
 
-    const { error } = await supabase
-      .from("notificacoes")
-      .update({ lida: true })
-      .eq("usuario_id", usuarioAuth.user.id)
-      .eq("lida", false);
+  // Marca todas como lidas.
+  // Também NÃO remove nenhuma.
+  const marcarTodasComoLidas = useCallback(
+    async () => {
+      const { data } = await supabase.auth.getUser();
 
-    if (!error) {
-      setNotificacoes((atuais) => atuais.map((item) => ({ ...item, lida: true })));
-    }
-  }, []);
+      if (!data.user) return;
 
-  const naoLidas = notificacoes.filter((item) => !item.lida).length;
+      setNotificacoes((atuais) =>
+        atuais.map((item) => ({
+          ...item,
+          lida: true,
+        }))
+      );
 
-  return { notificacoes, naoLidas, marcarComoLida, marcarTodasComoLidas };
+      await supabase
+        .from("notificacoes")
+        .update({ lida: true })
+        .eq("usuario_id", data.user.id)
+        .eq("lida", false);
+    },
+    []
+  );
+
+  // AQUI é que a notificação realmente desaparece.
+  const excluirNotificacao = useCallback(
+    async (id: number) => {
+      const { error } = await supabase
+        .from("notificacoes")
+        .delete()
+        .eq("id", id);
+
+      if (!error) {
+        setNotificacoes((atuais) =>
+          atuais.filter((item) => item.id !== id)
+        );
+      }
+    },
+    []
+  );
+
+  const naoLidas = notificacoes.filter(
+    (item) => !item.lida
+  ).length;
+
+  return {
+    notificacoes,
+    naoLidas,
+    marcarComoLida,
+    marcarTodasComoLidas,
+    excluirNotificacao,
+  };
 }
