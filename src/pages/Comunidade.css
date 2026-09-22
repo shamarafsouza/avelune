@@ -64,7 +64,6 @@
 /* =========================================
    ATMOSFERA
    ========================================= */
-
 .comunidade::before {
   content: "";
 
@@ -86,6 +85,18 @@
       rgba(126, 61, 25, 0.06),
       transparent 30%
     );
+
+  animation: avelune-respirar 12s ease-in-out infinite;
+}
+
+@keyframes avelune-respirar {
+  0%, 100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
 }
 
 .comunidade::after {
@@ -116,21 +127,99 @@
 
   pointer-events: none;
 
-  opacity: 0.28;
-
-  background-image:
-    radial-gradient(
-      circle,
-      rgba(210, 158, 89, 0.5) 1px,
-      transparent 1px
-    );
-
-  background-size: 155px 155px;
-
-  background-position:
-    20px 30px;
+  overflow: hidden;
 }
 
+.comunidade-particulas span {
+  position: absolute;
+  bottom: -10%;
+
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+
+  background: rgba(216, 163, 92, 0.55);
+  box-shadow: 0 0 6px 1px rgba(216, 163, 92, 0.35);
+
+  opacity: 0;
+
+  animation: avelune-subir linear infinite;
+}
+
+.comunidade-particulas span:nth-child(1) {
+  left: 8%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 22s;
+  animation-delay: 0s;
+}
+
+.comunidade-particulas span:nth-child(2) {
+  left: 22%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 28s;
+  animation-delay: 4s;
+}
+
+.comunidade-particulas span:nth-child(3) {
+  left: 41%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 19s;
+  animation-delay: 9s;
+}
+
+.comunidade-particulas span:nth-child(4) {
+  left: 63%;
+  width: 4px;
+  height: 4px;
+  animation-duration: 33s;
+  animation-delay: 2s;
+}
+
+.comunidade-particulas span:nth-child(5) {
+  left: 79%;
+  width: 2px;
+  height: 2px;
+  animation-duration: 25s;
+  animation-delay: 12s;
+}
+
+.comunidade-particulas span:nth-child(6) {
+  left: 91%;
+  width: 3px;
+  height: 3px;
+  animation-duration: 30s;
+  animation-delay: 6s;
+}
+
+@keyframes avelune-subir {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 0.7;
+  }
+
+  92% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translateY(-115vh) translateX(24px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comunidade-particulas span {
+    animation: none;
+    opacity: 0.25;
+  }
+}
 
 /* =========================================
    TOPO
