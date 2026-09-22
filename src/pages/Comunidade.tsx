@@ -1445,21 +1445,28 @@ useEffect(() => {
         <span />
       </div>
 
-      <div className="comunidade-velas">
-        <div className="comunidade-vela">
-          <span className="chama" />
-          <span className="corpo" />
+        <div className="comunidade-velas">
+          <div className="comunidade-vela comunidade-vela-1">
+            <span className="chama" />
+            <span className="corpo" />
+          </div>
+          <div className="comunidade-vela comunidade-vela-2">
+            <span className="chama" />
+            <span className="corpo" />
+          </div>
+          <div className="comunidade-vela comunidade-vela-3">
+            <span className="chama" />
+            <span className="corpo" />
+          </div>
+          <div className="comunidade-vela comunidade-vela-4">
+            <span className="chama" />
+            <span className="corpo" />
+          </div>
+          <div className="comunidade-vela comunidade-vela-5">
+            <span className="chama" />
+            <span className="corpo" />
+          </div>
         </div>
-        <div className="comunidade-vela">
-          <span className="chama" />
-          <span className="corpo" />
-        </div>
-        <div className="comunidade-vela">
-          <span className="chama" />
-          <span className="corpo" />
-        </div>
-      </div>
-
       <AveluneHeader
         paginaAtual="comunidade"
         onNavigate={(pagina) => onNavigate?.(pagina)}
